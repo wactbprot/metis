@@ -6,7 +6,7 @@
             :release-tag-pattern "v[0-9]*"
             :stable-tag-pattern "stable-*"
             :project-to-alias {"development" "dev"}
-            :ns-to-lib {clutch com.ashafa/clutch}}
+            :ns-to-lib {}}
 
  :aliases  {:dev {:extra-paths ["development/src"
                                 
@@ -15,7 +15,6 @@
                                 "components/config/resources"
                                 "components/ltmem/src"
                                 "components/ltmem/resources"]
-
                   :extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
                                org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}
                                com.taoensso/carmine {:mvn/version "3.0.0"}
