@@ -1,1 +1,4 @@
-(ns metis.config.interface)
+(ns metis.config.interface
+  (:require [metis.config.core :as core]))
+
+(def config core/config)

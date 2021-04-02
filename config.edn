@@ -1,12 +1,6 @@
 {
  :mulog {:type :multi
          :publishers[
-                     ;; send events to the stdout
-                     ;; {:type :console
-                     ;;  :pretty? true}
-                     ;; send events to a file
-                     ;; {:type :simple-file
-                     ;;  :filename "/tmp/mulog/events.log"}
                      ;; send events to ELS
                      {:type :elasticsearch
                       :url  "http://localhost:9200/"
@@ -50,6 +44,8 @@
  :ltmem-port 5984
  :ltmem-db "vl_db_work"
  :ltmem-prot "http"
+ :ltmem-task-design "dbmp"
+ :ltmem-task-view "tasks"
  ;; short term memory: redis
  :st-conn {:pool {}
            :spec {:host "127.0.0.1" :port 6379 :db 0}}

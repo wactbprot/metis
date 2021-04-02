@@ -10,4 +10,13 @@ You can also get in touch with the Polylith Team via our [forum](https://polylit
 
 <h1>metis</h1>
 
-<p>Add your workspace documentation here...</p>
+## notes
+
+`(require '[com.ashafa.clutch :as c])`
+
+not
+
+`(require '[com.ashafa/clutch :as c])`
+
+Start with alias (here `:dev`) dependency
+`clj -A:dev`

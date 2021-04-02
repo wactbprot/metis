@@ -6,7 +6,7 @@
             :release-tag-pattern "v[0-9]*"
             :stable-tag-pattern "stable-*"
             :project-to-alias {"development" "dev"}
-            :ns-to-lib {}}
+            :ns-to-lib {clutch com.ashafa/clutch}}
 
  :aliases  {:dev {:extra-paths ["development/src"
                                 
@@ -35,8 +35,9 @@
                                com.brunobonacci/mulog-elasticsearch {:mvn/version "0.6.0"}
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
             
+            
             :test {:extra-paths []}
-
+            
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith
                                 {:git/url   "https://github.com/polyfy/polylith"
