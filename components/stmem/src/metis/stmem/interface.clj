@@ -1,0 +1,1 @@
+(ns metis.stmem.interface)

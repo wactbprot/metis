@@ -13,7 +13,9 @@
                                 "components/config/src"
                                 "components/config/resources"
                                 "components/ltmem/src"
-                                "components/ltmem/resources"]
+                                "components/ltmem/resources"
+                                "components/stmem/src"
+                                "components/stmem/resources"]
                   :extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
                                org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}
                                com.taoensso/carmine {:mvn/version "3.0.0"}
