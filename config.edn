@@ -46,6 +46,8 @@
  :ltmem-prot "http"
  :ltmem-task-design "dbmp"
  :ltmem-task-view "tasks"
+ :ltmem-mpds-design "dbmp"
+ :ltmem-mpds-view "mpdocs"
  ;; short term memory: redis
  :st-conn {:pool {}
            :spec {:host "127.0.0.1" :port 6379 :db 0}}

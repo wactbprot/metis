@@ -40,6 +40,19 @@
     (catch Exception e (mu/log ::all-tasks :error (.getMessage e)))))
 
 ;;------------------------------
+;; tasks
+;;------------------------------
+(defn all-mpds
+  "Returns all measurement program definitions in long term memory."
+  []
+  (mu/log ::all-mpds :message "get mpds from ltm")
+  (try
+    (couch/get-view (:ltmem-conn c/config)
+                    (:ltmem-mpds-design c/config)
+                    (:ltmem-mpds-view c/config))
+    (catch Exception e (mu/log ::all-tasks :error (.getMessage e)))))
+
+;;------------------------------
 ;; utils
 ;;------------------------------
 (defn exist?

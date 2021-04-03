@@ -19,5 +19,5 @@
 
 (def config
   (let [c (get-config)]
-    (assoc c
-           :ltmem-conn (str (ltmem-url c) "/"(:lt-db c)))))
+    (assoc c 
+           :ltmem-conn (str (ltmem-url c) "/"(:ltmem-db c)))))

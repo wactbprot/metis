@@ -10,3 +10,5 @@
 (defn put-doc [doc] (core/put-doc doc))
 
 (defn all-tasks [] (core/all-tasks))
+
+(defn all-mpds [] (core/all-mpds))

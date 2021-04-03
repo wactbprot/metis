@@ -9,7 +9,6 @@
             :ns-to-lib {}}
 
  :aliases  {:dev {:extra-paths ["development/src"
-                                
                                 ;; Components
                                 "components/config/src"
                                 "components/config/resources"
