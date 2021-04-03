@@ -23,6 +23,7 @@ Start with alias (here `:dev`) dependency
 
 
 ## clj --help
+```
 Version: 1.10.2.774
 
 You use the Clojure tools ('clj' or 'clojure') to run Clojure programs
@@ -92,3 +93,4 @@ Programs provided by :deps alias:
 For more info, see:
  https://clojure.org/guides/deps_and_cli
  https://clojure.org/reference/repl_and_main
+```
