@@ -48,9 +48,14 @@
  :ltmem-task-view "tasks"
  :ltmem-mpds-design "dbmp"
  :ltmem-mpds-view "mpdocs"
+ 
  ;; short term memory: redis
- :st-conn {:pool {}
-           :spec {:host "127.0.0.1" :port 6379 :db 0}}
+ :stmem-srv "127.0.0.1"
+ :stmem-port 6379
+ :stmem-db 0
+ :stmem-notif-sep "@"
+ :stmem-key-sep "@"
+ 
  ;; for order or sorting reasons
  ;; idx, jdx and kdx are padded
  :key-pad-length 3

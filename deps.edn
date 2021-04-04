@@ -16,6 +16,7 @@
                                 "components/ltmem/resources"
                                 "components/stmem/src"
                                 "components/stmem/resources"]
+                  
                   :extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
                                org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}
                                com.taoensso/carmine {:mvn/version "3.0.0"}
@@ -36,7 +37,7 @@
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
             
             
-            :test {:extra-paths []}
+            :test {:extra-paths ["components/stmem/test"]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith
