@@ -55,10 +55,20 @@
  :stmem-db 0
  :stmem-notif-sep "@"
  :stmem-key-sep "@"
- 
+ :stmem-trans {:tasks "tasks"
+               :cont "container"
+               :defin "definition"
+               :defins "definitions"
+               :title "title"
+               :nc "ncont"
+               :nd "ndefins"
+               :state "state"
+               :ctrl "ctrl"
+               :exch "exchange"}
  ;; for order or sorting reasons
  ;; idx, jdx and kdx are padded
- :key-pad-length 3
+ :stmem-key-pad-length 3
+
  :ref-mpd "mpd-ref.edn"
  ;; a task should at least take 10ms
  ;; in order to give the keyspace notification listener
