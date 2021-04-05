@@ -1,6 +1,6 @@
 # Μητις
 
-<img src="metis.jpg" width="90%" alt="metis" id="logo">
+<img src="metis.png" width="50%" alt="metis" id="logo">
 
 
 ## metis arch: Polylith
