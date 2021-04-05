@@ -13,9 +13,9 @@
   * `<mp-id>`"
   ([k]
    (key->mp-id c/config k))
-  ([k c]
+  ([config k]
   (when (and (string? k) (not (empty? k)))
-    (nth (string/split k (:re-sep c)) 0 nil))))
+    (nth (string/split k (:re-sep config)) 0 nil))))
 
 ;;------------------------------
 ;; key at position 1
@@ -33,8 +33,8 @@
   * `meta`"
   ([k]
    (key->struct c/config k))
-  ([k c]
-  (when (string? k) (nth (string/split k (:re-sep c)) 1 nil))))
+  ([config k]
+  (when (string? k) (nth (string/split k (:re-sep config)) 1 nil))))
 
 ;;------------------------------
 ;; key at position 2
@@ -44,8 +44,8 @@
   `container` or `definitions` index."
   ([k]
    (key->no-idx c/config k))
-  ([k c]
-  (when (string? k) (nth (string/split k (:re-sep c)) 2 nil))))
+  ([config k]
+  (when (string? k) (nth (string/split k (:re-sep config)) 2 nil))))
 
 ;;------------------------------
 ;; key at position 3
@@ -65,8 +65,8 @@
   * `messsage`"
   ([k]
    (key->func c/config k))
-  ([k c]
-  (when (string? k) (nth (string/split k (:re-sep c)) 3 nil))))
+  ([config k]
+  (when (string? k) (nth (string/split k (:re-sep config)) 3 nil))))
 
 ;;------------------------------
 ;; key at position 4
@@ -75,8 +75,8 @@
   "Returns an integer corresponding to the givens key sequential index."
   ([k]
    (key->seq-idx c/config k))
-  ([k c]
-   (when (string? k) (nth (string/split k (:re-sep c)) 4 nil))))
+  ([config k]
+   (when (string? k) (nth (string/split k (:re-sep config)) 4 nil))))
 
 (defn key->no-jdx
   "The 4th position at `definitions` keys."
@@ -95,55 +95,74 @@
   "Returns an integer corresponding to the givens key parallel index."
   ([k]
    (key->par-idx c/config k))
-  ([k c]
-   (when (string? k) (nth (string/split k (:re-sep c)) 5 nil))))
+  ([config k]
+   (when (string? k) (nth (string/split k (:re-sep config)) 5 nil))))
 
 ;;------------------------------
 ;; map to string
 ;;------------------------------
 (defn pad-ok?
   "Checks if the padding of `i` is ok. `\"*\"` serves pattern matching."
-  ([i]
-   (pad-ok? i (:stmem-key-pad-length c/config)))
-  ([i n]
+  ([idx]
+   (pad-ok? c/config idx))
+  ([config idx]
    (cond
-     (and (string? i)
-          (= n (count i))) true
-     (= i "*")             true 
-     :else                 false)))
+     (and (string? idx)
+          (= (count idx)
+             (:stmem-key-pad-length config))) true
+     (= idx "*")                         true 
+     :else                               false)))
 
 (defn ensure-int
   "Ensures `i` to be integer. Returns 0 as default."
-  [i]
-  (if (integer? i) i (try (Integer/parseInt i) (catch Exception e 0))))
+  [idx]
+  (if (integer? idx)
+    idx
+    (try (Integer/parseInt idx) (catch Exception e 0))))
 
 (defn lpad
   "Left pad the given number if it is not a string."
-  ([i]
-   (lpad i (:stmem-key-pad-length c/config)))
-  ([i n]
-   (if (pad-ok? i) i (format (str "%0" n "d") (ensure-int i)))))
+  ([idx]
+   (lpad c/config idx))
+  ([config idx]
+   (if (pad-ok? idx)
+     idx
+     (format (str "%0" (:stmem-key-pad-length config) "d") (ensure-int idx)))))
 
 (defn map->task-key
-  [{{t :tasks} :stmem-trans s :stmem-key-sep} {n :task-name}]
-  (str n s t))
-
-(defn map->struct-key
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (str (:mp-id m) s ((:struct m) trans)))
+  (str (:tasks trans) s (:task-name m)))
+
+(defn map->struct-part
+  [{trans :stmem-trans s :stmem-key-sep} m]
+  (when (and (:mp-id m) (:struct m))
+    (str (:mp-id m) s ((:struct m) trans))))
+
+(defn map->no-idx-part
+  [{s :stmem-key-sep :as config} m]
+  (when (:no-idx m)
+    (str s (lpad config (:no-idx m)))))
+
+(defn map->func-part
+  [{trans :stmem-trans s :stmem-key-sep} m]
+  (when (:func m)
+    (str s ((:func m) trans))))
+
+(defn map->seq-par-idx-part
+  [{s :stmem-key-sep :as config} m]
+  (when (:seq-idx m)
+    (str s (lpad config (:seq-idx m)))
+    (when (:par-idx m)
+      (str s (lpad config (:par-idx m))))))
 
 (defn map->key
   ([m]
    (map->key c/config m))
   ([config m]
-   (when (and (map? m) (not (empty? m))) 
-     (let [sep   (:stmem-key-sep config)
-           trans (:stmem-trans config)]
-       (if (:task-name m)
+   (when (and (map? m) (seq m)) 
+     (if (:task-name m)
          (map->task-key config m)
-         (when (and (:mp-id m) (:struct m))
-           (str (map->struct-key config m))
-           (when (:no-idx m) (str sep (:no-idx m))
-                  (when (:func m) (str sep (:func m))
-                        (when (:seq-idx m) (str sep (:seq-idx m))
-                              (when (:par-idx m) (str sep (:par-idx m))))))))))))
+         (str (map->struct-part config m)
+              (map->no-idx-part config m)
+              (map->func-part config m)
+              (map->seq-par-idx-part config m))))))
