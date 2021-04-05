@@ -60,10 +60,10 @@
   (doall
    (map-indexed
     (fn [jdx cnd]
-      (trans/set-val (assoc m :seq-idx jdx :func :cond :value cnd))
-      cnds))))
+      (trans/set-val (assoc m :seq-idx jdx :func :cond :value cnd)))
+    cnds)))
 
-(defn store-definitions
+(defn build-definitions
   "Stores a definition given in the definition section
   (second way beside container to provide definitions).  This includes
   `DefinitionClass` and `Conditions`."
@@ -74,7 +74,7 @@
   (build-conds m)
   (build-defin m))
 
-(defn store-all-definitions
+(defn build-all-definitions
   "Triggers the storing of the definition section."
   [{mp-id :mp-id defins :Definitions}]
   (doall
@@ -111,6 +111,7 @@
 ;; build mpd doc
 ;;------------------------------
 (defn build
-  [{mp-id :_id {conts :Container exch :Exchange} :Mp}]
+  [{mp-id :_id {conts :Container defins :Definitions exch :Exchange} :Mp}]
   (build-exchange {:mp-id mp-id :Exchange exch})
-  (build-all-container {:mp-id mp-id :Container conts}))
+  (build-all-container {:mp-id mp-id :Container conts})
+  (build-all-definitions {:mp-id mp-id :Definitions defins}))

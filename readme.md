@@ -1,8 +1,9 @@
 # Μητις
 
+<img src="metis.jpg" width="90%" alt="metis" id="logo">
 
-## Polylith
-<img src="logo.png" width="30%" alt="Polylith" id="logo">
+
+## metis arch: Polylith
 
 The Polylith documentation can be found here:
 

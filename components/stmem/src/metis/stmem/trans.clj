@@ -162,6 +162,13 @@
          (when (:par-idx m)
            (str s (lpad config (:par-idx m)))))))
 
+(defn map->def-key
+  [config m]
+  (str (map->struct-part config m)
+       (map->no-idx-part config m) (map->exch-part config m)
+       (map->func-part config m)
+       (map->seq-par-idx-part config m)))
+
 (defn map->key
   ([m]
    (map->key c/config m))
@@ -169,17 +176,13 @@
    (when (and (map? m) (seq m)) 
      (if (:task-name m)
          (map->task-key config m)
-         (str (map->struct-part config m)
-              (map->no-idx-part config m) (map->exch-part config m)
-              (map->func-part config m)
-              (map->seq-par-idx-part config m))))))
+         (map->def-key config m)))))
 
 (defn map->val
   ([m]
    (map->val c/config m))
-   ([config m]
-    (:value m)))
-
+  ([config m]
+   (:value m)))
 
 (defn set-val [m] (core/set-val (map->key m) (che/generate-string (map->val m))))
 
