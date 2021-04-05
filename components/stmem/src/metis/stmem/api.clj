@@ -1,10 +1,10 @@
 (ns metis.stmem.api
-  (:require [metis.stmem.core :as core]))
+  (:require [metis.stmem.trans :as trans]))
 
 ;; the idea is: no key operation outside stmem
 ;; the stmem api converts maps to keys and vice versa
 ;; this should keep everything outside mostly free of side effects
-
+  
 ;;------------------------------
 ;; exchange
 ;;------------------------------
@@ -12,7 +12,7 @@
   "Builds the exchange interface."
   [{mp-id :mp-id exch :Exchange}]
   (doseq [[k v] exch]
-    (core/set-val (stu/exch-key p (name k)) v)))
+    (trans/set-val {:mp-id mp-id :struct :exch :exch (name k) :value v})))
 
 
 (defn build

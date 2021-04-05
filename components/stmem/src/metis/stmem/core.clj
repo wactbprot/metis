@@ -1,5 +1,6 @@
 (ns metis.stmem.core
   (:require [metis.config.interface :as c]
+            [metis.stmem.trans :as trans]
             [taoensso.carmine :as car :refer (wcar)]
             [cheshire.core :as che]
             [com.brunobonacci.mulog :as mu]
@@ -13,14 +14,14 @@
   [k v]
   (if (string? k)
     (if (some? v)
-      (wcar (:stmem-conn c/config) (car/set k (che/generate-string v)))
+      (wcar (:stmem-conn c/config) (car/set k v))
       (mu/log ::set :error "no value given"))
     (mu/log ::set :error "no key given")))
 
 (defn set-same-val
   "Sets the given `val` for all keys `ks` with the delay `mtp`."
   [ks v]
-  (run! (fn [k] (set k v)) ks))
+  (run! (fn [k] (set-val k v)) ks))
 
 ;;------------------------------
 ;; get keys
@@ -50,7 +51,7 @@
   "Returns the value for the given key (`k`) and cast it to a clojure
   type."
   [k]
-  (che/parse-string (wcar (:stmem-conn c/config) (car/get k)) true))
+  (wcar (:stmem-conn c/config) (car/get k)))
 
 (defn get-vals
   "Returns a vector of the `vals` behind the keys `ks`."

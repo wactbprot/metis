@@ -12,8 +12,6 @@ The Polylith documentation can be found here:
 
 You can also get in touch with the Polylith Team via our [forum](https://polylith.freeflarum.com) or on [Slack](https://clojurians.slack.com/archives/C013B7MQHJQ).
 
-<h1>metis</h1>
-
 ## notes
 
 `(require '[com.ashafa.clutch :as c])`

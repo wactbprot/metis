@@ -1,5 +1,7 @@
 (ns metis.stmem.trans
-  (:require [metis.config.interface :as c]
+  (:require [metis.stmem.core :as core]
+            [metis.config.interface :as c]
+            [cheshire.core :as che]
             [clojure.string :as string]))
 
 ;;------------------------------
@@ -143,6 +145,13 @@
   (when (:no-idx m)
     (str s (lpad config (:no-idx m)))))
 
+(defn map->exch-part
+  [{s :stmem-key-sep :as config} m]
+  (when (:exch m)
+    (str s (:exch m))))
+
+
+
 (defn map->func-part
   [{trans :stmem-trans s :stmem-key-sep} m]
   (when (:func m)
@@ -163,6 +172,17 @@
      (if (:task-name m)
          (map->task-key config m)
          (str (map->struct-part config m)
-              (map->no-idx-part config m)
+              (map->no-idx-part config m) (map->exch-part config m)
               (map->func-part config m)
               (map->seq-par-idx-part config m))))))
+
+(defn map->val
+  ([m]
+   (map->val c/config m))
+   ([config m]
+    (:value m)))
+
+
+(defn set-val [m] (core/set-val (map->key m) (che/generate-string (map->val m))))
+
+(defn get-val [m] (che/parse-string (core/get-val (map->key m)) true))
