@@ -1,3 +1,7 @@
+# Μητις
+
+
+## Polylith
 <img src="logo.png" width="30%" alt="Polylith" id="logo">
 
 The Polylith documentation can be found here:
