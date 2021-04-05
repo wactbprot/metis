@@ -150,8 +150,6 @@
   (when (:exch m)
     (str s (:exch m))))
 
-
-
 (defn map->func-part
   [{trans :stmem-trans s :stmem-key-sep} m]
   (when (:func m)
@@ -160,9 +158,9 @@
 (defn map->seq-par-idx-part
   [{s :stmem-key-sep :as config} m]
   (when (:seq-idx m)
-    (str s (lpad config (:seq-idx m)))
-    (when (:par-idx m)
-      (str s (lpad config (:par-idx m))))))
+    (str s (lpad config (:seq-idx m))
+         (when (:par-idx m)
+           (str s (lpad config (:par-idx m)))))))
 
 (defn map->key
   ([m]
