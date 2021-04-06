@@ -82,37 +82,33 @@
 ;;------------------------------
 ;; meta
 ;;------------------------------
-(comment
-  (defn build-meta
+(defn build-meta
   "Stores the meta data of an mpd:
-
+  
   * standard
   * name
   * description
   * number of containers
   * number of definitions
   "
-  [p {standard :Standard
-      name     :Name
-      descr    :Description
-      cont     :Container
-      defins   :Definitions}]
-  (st/set-val! (stu/meta-std-key p) standard)
-  (st/set-val! (stu/meta-name-key p) name)
-  (st/set-val! (stu/meta-descr-key p) descr)
-  (st/set-val! (stu/meta-ndefins-key p) (count defins))
-  (st/set-val! (stu/meta-ncont-key p) (count cont)))
-  )
+  [{mp-id :mp-id std :Standard name :Name descr :Description cont :Container defins :Definitions}]
+  (let [m {:mp-id mp-id :struct :meta}]
+    (stmem/set-val (assoc m :metapath :std :value std))
+    (stmem/set-val (assoc m :metapath :name :value name))
+    (stmem/set-val (assoc m :metapath :descr :value descr))
+    (stmem/set-val (assoc m :metapath :nd :value (count defins)))
+    (stmem/set-val (assoc m :metapath :nc :value (count cont)))))
 
 ;;------------------------------
 ;; build mpd doc
 ;;------------------------------
 (defn build
-  [{mp-id :_id {conts :Container defins :Definitions exch :Exchange} :Mp}]
-  (let [m {:mp-id mp-id}]
-    (build-exchange  (assoc m :Exchange exch))
-    (build-all-container (assoc m :Container conts))
-    (build-all-definitions (assoc m :Definitions defins))))
+  [{mp-id :_id {conts :Container defins :Definitions exch :Exchange :as m} :Mp}]
+  (let [m (assoc m :mp-id mp-id)]
+    (build-exchange m)
+    (build-meta m)
+    (build-all-container m)
+    (build-all-definitions m)))
 
 ;;------------------------------
 ;; clear mpd doc

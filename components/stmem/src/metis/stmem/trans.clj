@@ -150,6 +150,11 @@
   (when (:exch m)
     (str s (:exch m))))
 
+(defn map->metapath-part
+  [{trans :stmem-trans s :stmem-key-sep} m]
+  (when (:metapath m)
+    (str s ((:metapath m) trans))))
+
 (defn map->func-part
   [{trans :stmem-trans s :stmem-key-sep} m]
   (when (:func m)
@@ -165,7 +170,7 @@
 (defn map->def-key
   [config m]
   (str (map->struct-part config m)
-       (map->no-idx-part config m) (map->exch-part config m)
+       (map->no-idx-part config m) (map->exch-part config m) (map->metapath-part config m) 
        (map->func-part config m)
        (map->seq-par-idx-part config m)))
 
