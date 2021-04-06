@@ -1,6 +1,5 @@
 (ns metis.stmem.core
   (:require [metis.config.interface :as c]
-            [metis.stmem.trans :as trans]
             [taoensso.carmine :as car :refer (wcar)]
             [cheshire.core :as che]
             [com.brunobonacci.mulog :as mu]

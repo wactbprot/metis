@@ -1,6 +1,5 @@
 (ns metis.stmem.interface
-  (:require [metis.stmem.api :as api]
-            [metis.stmem.trans :as trans]))
+  (:require [metis.stmem.trans :as trans]))
 
 (defn set-val [m] (trans/set-val m))
 
