@@ -113,3 +113,10 @@
     (build-exchange  (assoc m :Exchange exch))
     (build-all-container (assoc m :Container conts))
     (build-all-definitions (assoc m :Definitions defins))))
+
+;;------------------------------
+;; clear mpd doc
+;;------------------------------
+(defn clear
+  [{mp-id :mp-id}]
+  (stmem/del-vals {:mp-id mp-id :struct :*})) 

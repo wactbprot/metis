@@ -7,4 +7,6 @@
  
 (defn ms-list [] (ltmem/all-mpds))
 
-(defn m-build [id] (-> id ltmem/get-doc model/build))  
+(defn m-build [id] (-> id ltmem/get-doc model/build))
+
+(defn m-clear [id] (model/clear {:mp-id id}))  
