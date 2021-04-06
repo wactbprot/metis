@@ -70,7 +70,8 @@
                :nd "ndefins"
                :state "state"
                :ctrl "ctrl"
-               :exch "exchange"}
+               :exch "exchange"
+               :* "*"}
  ;; for order or sorting reasons
  ;; idx, jdx and kdx are padded
  :stmem-key-pad-length 3
