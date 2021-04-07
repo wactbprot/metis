@@ -5,7 +5,7 @@
 
 (defn m-get [id] (ltmem/get-doc id))
  
-(defn ms-list [] (ltmem/all-mpds))
+(defn ms-list [] (mapv :id (ltmem/all-mpds)))
 
 (defn m-build [id] (-> id ltmem/get-doc model/build))
 

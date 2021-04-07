@@ -1,8 +1,35 @@
 (ns metis.stmem.notif
   (:require [metis.config.interface :as c]
+            [metis.stmem.trans :as trans]
             [taoensso.carmine :as car :refer (wcar)]))
+
+(defn reg-key
+  ([m]
+   (reg-key c/config m))
+  ([{t :stmem-trans s :stmem-key-sep} m]
+   (when (and (map? m) (seq m))
+     (str (:mp-id m) s ((:struct m) t) s (trans/lpad (:no-idx m)) s
+          ((:func m) t) s (or (:level m) (trans/lpad 0))))))
+
 (comment
-;;------------------------------
+
+(defn register
+  "Generates and registers a listener under the key `mp-id` in the
+  `listeners` atom.  The cb! function dispatches depending on the
+  result."
+  ([m f]
+   (register c/config m f))
+  ([c m f]
+   (let [reg-key (reg-key mp-id struct no func level)]
+     (if-not (registered? reg-key)
+       {:ok (map?
+             (swap! listeners assoc
+                    reg-key
+                    (gen-listener mp-id struct no func f)))}
+       {:ok true :warn "already registered"}))))
+)
+
+  ;;------------------------------
 ;; keyspace notification
 ;;------------------------------
 (defn msg->key
@@ -83,33 +110,12 @@
 ;;------------------------------
 ;;register!, registered?, de-register!
 ;;------------------------------
-(defn reg-key
-  "Generates a registration key for the listener atom.
-  The `level` param allows to register more than one listener for one
-  pattern."
-  [mp-id struct no func level]
-  (stu/vec->key  [mp-id struct no func level]))
 
 (defn registered?
   "Checks if a `listener` is registered under
   the `listeners`-atom."
   [k]
   (contains? (deref listeners) k))
-
-(defn register!
-  "Generates and registers a listener under the key `mp-id` in the
-  `listeners` atom.  The cb! function dispatches depending on the
-  result."
-  ([mp-id struct no func cb!]
-   (register! mp-id struct no func cb! "a"))
-  ([mp-id struct no func cb! level]
-   (let [reg-key (reg-key mp-id struct no func level)]
-     (if-not (registered? reg-key)
-       {:ok (map?
-             (swap! listeners assoc
-                    reg-key
-                    (gen-listener mp-id struct no func cb!)))}
-       {:ok true :warn "already registered"}))))
 
 (defn de-register!
   "De-registers the listener with the key `mp-id` in the `listeners`
