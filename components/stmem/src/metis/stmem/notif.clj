@@ -6,10 +6,13 @@
 (defn reg-key
   ([m]
    (reg-key c/config m))
-  ([{t :stmem-trans s :stmem-key-sep} m]
+  ([{t :stmem-trans s :stmem-key-sep :as config} m]
    (when (and (map? m) (seq m))
-     (str (:mp-id m) s ((:struct m) t) s (trans/lpad (:no-idx m)) s
-          ((:func m) t) s (or (:level m) (trans/lpad 0))))))
+     (str (:mp-id m) s
+          ((or (:struct m) :*)  t) s
+          (if (:no-idx m) (trans/lpad config (:no-idx m)) (:* t)) s
+          ((or (:func m) :*) t) s
+          (or (:level m) (trans/lpad config 0))))))
 
 (comment
 
