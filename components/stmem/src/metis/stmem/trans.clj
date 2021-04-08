@@ -5,7 +5,7 @@
             [clojure.string :as string]))
 
 ;;------------------------------
-;; map to string
+;; map to key utils
 ;;------------------------------
 (defn pad-ok?
   "Checks if the padding of `i` is ok. `\"*\"` serves pattern matching."

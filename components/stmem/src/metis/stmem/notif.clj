@@ -26,8 +26,9 @@
   "Generates subscribe patterns."
   ([m]
    (subs-pat c/config m))
-  ([{t :stmem-trans s :stmem-notif-sep db :stmem-db :as config} m]
-   (str "__keyspace" s db (:* t) "__:" (reg-pat config m) (:* t))))
+  ([config m]
+   (let [{t :stmem-trans s :stmem-notif-sep db :stmem-db} config]
+     (str "__keyspace" s db (:* t) "__:" (reg-pat config m) (:* t)))))
 
 (defn reg-key
   ([m]
@@ -50,17 +51,11 @@
   ```"
   ([m f]
    (gen-listener c/config m f))
-  ([{{conn :spec :as config} :stmem-conn} m f]
+  ([{{conn :spec} :stmem-conn :as config} m f]
    (let [pat (subs-pat config m)]
      (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
 
-(defn registered?
-  "Checks if a `listener` is registered under
-  the `listeners`-atom."
-  ([m]
-   (registered? c/config m))
-  ([config m]
-   (contains? @listeners (reg-key config m))))
+(defn registered? [k] (contains? @listeners k))
 
 (defn register
   "Generates and registers a listener in the `listeners` atom.  The cb!
