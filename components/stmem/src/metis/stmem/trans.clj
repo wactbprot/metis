@@ -45,24 +45,21 @@
     (str (:mp-id m) s ((:struct m) trans))))
 
 (defn map->no-idx-part
-  [{s :stmem-key-sep :as config} m]
-  (when (:no-idx m)
-    (str s (lpad config (:no-idx m)))))
+  [{trans :stmem-trans s :stmem-key-sep :as config} m]
+  (when-let[no-idx (:no-idx m)]
+    (str s (if (= :* no-idx) (:* trans) (lpad config (:no-idx m))))))
 
 (defn map->exch-part
   [{s :stmem-key-sep :as config} m]
-  (when (:exch m)
-    (str s (:exch m))))
+  (when (:exch m) (str s (:exch m))))
 
 (defn map->metapath-part
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (when (:metapath m)
-    (str s ((:metapath m) trans))))
+  (when (:metapath m) (str s ((:metapath m) trans))))
 
 (defn map->func-part
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (when (:func m)
-    (str s ((:func m) trans))))
+  (when (:func m)(str s ((:func m) trans))))
 
 (defn map->seq-par-idx-part
   [{s :stmem-key-sep :as config} m]
