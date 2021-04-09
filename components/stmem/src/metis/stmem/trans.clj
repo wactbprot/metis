@@ -62,11 +62,13 @@
   (when (:func m)(str s ((:func m) trans))))
 
 (defn map->seq-par-idx-part
-  [{s :stmem-key-sep :as config} m]
-  (when (:seq-idx m)
-    (str s (lpad config (:seq-idx m))
-         (when (:par-idx m)
-           (str s (lpad config (:par-idx m)))))))
+  [{trans :stmem-trans s :stmem-key-sep :as config} m]
+  (let [sdx (:seq-idx m)
+        pdx (:par-idx m)]
+  (when sdx
+    (str s (if (number? sdx) (lpad config sdx) (:* trans))
+         (when pdx
+           (str s (if (number? pdx) (lpad config pdx) (:* trans))))))))
 
 (defn map->def-key
   [config m]

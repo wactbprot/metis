@@ -16,7 +16,7 @@
 (defn reg-pat
   ([m]
    (reg-pat c/config m))
-  ([{t :stmem-trans s :stmem-key-sep :as config} m]
+  ([{t :stmem-trans s :stmem-notif-sep :as config} m]
    (str (:mp-id m) s
         ((or (:struct m) :*)  t) s
         (if (:no-idx m) (trans/lpad config (:no-idx m)) (:* t)) s
@@ -99,6 +99,6 @@
   [m]
   (let [k (reg-key m)]
     (when (registered? k)
-      (mu/log ::de-register! :message "will de-register" :key k)
+      (mu/log ::de-register :message "will de-register" :key k)
       (close-listener (@listeners k))
       {:ok (map? (swap! listeners dissoc k))})))

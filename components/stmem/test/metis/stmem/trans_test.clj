@@ -4,9 +4,9 @@
 
 (deftest map->key-i
   (testing "nil behaviour"
-    (is (nil? (trans/map->key nil))))
+    (is (nil? (map->key nil))))
   (testing "empty"
-    (is (nil? (trans/map->key {})))))
+    (is (nil? (map->key {})))))
 
 (deftest map->key-ii
   (let [config {:stmem-key-sep "@"
@@ -21,7 +21,7 @@
                               :ctrl "ctrl"
                               :exch "exchange"}}]
     (testing "task"
-      (is (= "tasks@foo" (trans/map->key config {:task-name "foo"}))))
+      (is (= "tasks@foo" (map->key config {:task-name "foo"}))))
     (testing "..."
       (is (nil? nil)))))
 
