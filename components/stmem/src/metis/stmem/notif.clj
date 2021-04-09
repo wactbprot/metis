@@ -65,7 +65,10 @@
   ([config m f]
    (let [reg-key (reg-key config m)]
      (if-not (registered? reg-key)
-       {:ok (map? (swap! listeners assoc reg-key (gen-listener m f)))}
+       (do
+        (swap! listeners assoc reg-key (gen-listener m f))
+        (Thread/sleep 1)
+        {:ok true})
        {:ok true :warn "already registered"}))))
 
 ;;------------------------------

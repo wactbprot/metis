@@ -92,10 +92,20 @@
   ([config m]
    (:value m)))
 
-(defn set-val [m] (core/set-val (map->key m) (che/generate-string (map->val m))))
 
 (defn get-val [m] (che/parse-string (core/get-val (map->key m)) true))
 
-(defn del-val [m] (core/del-val (map->key m)))
+(defn set-val [m]
+  (core/set-val (map->key m) (che/generate-string (map->val m)))
+  (Thread/sleep 1)
+  {:ok true})
 
-(defn del-vals [m] (core/del-vals (core/pat->keys (map->key m))))
+(defn del-val [m]
+  (core/del-val (map->key m))
+  (Thread/sleep 1)
+  {:ok true})
+
+(defn del-vals [m]
+  (core/del-vals (core/pat->keys (map->key m)))
+  (Thread/sleep 1)
+  {:ok true})
