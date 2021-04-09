@@ -10,12 +10,11 @@
 ;;------------------------------
 (defn set-val
   "Sets the value `v` for the key `k`."
-  [k v]
-  (if (string? k)
-    (if (some? v)
-      (wcar (:stmem-conn c/config) (car/set k v))
-      (mu/log ::set :error "no value given"))
-    (mu/log ::set :error "no key given")))
+  ([k v]
+   (set-val c/config k v))
+  ([{conn :stmem-conn relax :stmem-mod-relax} k v]
+   (wcar conn (car/set k v))
+   (Thread/sleep relax)))
 
 (defn set-same-val
   "Sets the given `val` for all keys `ks` with the delay `mtp`."
@@ -27,16 +26,20 @@
 ;;------------------------------
 (defn pat->keys
   "Get all keys matching  the given pattern `pat`."
-  [pat]
-  (sort (wcar (:stmem-conn c/config) (car/keys pat))))
+  ([pat]
+   (pat->keys c/config pat))
+  ([{conn :stmem-conn} pat]
+   (sort (wcar conn (car/keys pat)))))
  
 ;;------------------------------
 ;; del
 ;;------------------------------
 (defn del-val
-  "Delets the key `k`."
-  [k]
-  (wcar (:stmem-conn c/config) (car/del k)))
+  "Deletes the key `k`."
+  ([k]
+   (del-val c/config k))
+  ([{conn :stmem-conn} k]
+   (wcar conn (car/del k))))
 
 (defn del-vals
   "Deletes all given keys (`ks`)."
@@ -49,8 +52,10 @@
 (defn get-val
   "Returns the value for the given key (`k`) and cast it to a clojure
   type."
-  [k]
-  (wcar (:stmem-conn c/config) (car/get k)))
+  ([k]
+   (get-val c/config k))
+  ([{conn :stmem-conn} k]
+   (wcar conn (car/get k))))
 
 (defn get-vals
   "Returns a vector of the `vals` behind the keys `ks`."

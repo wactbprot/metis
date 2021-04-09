@@ -58,8 +58,8 @@
 (defn registered? [k] (contains? @listeners k))
 
 (defn register
-  "Generates and registers a listener in the `listeners` atom.  The cb!
-  function dispatches depending on the result."
+  "Generates a listener for the function `f`. Registers it at the
+  `listeners` atom."
   ([m f]
    (register c/config m f))
   ([config m f]
@@ -67,7 +67,7 @@
      (if-not (registered? reg-key)
        (do
         (swap! listeners assoc reg-key (gen-listener m f))
-        (Thread/sleep 1)
+        (Thread/sleep (:stmem-reg-relax config))
         {:ok true})
        {:ok true :warn "already registered"}))))
 
