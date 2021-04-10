@@ -40,6 +40,12 @@
 ;;------------------------------
 ;; generate listener 
 ;;------------------------------
+(defn wrap-skip-psubs
+  "Ensures that f is only executed on `pmessage`s. Skips the subscribe
+  event calls."
+  [f]
+  (fn [v] (when (= "pmessage" (first v)) (f v))))
+
 (defn gen-listener
   "Returns a listener for published keyspace **notif**ications. Don't forget
   to [[close-listener]]
@@ -53,7 +59,7 @@
    (gen-listener c/config m f))
   ([{{conn :spec} :stmem-conn :as config} m f]
    (let [pat (subs-pat config m)]
-     (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
+     (car/with-new-pubsub-listener conn {pat (wrap-skip-psubs f)} (car/psubscribe pat))))) 
 
 (defn registered? [k] (contains? @listeners k))
 
