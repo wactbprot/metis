@@ -38,7 +38,7 @@
      (str (reg-pat config m) (or (:level m) (trans/lpad config 0))))))
 
 ;;------------------------------
-;; generate listener 
+;; message wraper
 ;;------------------------------
 (defn wrap-skip-psubs
   "Ensures that f is only executed on `pmessage`s. Skips the subscribe
@@ -46,6 +46,26 @@
   [f]
   (fn [v] (when (= "pmessage" (first v)) (f v))))
 
+(defn wrap-msg->key
+  [f]
+  (fn [[_ _ s _]]
+    (f (second (string/split s #":")))))
+
+(defn wrap-key->map
+  ([f]
+   (wrap-key->map c/config f))
+  ([{re-sep :re-sep} f]
+   (fn [k] (let [v (string/split k re-sep)]
+             (f {:mp-id (nth v 0 nil)
+                 :struct (nth v 1 nil)
+                 :no-idx (nth v 2 nil)
+                 :func (nth v 3 nil)
+                 :seq-idx (nth v 4 nil)
+                 :par-idx (nth v 5 nil)})))))
+
+;;------------------------------
+;; generate listener
+;;------------------------------
 (defn gen-listener
   "Returns a listener for published keyspace **notif**ications. Don't forget
   to [[close-listener]]
@@ -58,8 +78,9 @@
   ([m f]
    (gen-listener c/config m f))
   ([{{conn :spec} :stmem-conn :as config} m f]
-   (let [pat (subs-pat config m)]
-     (car/with-new-pubsub-listener conn {pat (wrap-skip-psubs f)} (car/psubscribe pat))))) 
+   (let [pat (subs-pat config m)
+         f (->> f  wrap-key->map wrap-msg->key wrap-skip-psubs)]
+     (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
 
 (defn registered? [k] (contains? @listeners k))
 
@@ -98,6 +119,7 @@
   [m]
   (map (fn [[k v]]
          (when (string/starts-with? k (:mp-id m))
+            (mu/log ::clean-register :message "will clean" :key k)
            (close-listener v)
            {:ok (map? (swap! listeners dissoc k))}))
        @listeners))

@@ -58,7 +58,7 @@
  ;; register relax
  :stmem-reg-relax 10 ;; ms
  ;; modify relax
- :stmem-mod-relax 2 ;; ms
+ :stmem-mod-relax 20 ;; ms
  :stmem-trans {:tasks "tasks"
                :cont "container"
                :defin "definition"

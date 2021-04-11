@@ -38,8 +38,8 @@
 (deftest register-de-register-i
   (testing "re-de-reg works"
     (let [r (atom (rand-int 1000))
-          x        @r
-          m        {:mp-id "test" :struct :cont :no-idx 0 :func :state :seq-idx 0 :value x}
+          x @r
+          m {:mp-id "test" :struct :cont :no-idx 0 :func :state :seq-idx 0 :value x}
           f (fn [v] (swap! r dec))]
       (is (= x  @r))
       (register (assoc m :seq-idx :*) f)
