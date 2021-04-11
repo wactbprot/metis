@@ -11,7 +11,7 @@
 (defn set-val
   "Sets the value `v` for the key `k`."
   ([k v]
-   (set-val c/config k v))
+   (set-val c/config k v))  
   ([{conn :stmem-conn relax :stmem-mod-relax} k v]
    (wcar conn (car/set k v))
    (Thread/sleep relax)))

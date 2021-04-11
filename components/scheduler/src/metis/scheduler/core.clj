@@ -157,8 +157,9 @@
   is necessary. Just fix the problem and set the corresponding state
   from `:error` to `ready` and the processing goes on."
   [m]
+  (prn (stmem/get-val m))
   (comment
-  (condp = (keyword cmd)
+    (condp = (keyword (stmem/get-val m))
     :run     (observe! k)
     :mon     (observe! k)
     :stop    (do

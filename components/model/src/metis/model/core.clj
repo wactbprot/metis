@@ -6,7 +6,7 @@
 ;;------------------------------
 (defn build-exchange
   "Builds the exchange interface."
-  [{mp-id :mp-id exch :Exchange}]
+  [{mp-id :mp-id exch :Exchange}]  
   (doseq [[k v] exch]
     (stmem/set-val {:mp-id mp-id :struct :exch :exch (name k) :value v})))
 

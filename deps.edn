@@ -19,7 +19,11 @@
                                 "components/scheduler/src"
                                 "components/scheduler/resources"
                                 "components/stmem/src"
-                                "components/stmem/resources"]
+                                "components/stmem/resources"
+                                ;; Bases
+                                "bases/cli/src"
+                                "bases/cli/resources"
+                                ]
                   
                   :extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
                                org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}

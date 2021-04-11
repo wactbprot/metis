@@ -79,7 +79,7 @@
    (gen-listener c/config m f))
   ([{{conn :spec} :stmem-conn :as config} m f]
    (let [pat (subs-pat config m)
-         f (->> f  wrap-key->map wrap-msg->key wrap-skip-psubs)]
+         f (->> f wrap-key->map wrap-msg->key wrap-skip-psubs)]
      (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
 
 (defn registered? [k] (contains? @listeners k))
