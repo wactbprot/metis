@@ -46,13 +46,12 @@
     (is (= (lpad {:stmem-key-pad-length 3} 0)
            "000" )))
   (testing "nil"
-    (is (= (lpad {:stmem-key-pad-length 5} nil)
-           "00000" ))))
+    (is (nil? (lpad {:stmem-key-pad-length 5} nil)))))
 
 
 (deftest ensure-int-i
   (testing "nil behaviour"
-    (is (= 0 (ensure-int nil))))
+    (is (nil? (ensure-int nil))))
   (testing "0"
     (is (= 0 (ensure-int "0"))))
   (testing "string"

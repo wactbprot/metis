@@ -1,5 +1,6 @@
 (ns metis.stmem.notif
   (:require [metis.config.interface :as c]
+            [metis.stmem.core :as core]
             [taoensso.carmine :as car :refer (wcar)]
             [com.brunobonacci.mulog :as mu]
             [clojure.string :as string]
@@ -58,10 +59,16 @@
    (fn [k] (let [v (string/split k re-sep)]
              (f {:mp-id (nth v 0 nil)
                  :struct (nth v 1 nil)
-                 :no-idx (nth v 2 nil)
+                 :no-idx (trans/ensure-int (nth v 2 nil))
                  :func (nth v 3 nil)
-                 :seq-idx (nth v 4 nil)
-                 :par-idx (nth v 5 nil)})))))
+                 :seq-idx (trans/ensure-int (nth v 4 nil))
+                 :par-idx (trans/ensure-int (nth v 5 nil))})))))
+  
+(defn wrap-assoc-value
+  ([f]
+   (wrap-assoc-value c/config f))
+  ([config f]
+   (fn [m] (f (assoc m :value (core/get-val (trans/map->key m)))))))
 
 ;;------------------------------
 ;; generate listener
@@ -79,7 +86,7 @@
    (gen-listener c/config m f))
   ([{{conn :spec} :stmem-conn :as config} m f]
    (let [pat (subs-pat config m)
-         f (->> f wrap-key->map wrap-msg->key wrap-skip-psubs)]
+         f (->> f  wrap-assoc-value wrap-key->map wrap-msg->key wrap-skip-psubs)]
      (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
 
 (defn registered? [k] (contains? @listeners k))

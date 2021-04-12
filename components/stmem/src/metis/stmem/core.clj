@@ -12,9 +12,8 @@
   "Sets the value `v` for the key `k`."
   ([k v]
    (set-val c/config k v))  
-  ([{conn :stmem-conn relax :stmem-mod-relax} k v]
-   (wcar conn (car/set k v))
-   (Thread/sleep relax)))
+  ([{conn :stmem-conn} k v]
+   (wcar conn (car/set k v))))
 
 (defn set-same-val
   "Sets the given `val` for all keys `ks` with the delay `mtp`."

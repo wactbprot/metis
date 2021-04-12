@@ -22,9 +22,9 @@
 (defn ensure-int
   "Ensures `i` to be integer. Returns 0 as default."
   [idx]
-  (if (integer? idx)
-    idx
-    (try (Integer/parseInt idx) (catch Exception e 0))))
+  (cond
+    (integer? idx) idx
+    (string? idx) (try (Integer/parseInt idx) (catch Exception e 0))))
 
 (defn lpad
   "Left pad the given number if it is not a string."
@@ -33,7 +33,7 @@
   ([config idx]
    (if (pad-ok? idx)
      idx
-     (format (str "%0" (:stmem-key-pad-length config) "d") (ensure-int idx)))))
+     (when idx (format (str "%0" (:stmem-key-pad-length config) "d") (ensure-int idx))))))
 
 (defn map->task-key
   [{trans :stmem-trans s :stmem-key-sep} m]
@@ -41,8 +41,9 @@
 
 (defn map->struct-part
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (when (and (:mp-id m) (:struct m))
-    (str (:mp-id m) s ((:struct m) trans))))
+  (when  (:mp-id m)
+    (when-let [p (:struct m)]
+      (str (:mp-id m) s (if (keyword? p) (p trans) p)))))
 
 (defn map->no-idx-part
   [{trans :stmem-trans s :stmem-key-sep :as config} m]
@@ -51,21 +52,21 @@
 
 (defn map->exch-part
   [{s :stmem-key-sep :as config} m]
-  (when (:exch m) (str s (:exch m))))
+  (when-let [p (:exch m)] (str s p)))
 
 (defn map->metapath-part
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (when (:metapath m) (str s ((:metapath m) trans))))
+  (when-let [p (:metapath m)] (str s (if (keyword? p) (p trans) p))))
 
 (defn map->func-part
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (when (:func m)(str s ((:func m) trans))))
+  (when-let [p (:func m)] (str s (if (keyword? p) (p trans) p))))
 
 (defn map->seq-par-idx-part
   [{trans :stmem-trans s :stmem-key-sep :as config} m]
   (let [sdx (:seq-idx m)
         pdx (:par-idx m)]
-  (when sdx
+    (when sdx
     (str s (if (number? sdx) (lpad config sdx) (:* trans))
          (when pdx
            (str s (if (number? pdx) (lpad config pdx) (:* trans))))))))
@@ -92,20 +93,31 @@
   ([config m]
    (:value m)))
 
+(defn get-val
+  ([m]
+   (get-val c/config m))
+  ([config m]
+   (che/parse-string (core/get-val (map->key m)) true)))
 
-(defn get-val [m] (che/parse-string (core/get-val (map->key m)) true))
+(defn set-val
+  ([m]
+   (set-val c/config m))
+  ([{relax :stmem-mod-relax} m]
+   (core/set-val (map->key m) (che/generate-string (map->val m)))
+   (Thread/sleep relax)
+   {:ok true}))
 
-(defn set-val [m]
-  (core/set-val (map->key m) (che/generate-string (map->val m)))
-  (Thread/sleep 1)
-  {:ok true})
+(defn del-val
+  ([m]
+   (del-val c/config m))
+  ([{relax :stmem-mod-relax} m]
+   (core/del-val (map->key m))
+   (Thread/sleep relax)
+   {:ok true}))
 
-(defn del-val [m]
-  (core/del-val (map->key m))
-  (Thread/sleep 1)
-  {:ok true})
-
-(defn del-vals [m]
-  (core/del-vals (core/pat->keys (map->key m)))
-  (Thread/sleep 1)
-  {:ok true})
+(defn del-vals
+  ([m]
+   (del-vals c/config m))
+  ([config m]
+   (core/del-vals (core/pat->keys (map->key m)))
+   {:ok true}))
