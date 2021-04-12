@@ -6,7 +6,9 @@
 (defn get-config
   "Reads a `edn` configuration in file `f`." 
   ([]
-   (get-config (io/file "config.edn")))
+   (get-config #_(io/file "config.edn")
+               (io/resource "config/config.edn")
+   ))
   ([f]
    (-> f slurp edn/read-string)))
 
