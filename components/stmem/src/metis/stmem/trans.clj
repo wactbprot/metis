@@ -104,6 +104,18 @@
        {:ok true})
      {:error "no value given"})))
 
+
+(defn set-vals
+  ([m]
+   (set-vals c/config m))
+  ([{relax :stmem-mod-relax} m]
+   (if-let [val (:value m)]
+     (do 
+       (core/set-vals (core/pat->keys (map->key m)) (che/generate-string val))
+       (Thread/sleep relax)
+       {:ok true})
+     {:error "no value given"})))
+
 (defn del-val
   ([m]
    (del-val c/config m))

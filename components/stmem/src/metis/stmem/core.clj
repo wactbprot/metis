@@ -15,7 +15,7 @@
   ([{conn :stmem-conn} k v]
    (wcar conn (car/set k v))))
 
-(defn set-same-val
+(defn set-vals
   "Sets the given `val` for all keys `ks` with the delay `mtp`."
   [ks v]
   (run! (fn [k] (set-val k v)) ks))

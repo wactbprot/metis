@@ -4,6 +4,8 @@
 
 (defn set-val [m] (trans/set-val m))
 
+(defn set-vals [m] (trans/set-vals m))
+
 (defn get-val [m] (trans/get-val m))
 
 (defn del-val [m] (trans/del-val m))
