@@ -33,7 +33,14 @@
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
                                    :b "b"
-                                   :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c})))))
+                                   :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c}))))
+  (testing "behaviour :mp-id :struct :no-idx :func :level"
+    (is (= "a.b.00005.c.00002"
+           (reg-key {:stmem-notif-sep "."
+                     :stmem-key-pad-length 5
+                     :stmem-trans {:* "*"
+                                   :b "b"
+                                   :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c :level 2})))))
 
 (deftest register-de-register-i
   (testing "re-de-reg works"

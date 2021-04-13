@@ -20,8 +20,10 @@
   ([{t :stmem-trans s :stmem-notif-sep :as config} m]
    (str (:mp-id m) s
         ((or (:struct m) :*)  t) s
-        (if (:no-idx m) (trans/lpad config (:no-idx m)) (:* t)) s
-        ((or (:func m) :*) t) s)))
+        (if (number? (:no-idx m))
+          (trans/lpad config (:no-idx m))
+          (:* t)) s
+        ((or (:func m) :*) t))))
    
 (defn subs-pat
   "Generates subscribe patterns."
@@ -36,7 +38,7 @@
    (reg-key c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} m]
    (when (and (map? m) (seq m))
-     (str (reg-pat config m) (or (:level m) (trans/lpad config 0))))))
+     (str (reg-pat config m) s (trans/lpad config (or (:level m)  0))))))
 
 ;;------------------------------
 ;; message wraper
@@ -122,7 +124,7 @@
   (car/close-listener l))
 
 (defn clean-register
-  "Closes and `de-registers` all `listeners` belonging to `mp-id` ."
+  "Closes and `de-registers` **all** `listeners` belonging to `mp-id` ."
   [m]
   (map (fn [[k v]]
          (when (string/starts-with? k (:mp-id m))

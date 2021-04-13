@@ -135,17 +135,6 @@
 ;; ctrl interface
 ;;------------------------------
 
-;;------------------------------
-;; stop
-;;------------------------------
-(defn stop
-  "De-registers the listener for the `ctrl` interfaces of the
-  `mp-id`. After stopping, the system will no longer react on
-  changes (write events) at the `ctrl` interface."
-  [mp-id]
-  (mu/log ::stop :message "deregister and clean ctrl listener" :mp-id mp-id)
-  (st/de-register! mp-id "*" "*" "ctrl")
-  (st/clean-register! mp-id))
 )
 
 ;;------------------------------
@@ -157,7 +146,7 @@
   is necessary. Just fix the problem and set the corresponding state
   from `:error` to `ready` and the processing goes on."
   [m]
-  (prn (stmem/get-val m))
+  (prn (:value m))
   (comment
     (condp = (keyword (stmem/get-val m))
     :run     (observe! k)
@@ -171,6 +160,19 @@
     :suspend (de-observe! k)
     :error   (mu/log ::dispatch :error "at ctrl interface" :key k :command cmd)
     (mu/log ::dispatch :message "default case ctrl dispach function" :key k :command cmd))))
+
+
+
+;;------------------------------
+;; stop
+;;------------------------------
+(defn stop
+  "De-registers the listener for the `ctrl` interfaces of the
+  `mp-id`. After stopping, the system will no longer react on
+  changes (write events) at the `ctrl` interface."
+  [mp-id]
+  (mu/log ::stop :message "de-register and clean all ctrl listener" :mp-id mp-id)
+  (stmem/clean-register {:mp-id mp-id :struct :* :no-idx :* :func :ctrl}))
 
 ;;------------------------------
 ;; start
