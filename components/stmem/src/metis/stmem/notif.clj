@@ -70,7 +70,7 @@
   ([f]
    (wrap-assoc-value c/config f))
   ([config f]
-   (fn [m] (f (assoc m :value (core/get-val (trans/map->key m)))))))
+   (fn [m] (f (assoc m :value (trans/get-val m))))))
 
 ;;------------------------------
 ;; generate listener

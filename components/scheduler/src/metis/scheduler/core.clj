@@ -113,29 +113,43 @@
         :nop      (nop!       k)
         :work     (work/check k)))))
 
-;;------------------------------
-;; observe!
-;;------------------------------
-(defn observe!
-  "Registers a listener for the `state`-interface of a `container` or
-  `definitions` struct. [[start-next!]] is the callback of this
-  listener. The register pattern is derived from the key
-  `k` (`ctrl-key`)."
-  [k]
-  (mu/log ::observe! :message "register, callback and start-next!" :key k)
-  (st/register! (stu/key->mp-id k) (stu/key->struct k) (stu/key->no-idx k) "state"
-                (fn [msg]
-                  (when-let [msg-k (st/msg->key msg)]                   
-                    (start-next! (ks->state-vec (k->state-ks msg-k))))))
-  (mu/log ::observe :message "will call start-next first trigger" :key k)
-  (start-next! (ks->state-vec (k->state-ks k))))
-
 
 ;;------------------------------
 ;; ctrl interface
 ;;------------------------------
 
 )
+
+(defn start-next
+  [m]
+  (prn m))
+
+
+;;------------------------------
+;; start-state
+;;------------------------------
+(defn start-state
+  "Registers a stmem listener for the `state`-interface of a `container` or
+  `definitions` struct. [[start-next]] is the callback of this
+  listener."
+  [m]
+  (let [m (assoc m :func :state)]
+    (mu/log ::start-state :message "register, callback and start-next")
+    (stmem/register m start-next)
+    (mu/log ::start-state :message "will call start-next first trigger")
+    (start-next m)))
+
+;;------------------------------
+;; stop-state
+;;------------------------------
+(defn stop-state
+  "Registers a stmem listener for the `state`-interface of a `container` or 
+  `definitions` struct. [[start-next]] is the callback of this
+  listener."
+  [m]
+  (let [m (assoc m :func :state)]
+    (mu/log ::stop-state :message "de-register")
+    (stmem/de-register m)))
 
 ;;------------------------------
 ;; dispatch
@@ -146,27 +160,24 @@
   is necessary. Just fix the problem and set the corresponding state
   from `:error` to `ready` and the processing goes on."
   [m]
-  (prn (:value m))
-  (comment
-    (condp = (keyword (stmem/get-val m))
-    :run     (observe! k)
-    :mon     (observe! k)
-    :stop    (do
-               (de-observe! k)
-               (ready! k))
-    :reset   (do
-               (de-observe! k)
-               (ready! k))
-    :suspend (de-observe! k)
-    :error   (mu/log ::dispatch :error "at ctrl interface" :key k :command cmd)
-    (mu/log ::dispatch :message "default case ctrl dispach function" :key k :command cmd))))
-
-
+  (let [cmd (keyword (:value m))]
+    (condp = cmd
+      :run (start-state m)
+      :mon (start-state m)
+      :stop (do
+              (stop-state m)
+              #_(ready! k))
+      :reset (do
+               (stop-state m)
+               #_(ready! k))
+      :suspend (stop-state m)
+      :error (mu/log ::dispatch :error "at ctrl interface")
+      (mu/log ::dispatch :message "default case ctrl dispach function" :command cmd))))
 
 ;;------------------------------
-;; stop
+;; stop-ctrl
 ;;------------------------------
-(defn stop
+(defn stop-ctrl
   "De-registers the listener for the `ctrl` interfaces of the
   `mp-id`. After stopping, the system will no longer react on
   changes (write events) at the `ctrl` interface."
@@ -175,9 +186,9 @@
   (stmem/clean-register {:mp-id mp-id :struct :* :no-idx :* :func :ctrl}))
 
 ;;------------------------------
-;; start
+;; start-ctrl
 ;;------------------------------
-(defn start
+(defn start-ctrl
   "Registers a listener for the `ctrl` interface of the entire
   `mp-id`. The [[dispatch]] function becomes the listeners `cb!`." 
   ([mp-id]

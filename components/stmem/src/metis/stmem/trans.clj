@@ -87,12 +87,6 @@
          (map->task-key config m)
          (map->def-key config m)))))
 
-(defn map->val
-  ([m]
-   (map->val c/config m))
-  ([config m]
-   (:value m)))
-
 (defn get-val
   ([m]
    (get-val c/config m))
@@ -103,9 +97,12 @@
   ([m]
    (set-val c/config m))
   ([{relax :stmem-mod-relax} m]
-   (core/set-val (map->key m) (che/generate-string (map->val m)))
-   (Thread/sleep relax)
-   {:ok true}))
+   (if-let [val (:value m)]
+     (do 
+       (core/set-val (map->key m) (che/generate-string val))
+       (Thread/sleep relax)
+       {:ok true})
+     {:error "no value given"})))
 
 (defn del-val
   ([m]
