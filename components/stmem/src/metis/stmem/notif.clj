@@ -1,10 +1,11 @@
 (ns metis.stmem.notif
-  (:require [metis.config.interface :as c]
-            [metis.stmem.core :as core]
-            [taoensso.carmine :as car :refer (wcar)]
-            [com.brunobonacci.mulog :as mu]
-            [clojure.string :as string]
-            [metis.stmem.trans :as trans]))
+  (:require  [metis.stmem.api :as api]
+             [metis.config.interface :as c]
+             [metis.stmem.core :as core]
+             [taoensso.carmine :as car :refer (wcar)]
+             [com.brunobonacci.mulog :as mu]
+             [clojure.string :as string]
+             [metis.stmem.trans :as trans]))
 
 ;;------------------------------
 ;; listeners 
@@ -70,7 +71,7 @@
   ([f]
    (wrap-assoc-value c/config f))
   ([config f]
-   (fn [m] (f (assoc m :value (trans/get-val m))))))
+   (fn [m] (f (assoc m :value (api/get-val m))))))
 
 ;;------------------------------
 ;; generate listener

@@ -1,6 +1,6 @@
 (ns metis.stmem.notif-test
-  (:require [clojure.test :refer :all]
-            [metis.stmem.trans :as trans]
+  (:require [metis.stmem.api :as api]
+            [clojure.test :refer :all]
             [metis.stmem.notif :refer :all]))
 
 (deftest reg-key-i
@@ -55,20 +55,20 @@
       ;; (Thread/sleep 1)
       (is (= x @r)
           "The register event triggers but callback is not executed.")
-      (trans/set-val (assoc m :value (dec @r)))
+      (api/set-val (assoc m :value (dec @r)))
       (is (= (dec x)
              @r))
-      (trans/set-val (assoc m :value (dec @r)))
+      (api/set-val (assoc m :value (dec @r)))
       (is (= (dec (dec x))
              @r))
-      (trans/set-val (assoc m :value (dec @r)))
+      (api/set-val (assoc m :value (dec @r)))
       (is (= (dec (dec (dec x)))
              @r))
-      (trans/set-val (assoc m :value (dec @r)))
+      (api/set-val (assoc m :value (dec @r)))
       (is (= (dec (dec (dec (dec  x))))
              @r))
       (de-register (assoc m :seq-idx :*))
-      (trans/set-val (assoc m :value (dec @r)))
+      (api/set-val (assoc m :value (dec @r)))
       (is (= (dec (dec (dec (dec  x))))
              @r)
           "The set-val function does not trigger after de-register."))))

@@ -1,16 +1,16 @@
 (ns metis.stmem.interface
-  (:require [metis.stmem.trans :as trans]
+  (:require [metis.stmem.api :as api]
             [metis.stmem.notif :as notif]))
 
-(defn set-val [m] (trans/set-val m))
+(defn set-val [m] (api/set-val m))
 
-(defn set-vals [m] (trans/set-vals m))
+(defn set-vals [m] (api/set-vals m))
 
-(defn get-val [m] (trans/get-val m))
+(defn get-val [m] (api/get-val m))
 
-(defn del-val [m] (trans/del-val m))
+(defn del-val [m] (api/del-val m))
 
-(defn del-vals [m] (trans/del-vals m))
+(defn del-vals [m] (api/del-vals m))
 
 (defn register [m f] (notif/register m f))
 
