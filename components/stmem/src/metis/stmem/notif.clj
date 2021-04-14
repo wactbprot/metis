@@ -20,12 +20,10 @@
    (reg-pat c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} m]
    (let [mp-id (:mp-id m)
-         struct (or (:struct m) :*)
-         struct (if (keyword? struct) (struct  t) struct)
+         struct ((or (:struct m) :*) t)
          no-idx (:no-idx m)
          no-idx (if (number? no-idx) (trans/lpad config no-idx) (:* t))
-         func (or (:func m) :*)
-         func (if (keyword? func) (func  t) func)]
+         func ((or (:func m) :*) t)]
      (str mp-id s struct s no-idx s func))))
    
 (defn subs-pat

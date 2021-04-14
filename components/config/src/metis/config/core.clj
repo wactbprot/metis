@@ -33,4 +33,5 @@
     (assoc c 
            :ltmem-conn (ltmem-conn c)
            :stmem-conn (stmem-conn c)
+           :stmem-retrans (into {} (map (fn [[k v]] {v k})) (:stmem-trans c))
            :re-sep (re-pattern (:stmem-key-sep c)))))
