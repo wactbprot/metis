@@ -132,11 +132,12 @@
 ;;------------------------------
 ;; build tasks
 ;;------------------------------
-(defn build-tasks [task] )
+(defn build-tasks [tasks]
+  (doseq [task tasks]
+    (prn  (:TaskName task))
+    (stmem/set-val {:task-name (:TaskName task) :value task})))
 
 ;;------------------------------
 ;; clear mpd doc
 ;;------------------------------
-(defn clear-tasks
-  []
-  (stmem/del-vals {:mp-id "tasks"})) 
+(defn clear-tasks [] (stmem/del-vals {:mp-id "tasks"})) 

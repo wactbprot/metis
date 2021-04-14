@@ -31,26 +31,26 @@
 ;;------------------------------
 (defn all-tasks
   "Returns all tasks."
-  []
-  (mu/log ::all-tasks :message "get tasks from ltm")
-  (try
-    (couch/get-view (:ltmem-conn c/config)
-                    (:ltmem-task-design c/config)
-                    (:ltmem-task-view c/config))
-    (catch Exception e (mu/log ::all-tasks :error (.getMessage e)))))
+  ([]
+   (all-tasks c/config))
+  ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view}]
+   (mu/log ::all-tasks :message "get tasks from ltm")
+   (try
+     (map :value (couch/get-view conn design view))
+     (catch Exception e (mu/log ::all-tasks :error (.getMessage e))))))
 
 ;;------------------------------
 ;; tasks
 ;;------------------------------
 (defn all-mpds
   "Returns all measurement program definitions in long term memory."
-  []
-  (mu/log ::all-mpds :message "get mpds from ltm")
+  ([]
+   (all-mpds c/config))
+  ([{conn :ltmem-conn design :ltmem-mpds-design view :ltmem-mpds-view}]
+   (mu/log ::all-mpds :message "get mpds from ltm")
   (try
-    (couch/get-view (:ltmem-conn c/config)
-                    (:ltmem-mpds-design c/config)
-                    (:ltmem-mpds-view c/config))
-    (catch Exception e (mu/log ::all-tasks :error (.getMessage e)))))
+    (map :value (couch/get-view conn design view))
+    (catch Exception e (mu/log ::all-mpds :error (.getMessage e))))))
 
 ;;------------------------------
 ;; utils
