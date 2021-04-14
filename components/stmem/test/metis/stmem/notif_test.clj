@@ -47,9 +47,7 @@
     (let [r (atom (rand-int 1000))
           x @r
           m {:mp-id "test" :struct :cont :no-idx 0 :func :state :seq-idx 0 :par-idx 0 :value x}
-          f (fn [m]
-              (prn m)
-              (swap! r dec))]
+          f (fn [m] (swap! r dec))]
       (is (= x  @r))
       (register (assoc m :seq-idx :*) f)
       ;; (Thread/sleep 1)

@@ -45,7 +45,8 @@
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
             
             
-            :test {:extra-paths ["components/stmem/test"]}
+            :test {:extra-paths ["components/stmem/test"
+                                 "components/scheduler/test"]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith
