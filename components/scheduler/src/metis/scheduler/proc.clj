@@ -1,4 +1,4 @@
-(ns metis.scheduler.next
+(ns metis.scheduler.proc
   ^{:author "wactbprot"
     :doc "Finds and starts the up comming tasks of a certain container."}
   (:require [com.brunobonacci.mulog :as mu]
@@ -8,7 +8,12 @@
   "Returns a vector of maps where state is `s`."
   [v s]
   (filterv (fn [m] (= s (:state m))) v))
-  
+
+(defn filter-no-idx
+  "Returns a vector of maps where state is `s`."
+  [v i]
+  (filterv (fn [m] (= i (:no_idx m))) v))
+
 (defn all-error
   "Returns all steps with the state `:error` for a given state vector
   `v`"
@@ -56,12 +61,11 @@
   "Checks if the steps of `v` before `i` are `all-executed?`. Returns
   `true` for `i` equal to zero (or negative `i`)"
   [v i]
-  (let [i (u/ensure-int i)]
-    (if (pos? i)
-      (every? true? (map
-                     (fn [j] (all-executed? (stu/seq-idx->all-par v j)))
-                     (range i)))
-      true)))
+  (if (pos? i)
+    (every? true? (map
+                   (fn [j] (all-executed? (filter-no-idx v j)))
+                   (range i)))
+      true))
 
 
 ;;------------------------------
@@ -86,6 +90,6 @@
   [v]
   (when-let [next-m (next-ready v)]
     (when-let [i (:seq-idx next-m)]
-      (when (or (zero? (u/ensure-int i))
+      (when (or (zero? i)
                 (predecessors-executed? v i))
         next-m))))
