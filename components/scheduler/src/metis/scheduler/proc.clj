@@ -7,24 +7,24 @@
 (defn filter-state
   "Returns a vector of maps where state is `s`."
   [v s]
-  (filterv (fn [m] (= s (:state m))) v))
+  (filterv (fn [m] (= s (:value m))) v))
 
-(defn filter-no-idx
+(defn filter-seq-idx
   "Returns a vector of maps where state is `s`."
   [v i]
-  (filterv (fn [m] (= i (:no_idx m))) v))
+  (filterv (fn [m] (= i (:seq-idx m))) v))
 
 (defn all-error
   "Returns all steps with the state `:error` for a given state vector
   `v`"
   [v]
-  (filter-state v :error))
+  (filter-state v "error"))
 
 (defn all-ready
   "Returns all steps with the state `:ready` for a given state vector
   `v`"
   [v]
-  (filter-state v :ready))
+  (filter-state v "ready"))
 
 (defn all-executed
   "Returns all-executed entrys of the given vector `v`.
@@ -39,7 +39,7 @@
   ;; [{:seq-idx 0 :par-idx 0 :state :executed}]
   ```"
   [v]
-  (filter-state v :executed))
+  (filter-state v "executed"))
 
 (defn all-executed?
   "Checks if all entries of map `m` are executed"
@@ -63,7 +63,7 @@
   [v i]
   (if (pos? i)
     (every? true? (map
-                   (fn [j] (all-executed? (filter-no-idx v j)))
+                   (fn [j] (all-executed? (filter-seq-idx v j)))
                    (range i)))
       true))
 
@@ -90,6 +90,5 @@
   [v]
   (when-let [next-m (next-ready v)]
     (when-let [i (:seq-idx next-m)]
-      (when (or (zero? i)
-                (predecessors-executed? v i))
+      (when (or (zero? i) (predecessors-executed? v i))
         next-m))))
