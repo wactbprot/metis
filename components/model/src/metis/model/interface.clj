@@ -1,6 +1,6 @@
 (ns metis.model.interface
   (:require [metis.model.core :as core]))
 
-(defn build [m] (core/build m))
+(defn build-mpd [m] (core/build-mpd m))
 
-(defn clear [m] (core/clear m))
+(defn clear-mpd [m] (core/clear-mpd m))

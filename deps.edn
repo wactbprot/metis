@@ -20,6 +20,10 @@
                                 "components/scheduler/resources"
                                 "components/stmem/src"
                                 "components/stmem/resources"
+                                "components/tasks/src"
+                                "components/tasks/resources"
+                                "components/worker/src"
+                                "components/worker/resources"
                                 ;; Bases
                                 "bases/cli/src"
                                 "bases/cli/resources"
@@ -46,7 +50,8 @@
             
             
             :test {:extra-paths ["components/stmem/test"
-                                 "components/scheduler/test"]}
+                                 "components/scheduler/test"
+                                 "components/model/test"]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith

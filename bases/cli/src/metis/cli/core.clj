@@ -8,8 +8,8 @@
 
 (defn ms-list [] (mapv :id (ltmem/all-mpds)))
 
-(defn m-build [id] (-> id ltmem/get-doc model/build))
+(defn m-build [id] (-> id ltmem/get-doc model/build-mpd))
 
 (defn m-build-ref [] (model/build (c/mpd-ref)))
 
-(defn m-clear [id] (model/clear {:mp-id id}))  
+(defn m-clear [id] (model/clear-mpd {:mp-id id}))  

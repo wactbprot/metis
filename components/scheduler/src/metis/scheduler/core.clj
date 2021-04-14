@@ -4,10 +4,8 @@
   (:require [metis.config.interface :as c]
             [com.brunobonacci.mulog :as mu]
             [metis.scheduler.proc :as proc]
-            [metis.stmem.interface :as stmem]))
-
-
-
+            [metis.stmem.interface :as stmem]
+            [metis.worker.interface :as worker]))
 
 ;;------------------------------
 ;; stop state
@@ -60,7 +58,7 @@
         (proc/errors? v) (set-ctrl-error v)
         (proc/all-executed? v) (handle-all-exec v)
         (nil? m) (mu/log ::start-next :message "no operation")
-        :else (prn m ) #_(work/check m))))
+        :else (worker/start m))))
 
 ;;------------------------------
 ;; start state
