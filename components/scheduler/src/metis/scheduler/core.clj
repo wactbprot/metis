@@ -41,25 +41,26 @@
 
 (defn set-ctrl-error
   "Sets the `ctrl` interface to `\"error\"`. Function does not [[de-observe!]]."
-  [m]
+  [v]
   (mu/log ::set-ctrl-error :error "will set ctrl interface to error")
-  (stmem/set-val (assoc (dissoc m :par-idx :seq-idx) :func :ctrl :value "error")))
+  (stmem/set-val (assoc (dissoc (first v) :par-idx :seq-idx) :func :ctrl :value "error")))
  
 ;;------------------------------
 ;; start-next
 ;;------------------------------
 (defn start-next
-  "`start-next` choose the `m` of the upcomming tasks.
+  "`start-next` `proc`esses the `m`ap of the task to start `next`.
+  
   Then the `worker` set the state to `\"working\"` which triggers the
   next call to `start-next!`: parallel tasks are started this way."
   [m]
   (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
         m (proc/next-map v)]
-    (when m
       (cond
-        (proc/errors? v) (set-ctrl-error m)
+        (proc/errors? v) (set-ctrl-error v)
         (proc/all-executed? v) (handle-all-exec v)
-        :else (prn m ) #_(work/check m)))))
+        (nil? m) (mu/log ::start-next :message "no operation")
+        :else (prn m ) #_(work/check m))))
 
 ;;------------------------------
 ;; start state

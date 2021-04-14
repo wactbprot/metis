@@ -19,12 +19,14 @@
   ([m]
    (reg-pat c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} m]
-   (str (:mp-id m) s
-        ((or (:struct m) :*)  t) s
-        (if (number? (:no-idx m))
-          (trans/lpad config (:no-idx m))
-          (:* t)) s
-        ((or (:func m) :*) t))))
+   (let [mp-id (:mp-id m)
+         struct (or (:struct m) :*)
+         struct (if (keyword? struct) (struct  t) struct)
+         no-idx (:no-idx m)
+         no-idx (if (number? no-idx) (trans/lpad config no-idx) (:* t))
+         func (or (:func m) :*)
+         func (if (keyword? func) (func  t) func)]
+     (str mp-id s struct s no-idx s func))))
    
 (defn subs-pat
   "Generates subscribe patterns."

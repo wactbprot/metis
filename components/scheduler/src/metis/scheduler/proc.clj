@@ -5,12 +5,12 @@
             ))
   
 (defn filter-state
-  "Returns a vector of maps where state is `s`."
+  "Returns a vector of maps where `:value` is `s`."
   [v s]
   (filterv (fn [m] (= s (:value m))) v))
 
 (defn filter-seq-idx
-  "Returns a vector of maps where state is `s`."
+  "Returns a vector of maps where `:seq-idx` is `i`."
   [v i]
   (filterv (fn [m] (= i (:seq-idx m))) v))
 
