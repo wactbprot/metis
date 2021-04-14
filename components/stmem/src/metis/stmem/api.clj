@@ -11,6 +11,23 @@
   ([config m]
    (che/parse-string (core/get-val (trans/map->key m)) true)))
 
+
+(defn get-map
+  ([m]
+   (get-val c/config m))
+  ([config m]
+   (assoc m :value (get-val config m))))
+
+(defn get-maps
+  ([m]
+   (get-maps c/config m))
+  ([config m]
+   (mapv (fn [k]
+           (merge
+            (assoc m :value (che/parse-string (core/get-val k) true))
+            (trans/key->map k)))
+         (core/pat->keys (trans/map->key m)))))
+
 (defn set-val
   ([m]
    (set-val c/config m))

@@ -8,6 +8,10 @@
 
 (defn get-val [m] (api/get-val m))
 
+(defn get-map [m] (api/get-map m))
+
+(defn get-maps [m] (api/get-maps m))
+
 (defn del-val [m] (api/del-val m))
 
 (defn del-vals [m] (api/del-vals m))

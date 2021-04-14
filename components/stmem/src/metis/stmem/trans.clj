@@ -86,3 +86,15 @@
      (if (:task-name m)
          (map->task-key config m)
          (map->def-key config m)))))
+
+(defn key->map
+  ([k]
+   (key->map c/config k))
+  ([{re-sep :re-sep trans :stmem-trans} k]
+   (let [v (string/split k re-sep)]
+     {:mp-id (nth v 0 nil)
+      :struct (nth v 1 nil)
+      :no-idx (ensure-int (nth v 2 nil))
+      :func (nth v 3 nil)
+      :seq-idx (ensure-int (nth v 4 nil))
+      :par-idx (ensure-int (nth v 5 nil))})))

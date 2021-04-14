@@ -3,36 +3,23 @@
     :doc "Starts and stops a scheduler."}
   (:require [metis.config.interface :as c]
             [com.brunobonacci.mulog :as mu]
+            [metis.scheduler.proc :as proc]
             [metis.stmem.interface :as stmem]))
+
+
+;;------------------------------
+;; stop state
+;;------------------------------
+(defn stop-state
+  "Registers a stmem listener for the `state`-interface of a `container` or 
+  `definitions` struct. [[start-next]] is the callback of this
+  listener."
+  [m]
+    (mu/log ::stop-state :message "de-register")
+    (stmem/de-register m))
+
+
 (comment
-;;------------------------------
-;; ready!
-;;------------------------------
-(defn ready! 
-  "Sets all states (the state interface) to ready."
-  [k]
-  (mu/log ::ready! :message "all states ready" :key k)
-  (st/set-same-val! (k->state-ks k) "ready"))
-
-;;------------------------------
-;; stop
-;;------------------------------
-(defn de-observe!
-  "Opposite of [[observe!]]: De-registers the `state` listener.  The
-  de-register pattern is derived from the key `k` (may be the
-  `ctrl-key` or `state-key`).  Resets the state interface afterwards."
-  [k]
-  (mu/log ::de-observe! :message "de-observe" :key k)
-  (st/de-register! (stu/key->mp-id k) (stu/key->struct k) (stu/key->no-idx k) "state"))
-
-;;------------------------------
-;; set value at ctrl-key 
-;;------------------------------
-(defn ctrl-key->cmd-kw
-  "Gets the `cmd` from the `ctrl-k`. Extracts the `next-ctrl-cmd` and
-  make a keyword out of it."
-  [k]
-  (->> k st/key->val u/next-ctrl-cmd keyword))
 
 (defn error!
   "Sets the `ctrl` interface to `\"error\"`. Function does not [[de-observe!]]."
@@ -53,127 +40,75 @@
     (de-observe! ctrl-k)
     (ready! ctrl-k)
     (st/set-val! ctrl-k new-cmd)))
-
-;;------------------------------
-;; choose and start next task
-;;------------------------------
-(defn next-map
-  "The `next-map` function returns a map containing the next step to
-  start. See `cmp.state-test/next-map-i` for examples how `next-map`
-  should work.
-
-  Example:
-  ```clojure
-   (next-map [{:seq-idx 0 :par-idx 0 :state :executed}
-              {:seq-idx 0 :par-idx 1 :state :executed}
-              {:seq-idx 1 :par-idx 0 :state :executed}
-              {:seq-idx 2 :par-idx 0 :state :executed}
-              {:seq-idx 3 :par-idx 0 :state :working}
-              {:seq-idx 3 :par-idx 1 :state :ready}])
-  ;; =>
-  ;; {:seq-idx 3 :par-idx 1 :state :ready}
-  ```"
-  [v]
-  (when-let [next-m (next-ready v)]
-    (when-let [i (:seq-idx next-m)]
-      (when (or (zero? (u/ensure-int i))
-                (predecessors-executed? v i))
-        next-m))))
-
-;;------------------------------
-;; start-next(!)
-;;------------------------------
-(defn start-next
-  "Side effect free. Makes [[start-next!]] testable.
-  Gets the state vector `v` and picks the next thing to do.
-  The `ctrl-k`ey is derived from the first map in the
-  the `v`."
-  [v]
-  (let [m      (next-map v)
-        ctrl-k (stu/info-map->ctrl-key (first v))
-        defi-k (stu/info-map->definition-key m)]
-    (cond
-      (errors?       v) {:what :error    :key ctrl-k}
-      (all-executed? v) {:what :all-exec :key ctrl-k}
-      (nil?          m) {:what :nop      :key ctrl-k}
-      :run-worker       {:what :work     :key defi-k})))
-
-(defn start-next!
-  "`start-next!` choose the `k` of the upcomming tasks.
-  Then the `worker` set the state to `\"working\"` which triggers the
-  next call to `start-next!`: parallel tasks are started this way.
-  
-  Side effects all around. "
-  [v]
-  (when (vector? v)
-    (let [{what :what k :key} (start-next v)]
-      (condp = what
-        :error    (error!     k)
-        :all-exec (all-exec!  k)
-        :nop      (nop!       k)
-        :work     (work/check k)))))
-
-
-;;------------------------------
-;; ctrl interface
-;;------------------------------
-
 )
 
+;;------------------------------
+;; start-next
+;;------------------------------
 (defn start-next
+  "`start-next` choose the `m` of the upcomming tasks.
+  Then the `worker` set the state to `\"working\"` which triggers the
+  next call to `start-next!`: parallel tasks are started this way."
   [m]
-  (prn m))
-
+  (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
+        m (next-map v)]
+      (cond
+        (errors? v) (error! m)
+        (all-executed? v) (all-exec! m)
+        (nil? m) (nop! m)
+        (work/check m))))
 
 ;;------------------------------
-;; start-state
+;; set-states-ready
+;;------------------------------
+(defn set-states-ready 
+  "Sets all states (the state interface) to ready."
+  [m]
+  (mu/log ::set-states-ready :message "will set all states ready")
+  (stmem/set-vals (assoc m :func :state :seq-idx :* :par-idx :* :value "ready")))
+
+;;------------------------------
+;; state interface
+;;------------------------------
+;; start state
 ;;------------------------------
 (defn start-state
   "Registers a stmem listener for the `state`-interface of a `container` or
   `definitions` struct. [[start-next]] is the callback of this
   listener."
   [m]
-  (let [m (assoc m :func :state)]
-    (mu/log ::start-state :message "register, callback and start-next")
-    (stmem/register m start-next)
-    (mu/log ::start-state :message "will call start-next first trigger")
-    (start-next m)))
-
-;;------------------------------
-;; stop-state
-;;------------------------------
-(defn stop-state
-  "Registers a stmem listener for the `state`-interface of a `container` or 
-  `definitions` struct. [[start-next]] is the callback of this
-  listener."
-  [m]
-  (let [m (assoc m :func :state)]
-    (mu/log ::stop-state :message "de-register")
-    (stmem/de-register m)))
-
+  (mu/log ::start-state :message "register, callback and start-next")
+  (stmem/register m start-next)
+  (mu/log ::start-state :message "will call start-next first trigger")
+  (start-next m))
+ 
 ;;------------------------------
 ;; dispatch
 ;;------------------------------
 (defn dispatch
-  "`observe!`s or `de-observe!`s depending on `cmd`. If an `:error`
-  occurs the system is kept running (no `de-observe`). So, no restart
-  is necessary. Just fix the problem and set the corresponding state
-  from `:error` to `ready` and the processing goes on."
+  "`start`s or `stop`s the state observation of container `(:no-idx m)`
+  depending on `cmd`. If an `:error` occurs the system is kept
+  running (no `stop` and `de-register`). So, no restart is necessary. Just fix the
+  problem and set the corresponding state from `:error` to `ready` and
+  the processing goes on."
   [m]
-  (let [cmd (keyword (:value m))]
+  (let [cmd (keyword (:value m))
+        m (assoc m :func :state)]
     (condp = cmd
       :run (start-state m)
       :mon (start-state m)
       :stop (do
               (stop-state m)
-              #_(ready! k))
+              (set-states-ready m))
       :reset (do
                (stop-state m)
-               #_(ready! k))
+               (set-states-ready m))
       :suspend (stop-state m)
       :error (mu/log ::dispatch :error "at ctrl interface")
       (mu/log ::dispatch :message "default case ctrl dispach function" :command cmd))))
 
+;;------------------------------
+;; ctrl interface
 ;;------------------------------
 ;; stop-ctrl
 ;;------------------------------

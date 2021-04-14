@@ -58,14 +58,8 @@
 (defn wrap-key->map
   ([f]
    (wrap-key->map c/config f))
-  ([{re-sep :re-sep} f]
-   (fn [k] (let [v (string/split k re-sep)]
-             (f {:mp-id (nth v 0 nil)
-                 :struct (nth v 1 nil)
-                 :no-idx (trans/ensure-int (nth v 2 nil))
-                 :func (nth v 3 nil)
-                 :seq-idx (trans/ensure-int (nth v 4 nil))
-                 :par-idx (trans/ensure-int (nth v 5 nil))})))))
+  ([config f]
+   (fn [k] (f (trans/key->map k)))))
   
 (defn wrap-assoc-value
   ([f]

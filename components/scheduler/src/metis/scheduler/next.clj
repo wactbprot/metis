@@ -3,37 +3,6 @@
     :doc "Finds and starts the up comming tasks of a certain container."}
   (:require [com.brunobonacci.mulog :as mu]
             ))
-
-(defn state-key->state-map  
-  "Builds a `state-map` by means of the `info-map`.
-  The state value is `assoc`ed afet getting it with `st/key->val`. "
-  [state-key]
-  (assoc (stu/key->info-map state-key)
-         :state (keyword (st/key->val state-key))))
-
-(defn ks->state-vec
-  "Builds the state map `m` belonging to a key set `ks`.
-  `m` is introduced in order to keep the functions testable.
-
-  Example:
-  ```clojure
-  (ks->state-vec (k->state-ks \"ref@container@0\"))
-  ```" 
-  [ks]
-  (when ks (mapv state-key->state-map ks)))
-
-
-(defn k->state-ks
-  "Returns the state keys for a given path.
-
-  ```clojure
-  (k->state-ks \"wait@container@0\")
-  ```" 
-  [k]
-  (when k
-    (sort
-     (st/key->keys
-      (stu/struct-state-key (stu/key->mp-id k) (stu/key->struct k) (stu/key->no-idx k))))))
   
 (defn filter-state
   "Returns a vector of maps where state is `s`."
@@ -93,3 +62,30 @@
                      (fn [j] (all-executed? (stu/seq-idx->all-par v j)))
                      (range i)))
       true)))
+
+
+;;------------------------------
+;; choose and start next task
+;;------------------------------
+(defn next-map
+  "The `next-map` function returns a map containing the next step to
+  start. See `cmp.state-test/next-map-i` for examples how `next-map`
+  should work.
+
+  Example:
+  ```clojure
+   (next-map [{:seq-idx 0 :par-idx 0 :state :executed}
+              {:seq-idx 0 :par-idx 1 :state :executed}
+              {:seq-idx 1 :par-idx 0 :state :executed}
+              {:seq-idx 2 :par-idx 0 :state :executed}
+              {:seq-idx 3 :par-idx 0 :state :working}
+              {:seq-idx 3 :par-idx 1 :state :ready}])
+  ;; =>
+  ;; {:seq-idx 3 :par-idx 1 :state :ready}
+  ```"
+  [v]
+  (when-let [next-m (next-ready v)]
+    (when-let [i (:seq-idx next-m)]
+      (when (or (zero? (u/ensure-int i))
+                (predecessors-executed? v i))
+        next-m))))
