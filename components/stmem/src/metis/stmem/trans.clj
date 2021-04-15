@@ -37,7 +37,8 @@
 
 (defn map->task-key
   [{trans :stmem-trans s :stmem-key-sep} m]
-  (str (:tasks trans) s (:task-name m)))
+  (let [task-name (:task-name m)]
+    (str (:tasks trans) s (if (keyword? task-name) (task-name trans) task-name))))
 
 (defn map->struct-part
   [{trans :stmem-trans s :stmem-key-sep} m]

@@ -118,14 +118,16 @@
   [{mp-id :mp-id}]
   (stmem/del-vals {:mp-id mp-id})) 
 
-
+;;------------------------------
+;; tasks
+;;------------------------------
 (defn map->safe-map
   "Replaces all of the `@`-signs (if followed by letters 1)
   by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
   (or at least problematic).
 
   1) There are devices annotating channels by `(@101:105)`.
-  This should remain as it is."
+  This expressions should remain as they are."
   [m]
   (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" "%$2") true))
 
@@ -133,11 +135,12 @@
 ;; build tasks
 ;;------------------------------
 (defn build-tasks [tasks]
-  (doseq [task tasks]
-    (prn  (:TaskName task))
-    (stmem/set-val {:task-name (:TaskName task) :value task})))
+  (map (fn [{task-name :TaskName :as task} ]
+         (assoc (stmem/set-val {:task-name task-name
+                                :value (map->safe-map task)}) :task-name task-name))
+       tasks))
 
 ;;------------------------------
 ;; clear mpd doc
 ;;------------------------------
-(defn clear-tasks [] (stmem/del-vals {:mp-id "tasks"})) 
+(defn clear-tasks [] (stmem/del-vals {:task-name :*})) 

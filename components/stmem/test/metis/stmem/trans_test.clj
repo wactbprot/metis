@@ -25,6 +25,10 @@
     (testing "..."
       (is (nil? nil)))))
 
+(deftest map->key-iii
+  (testing "tasks clear pat"
+    (is (= "tasks@*" (map->key {:mp-id "tasks" :task-name :*})))))
+
 (deftest lpad-i
   (testing "longer string"
     (is (= (lpad {:stmem-key-pad-length 3} "000003")
