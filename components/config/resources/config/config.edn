@@ -81,7 +81,7 @@
  ;; for order or sorting reasons
  ;; idx, jdx and kdx are padded
  :stmem-key-pad-length 3
-
+ :at-replace "%"
  :ref-mpd "mpd-ref.edn"
  ;; a task should at least take 10ms
  ;; in order to give the keyspace notification listener

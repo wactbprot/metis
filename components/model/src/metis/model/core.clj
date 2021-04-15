@@ -1,7 +1,8 @@
 (ns metis.model.core
-  (:require [cheshire.core :as che]
+  (:require [metis.config.interface :as c]
             [metis.stmem.interface :as stmem]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [metis.utils.interface :as utils]))
 
 ;;------------------------------
 ;; exchange
@@ -119,25 +120,12 @@
   (stmem/del-vals {:mp-id mp-id})) 
 
 ;;------------------------------
-;; tasks
-;;------------------------------
-(defn map->safe-map
-  "Replaces all of the `@`-signs (if followed by letters 1)
-  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
-  (or at least problematic).
-
-  1) There are devices annotating channels by `(@101:105)`.
-  This expressions should remain as they are."
-  [m]
-  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" "%$2") true))
-
-;;------------------------------
 ;; build tasks
 ;;------------------------------
 (defn build-tasks [tasks]
   (map (fn [{task-name :TaskName :as task} ]
          (assoc (stmem/set-val {:task-name task-name
-                                :value (map->safe-map task)}) :task-name task-name))
+                                :value (utils/map->safe-map task)}) :task-name task-name))
        tasks))
 
 ;;------------------------------

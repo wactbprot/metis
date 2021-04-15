@@ -51,14 +51,3 @@
            "000" )))
   (testing "nil"
     (is (nil? (lpad {:stmem-key-pad-length 5} nil)))))
-
-
-(deftest ensure-int-i
-  (testing "nil behaviour"
-    (is (nil? (ensure-int nil))))
-  (testing "0"
-    (is (= 0 (ensure-int "0"))))
-  (testing "string"
-    (is (= 0 (ensure-int "www"))))
-  (testing "int already"
-    (is (= 10 (ensure-int 10)))))

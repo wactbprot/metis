@@ -32,34 +32,6 @@
   {:pre [(map? task)]}
   (some (action= task) [:MODBUS :VXI11 :TCP :UDP :EXECUTE]))
 
-;;------------------------------
-;; globals
-;;------------------------------
-(defn globals
-  "Returns a map with replacements
-  of general intrest.
-
-  ```clojure
-  (globals)
-  ;; {\"%hour\"  \"14\",
-  ;; \"%minute\" \"07\",
-  ;; \"%second\" \"54\",
-  ;; \"%year\"   \"2020\",
-  ;; \"%month\"  \"02\",
-  ;; \"%day\"    \"02\",
-  ;; \"%time\"   \"1580652474824\"}
-  ```
-  "
-  []
-  (let [d (u/get-date-object)]
-    {"%hour"   (u/get-hour d)
-     "%minute" (u/get-min d)
-     "%second" (u/get-sec d)
-     "%year"   (u/get-year d)
-     "%month"  (u/get-month d)
-     "%day"    (u/get-day d)
-     "%time"   (u/get-time d)}))
-
 
 (defn outer-replace-map
   "Replaces tokens (given in the m) in the task.
@@ -253,6 +225,8 @@
      :MpName    mp-id
      :StateKey  state-key)))
 )
+
+
 
 (defn build
   "Builds and returns the assembled `task` for the given key `k` related

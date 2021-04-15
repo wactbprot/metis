@@ -2,7 +2,8 @@
   (:require [metis.stmem.core :as core]
             [metis.config.interface :as c]
             [cheshire.core :as che]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [metis.utils.interface :as utils]))
 
 ;;------------------------------
 ;; map to key utils
@@ -19,13 +20,6 @@
      (= idx "*")                         true 
      :else                               false)))
 
-(defn ensure-int
-  "Ensures `i` to be integer. Returns 0 as default."
-  [idx]
-  (cond
-    (integer? idx) idx
-    (string? idx) (try (Integer/parseInt idx) (catch Exception e 0))))
-
 (defn lpad
   "Left pad the given number if it is not a string."
   ([idx]
@@ -33,7 +27,7 @@
   ([config idx]
    (if (pad-ok? idx)
      idx
-     (when idx (format (str "%0" (:stmem-key-pad-length config) "d") (ensure-int idx))))))
+     (when idx (format (str "%0" (:stmem-key-pad-length config) "d") (utils/ensure-int idx))))))
 
 (defn map->task-key
   [{trans :stmem-trans s :stmem-key-sep} m]
@@ -95,7 +89,7 @@
    (let [v (string/split k re-sep)]
      {:mp-id (nth v 0 nil)
       :struct (get retrans (nth v 1 nil)) 
-      :no-idx (ensure-int (nth v 2 nil))
+      :no-idx (utils/ensure-int (nth v 2 nil))
       :func (get retrans (nth v 3 nil))
-      :seq-idx (ensure-int (nth v 4 nil))
-      :par-idx (ensure-int (nth v 5 nil))})))
+      :seq-idx (utils/ensure-int (nth v 4 nil))
+      :par-idx (utils/ensure-int (nth v 5 nil))})))
