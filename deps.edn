@@ -12,6 +12,8 @@
                                 ;; Components
                                 "components/config/src"
                                 "components/config/resources"
+                                "components/flow-control/src"
+                                "components/flow-control/resources"
                                 "components/ltmem/src"
                                 "components/ltmem/resources"
                                 "components/model/src"

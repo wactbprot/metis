@@ -2,6 +2,7 @@
   ^{:author "wactbprot"
     :doc "Starts and stops a scheduler."}
   (:require [metis.config.interface :as c]
+            [metis.flow-control.interface :as fc]
             [com.brunobonacci.mulog :as mu]
             [metis.scheduler.proc :as proc]
             [metis.stmem.interface :as stmem]
@@ -17,31 +18,16 @@
   [m]
   (mu/log ::stop-state :message "de-register")
   (stmem/de-register (assoc m :func :state :seq-idx :* :par-idx :*)))
-
-;;------------------------------
-;; set-states-ready
-;;------------------------------
-(defn set-states-ready 
-  "Sets all states (the state interface) to ready."
-  [m]
-  (mu/log ::set-states-ready :message "will set all states ready")
-  (stmem/set-vals (assoc m :func :state :seq-idx :* :par-idx :* :value "ready")))
   
 (defn handle-all-exec
   [v]
   (let [m (assoc (dissoc (first v) :par-idx :seq-idx) :func :ctrl)
-        cmd (stmem/get-val m)
-        cmd (if (= cmd "mon") "mon" "ready")]
+        cmd (keyword (stmem/get-val m))
+        cmd (if (= cmd :mon) :mon :ready)]
     (mu/log ::handle-all-exec :message "all tasks executed, set new cmd" :command cmd)
     (stmem/de-register (assoc (dissoc m :par-idx :seq-idx) :func :ctrl))
-    (set-states-ready m)
-    (stmem/set-val (assoc (dissoc m :par-idx :seq-idx) :func :ctrl :value cmd))))
-
-(defn set-ctrl-error
-  "Sets the `ctrl` interface to `\"error\"`. Function does not [[de-observe!]]."
-  [v]
-  (mu/log ::set-ctrl-error :error "will set ctrl interface to error")
-  (stmem/set-val (assoc (dissoc (first v) :par-idx :seq-idx) :func :ctrl :value "error")))
+    (fc/set-states (asssoc m :value :ready))
+    (fc/set-ctrl (assoc m :value cmd))))
  
 ;;------------------------------
 ;; start-next
@@ -55,7 +41,7 @@
   (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
         m (proc/next-map v)]
       (cond
-        (proc/errors? v) (set-ctrl-error v)
+        (proc/errors? v) (fc/set-ctrl (assoc (first v) :value :error))
         (proc/all-executed? v) (handle-all-exec v)
         (nil? m) (mu/log ::start-next :message "no operation")
         :else (worker/start m))))
@@ -90,10 +76,10 @@
       :mon (start-state m)
       :stop (do
               (stop-state m)
-              (set-states-ready m))
+              (fc/set-states (assoc m :ready))
       :reset (do
                (stop-state m)
-               (set-states-ready m))
+               (fc/set-states (assoc m :ready)))
       :suspend (stop-state m)
       :error (mu/log ::dispatch :error "at ctrl interface")
       (mu/log ::dispatch :message "default case ctrl dispach function" :command cmd))))

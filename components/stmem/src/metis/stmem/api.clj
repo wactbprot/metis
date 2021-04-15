@@ -11,7 +11,6 @@
   ([config m]
    (che/parse-string (core/get-val (trans/map->key m)) true)))
 
-
 (defn get-map
   ([m]
    (get-val c/config m))

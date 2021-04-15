@@ -31,6 +31,44 @@
   ([d]
    (str (tm-c/to-long d))))
 
+  
+;;------------------------------
+;; strings
+;;------------------------------
+(defn short-string
+  "Short a `string` `s` to `n` or `45` chars. Returns `nil` is `s` is
+  not a `string`."
+  ([s]
+   (when (string? s) (short-string s 40)))
+  ([s n]
+   (when (string? s) (if (< (count s) n) s (str (subs s 0 n) "...")))))
+
+
+;;------------------------------
+;; numbers
+;;------------------------------
+ (defn ensure-int
+  "Ensures `i` to be integer. Returns 0 as default."
+  [i]
+  (cond
+    (integer? i) i
+    (string? i) (try (Integer/parseInt i) (catch Exception e 0))))
+
+;;------------------------------
+;; maps
+;;------------------------------
+(defn map->safe-map
+  "Replaces all of the `@`-signs (if followed by letters 1)
+  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
+  (or at least problematic).
+
+  1) There are devices annotating channels by `(@101:105)`.
+  This expressions should remain as they are."
+  ([m]
+   (map->safe-map c/config m))
+  ([{a :at-replace} m]
+  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" (str a "$2")) true)))
+
 (defn date-map
   "Returns a map with replacements
   of general intrest.
@@ -56,42 +94,3 @@
       (str a "month") (get-month d)
       (str a "day") (get-day d)
       (str a "time") (get-time d)})))
-  
-;;------------------------------
-;; strings
-;;------------------------------
-(defn short-string
-  "Short a `string` `s` to `n` or `45` chars. Returns `nil` is `s` is
-  not a `string`."
-  ([s]
-   (when (string? s) (short-string s 40)))
-  ([s n]
-   (when (string? s) (if (< (count s) n) s (str (subs s 0 n) "...")))))
-
-
-;;------------------------------
-;; numbers
-;;------------------------------
- (defn ensure-int
-  "Ensures `i` to be integer. Returns 0 as default."
-  [i]
-  (cond
-    (integer? i) i
-    (string? i) (try (Integer/parseInt i) (catch Exception e 0))))
-
-
-
-;;------------------------------
-;; maps
-;;------------------------------
-(defn map->safe-map
-  "Replaces all of the `@`-signs (if followed by letters 1)
-  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
-  (or at least problematic).
-
-  1) There are devices annotating channels by `(@101:105)`.
-  This expressions should remain as they are."
-  ([m]
-   (map->safe-map c/config m))
-  ([{a :at-replace} m]
-  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" (str a "$2")) true)))

@@ -1,37 +1,11 @@
 (ns metis.tasks.core
-  (:require[metis.stmem.interface :as stmem]))
+  (:require [metis.flow-contol.interface :as fc]
+            [metis.stmem.interface :as stmem]
+            [metis.utils.interface :as utils]))
 
 
-(comment 
-  (ns cmp.task
-  ^{:author "wactbprot"
-    :doc "Task handling."}
-  (:require [cmp.exchange            :as exch]
-            [cmp.lt-mem              :as lt]
-            [com.brunobonacci.mulog  :as mu]
-            [clojure.string          :as string]
-            [cmp.st-mem              :as st]
-            [cmp.st-utils            :as stu]
-            [cmp.utils               :as u]))
-
-(defn action=
-  "A `=` partial on the `task` `:Action`."
-  [task]
-  {:pre [(map? task)]}
-  (partial = (keyword (:Action task))))
-
-(defn dev-action?
-  "Device actions are:
-  * :MODBUS
-  * :VXI11
-  * :TCP
-  * :UDP
-  * :EXECUTE  
-  "
-  [task]
-  {:pre [(map? task)]}
-  (some (action= task) [:MODBUS :VXI11 :TCP :UDP :EXECUTE]))
-
+(comment
+  
 
 (defn outer-replace-map
   "Replaces tokens (given in the m) in the task.
@@ -115,65 +89,6 @@
                   (keys m))))
     task))
 
-(defn proto-task
-  "Returns x if it is not a string."
-  [x]
-  (if (string? x) {:TaskName x} x))
-
-(defn gen-meta-task
-  "Gathers all information for the given `proto-task` (map).
-  The `proto-task` should be a map containing the `:TaskName`
-  `keyword` at least. String version makes a `map` out of `s`
-  and calls related method.
-
-  ```clojure
-  (gen-meta-task \"Common-wait\")
-  ;; 19-12-27 11:14:48 hiob DEBUG [cmp.lt-mem:21] - get task:  Common-wait  from ltm
-  ;; {:Task
-  ;; {:Action \"wait\",
-  ;; :Comment \"%waitfor  %waittime ms\",
-  ;; :TaskName \"Common-wait\",
-  ;; :WaitTime \"%waittime\"},
-  ;; :Use nil,
-  ;; :Defaults
-  ;; {\"%unit\" \"mbar\",
-  ;; \"%targetdb\" \"vl_db\",
-  ;; \"%relayinfo\" \"relay_info\",
-  ;; \"%docpath\" \"\",
-  ;; \"%sourcedb\" \"vl_db_work\",
-  ;; \"%timepath\" \"Time\",
-  ;; \"%waitunit\" \"ms\",
-  ;; \"%break\" \"no\",
-  ;; \"%waitfor\" \"Ready in\",
-  ;; \"%waittime\" \"1000\",
-  ;; \"%dbinfo\" \"db_info\"},
-  ;; :Globals
-  ;; {\"%hour\" \"11\",
-  ;; \"%minute\" \"14\",
-  ;; \"%second\" \"48\",
-  ;; \"%year\" \"2019\",
-  ;; \"%month\" \"12\",
-  ;; \"%day\" \"27\",
-  ;; \"%time\" \"1577445288247\"},
-  ;; :Replace nil}
-  ;;
-  ;; call the map vesion as follows:
-  
-  (gen-meta-task {:TaskName \"Common-wait\" :Replace {\"%waittime\" 10}})
-  ```"
-  [x]
-  (let  [proto      (proto-task x)
-         task-name  (:TaskName proto)
-         db-task    (merge
-                     (->> ["tasks" task-name]
-                          stu/vec->key
-                          st/key->val)
-                     proto)]
-    {:Task          (dissoc db-task :Defaults) 
-     :Use           (:Use proto)
-     :Globals       (globals)
-     :Defaults      (:Defaults db-task)
-     :Replace       (:Replace proto)}))
 
 (defn assemble
   "Assembles the `task` from the given
@@ -227,18 +142,31 @@
 )
 
 
+(defn gen-meta-task
+  "Gathers all information for the given `proto-task` (map).
+  The `proto-task` should be a map containing the `:TaskName`
+  `keyword` at least. String version makes a `map` out of `s`
+  and calls related method.
+
+  ```clojure
+  (gen-meta-task {:TaskName \"Common-wait\" :Replace {\"%waittime\" 10}})
+  ```"
+  [{task-name :TaskName :as pre-task}]
+  (let [stmem-task (stmem/get-val {:task-name task-name})]
+    {:Task (dissoc stmem-task :Defaults) 
+     :Use (:Use pre-task)
+     :Globals (utils/date-map)
+     :Defaults (:Defaults stmem-task)
+     :Replace (:Replace pre-task)}))
 
 (defn build
-  "Builds and returns the assembled `task` for the given key `k` related
-  to the `proto-task`. Since the functions in the `cmp.task` namespace
-  are (kept) independent from the tasks position, this
-  info (`:StateKey` holds the position of the task) have to
-  be`assoc`ed (done in `tsk/assemble`)." 
+  "Builds and returns the assembled `task` for the given position map
+  `m`. Since the functions in the `cmp.task` namespace are (kept)
+  independent from the tasks position, this info (`:StateKey` holds
+  the position of the task) have to be`assoc`ed (done in
+  `tsk/assemble`)." 
   [m]
-                   
-  (try (let [proto-task (stmem/get-value (assoc m :struct :defin))
-             meta-task  (gen-meta-task proto-task)
-             mp-id      (stu/key->mp-id k)]
-         (assemble meta-task mp-id state-key))
-         (catch Exception e
-           (st/set-state! state-key :error (.getMessage e)))))
+  (try (let [pre-task (stmem/get-val (assoc m :struct :defin))
+             meta-task  (gen-meta-task pre-task)]
+         (assemble meta-task))
+         (catch Exception e (fc/set-state (assoc m :value :error :message (.getMessage e))))))
