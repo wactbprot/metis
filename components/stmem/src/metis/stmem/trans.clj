@@ -82,14 +82,26 @@
          (map->task-key config m)
          (map->def-key config m)))))
 
+
+;;------------------------------
+;; key to map  utils
+;;------------------------------
+(defn care-no-idx [config v]
+  (when-let [s (get v 2)]
+    (if (re-matches #"[0-9]*" s)  (utils/ensure-int s) s)))
+
+(defn care-struct [{retrans :stmem-retrans} v] (get retrans  (get v 1)))
+
 (defn key->map
   ([k]
    (key->map c/config k))
-  ([{re-sep :re-sep retrans :stmem-retrans} k]
-   (let [v (string/split k re-sep)]
-     {:mp-id (nth v 0 nil)
-      :struct (get retrans (nth v 1 nil)) 
-      :no-idx (utils/ensure-int (nth v 2 nil))
-      :func (get retrans (nth v 3 nil))
-      :seq-idx (utils/ensure-int (nth v 4 nil))
-      :par-idx (utils/ensure-int (nth v 5 nil))})))
+  ([{re-sep :re-sep retrans :stmem-retrans :as config} k]
+   (when k
+     (when-let [v (string/split k re-sep)]
+       {:mp-id (get v 0)
+        :struct (care-struct config v)
+        :no-idx (care-no-idx config v)
+        :func (get retrans (get v 3))
+        :seq-idx (utils/ensure-int (get v 4))
+        :par-idx (utils/ensure-int (get v 5))}))))
+  

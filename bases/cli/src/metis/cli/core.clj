@@ -17,3 +17,5 @@
 (defn t-build [] (model/build-tasks (ltmem/all-tasks)))
 
 (defn t-clear [] (model/clear-tasks))
+
+(defn e-all [id] (exchange/all {:mp-id id}))

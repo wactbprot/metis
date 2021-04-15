@@ -51,3 +51,37 @@
            "000" )))
   (testing "nil"
     (is (nil? (lpad {:stmem-key-pad-length 5} nil)))))
+
+
+(deftest key->map-i
+  (testing "nil behaviour"
+    (is (nil? (key->map nil))))
+  (testing "empty mp-id"
+    (is (= {:mp-id "",
+            :struct nil,
+            :no-idx nil,
+            :func nil,
+            :seq-idx nil,
+            :par-idx nil} (key->map ""))))
+  (testing "mp-id"
+    (is (= {:mp-id "a",
+            :struct nil,
+            :no-idx nil,
+            :func nil,
+            :seq-idx nil,
+            :par-idx nil} (key->map "a"))))
+  (testing "mp-id no-idx is kept if string"
+    (is (= {:mp-id "a",
+            :struct :cont,
+            :no-idx "c",
+            :func nil,
+            :seq-idx nil,
+            :par-idx nil} (key->map "a@container@c"))))
+  (testing "mp-id no-idx is turned to number"
+    (is (= {:mp-id "a",
+            :struct :cont,
+            :no-idx 5,
+            :func nil,
+            :seq-idx nil,
+            :par-idx nil} (key->map "a@container@00000005")))))
+  
