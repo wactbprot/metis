@@ -7,20 +7,6 @@
             [metis.utils.interface :as utils]))
 
 (comment
-    
-(defn exch-key
-  "Returns the base key for the exchange path.
-
-  ```clojure
-  (exch-key  \"foo\" \"bar.baz\")
-  ;; \"foo@exchange@bar\"
-  (exch-key \"foo\" \"bar\")
-  ;; \"foo@exchange@bar\"
-  ```
-  "
-  [mp-id s]
-  {:pre [(not (nil? s))]}
-  (stu/exch-key mp-id (first (string/split s #"\."))))
 
 (defn path->first-kw
   "Returns the keyword or nil.
@@ -34,29 +20,7 @@
   [s]
   (when-let [x (first (string/split s #"\."))] (keyword x)))
 
-(defn enclose-map
-  "Encloses the given map `m` with respect to the key `k`.
 
-  Example:
-  ```clojure
-  (enclose-map {:gg \"ff\"} \"mm.ll\")
-  ;; gives:
-  ;; {:mm {:ll {:gg \"ff\"}}}
-
-  (enclose-map {:gg \"ff\"} \"mm\")
-  ;; gives:
-  ;; {:mm {:gg \"ff\"}}
-
-  (enclose-map {:gg \"ff\"} nil)
-  ;; gives:
-  ;; {:gg \"ff\"}
-  ```"
-  [m k]
-  (if-not k m
-          (let [a (path->first-kw k)]
-            (if-let [b (path->second-kw k)]
-              {a {b m}}
-              {a m}))))
 
 (defn to!
   "Writes `m` to the exchange interface.  The first level keys of `m`
@@ -122,6 +86,31 @@
   [s]
   (when (string? s)
     (first (string/split s #"\."))))
+
+(defn enclose-map
+  "Encloses the given map `m` with respect to the key `k`.
+
+  Example:
+  ```clojure
+  (enclose-map {:gg \"ff\"} \"mm.ll\")
+  ;; gives:
+  ;; {\"mm\" {:ll {:gg \"ff\"}}}
+
+  (enclose-map {:gg \"ff\"} \"mm\")
+  ;; gives:
+  ;; {\"mm\" {:gg \"ff\"}}
+
+  (enclose-map {\"mm\" \"ff\"} nil)
+  ;; gives:
+  ;; {\"mm\" \"ff\"}
+  ```"
+  [m p]
+  (if p
+    (let [a (path->first-string p)]
+      (if-let [b (path->second-kw p)]
+        {a {b m}}
+        {a m}))
+    m))
 
 (defn get-val [a p]
   (or (get a p)

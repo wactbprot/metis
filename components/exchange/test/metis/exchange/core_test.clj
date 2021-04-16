@@ -75,3 +75,13 @@
     (is (= {:%check (:Type (get a "A"))}
            (from a {:%check "A.Type"})))))
 
+
+(deftest enclose-map-i
+  (testing "nil behaviour"
+    (is (nil? (enclose-map nil nil))))
+  (testing "."
+    (is (= {} (enclose-map {} nil))))
+  (testing ".."
+    (is (= {"k" {:a 1}} (enclose-map {:a 1} "k"))))
+  (testing "..."
+    (is (= {"k" {:b {:a 1}}} (enclose-map {:a 1} "k.b")))))
