@@ -1,6 +1,6 @@
 # Μητις
 
-<img src="metis.png" width="20%" alt="metis" id="logo">
+<img src="metis.png" alt="metis" id="logo">
 
 
 ## Polylith
