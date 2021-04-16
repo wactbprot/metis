@@ -2,8 +2,9 @@
 
 <img src="metis.png" alt="metis" id="logo">
 
+## notes
 
-## Polylith
+### polylith
 
 The Polylith documentation can be found here:
 
@@ -13,7 +14,7 @@ The Polylith documentation can be found here:
 
 You can also get in touch with the Polylith Team via our [forum](https://polylith.freeflarum.com) or on [Slack](https://clojurians.slack.com/archives/C013B7MQHJQ).
  
-## notes
+
 
 ### emacs
 
