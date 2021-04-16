@@ -3,4 +3,6 @@
 
 (defn all [m] (core/all m))
 
-(defn from [a m] (core/from a m))
+(defn from [m] (core/from m))
+
+(defn to [m] (core/to m))

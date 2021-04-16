@@ -81,61 +81,15 @@
     (is (= false (only-if-not a {:OnlyIfNot "X.Y"}))
         "p does not exist")))
 
-(deftest from-i
-  (testing "nil behaviour"
-    (is (nil? (from nil nil))))
-  (testing "empty"
-    (is (empty? (from {} {}))))
-  (testing "simple"
-    (is (= {:%check (get a "A")}
-           (from a {:%check "A"}))))
-  (testing "simple ."
-    (is (= {:%check (get a "foo.bar")}
-           (from a {:%check "foo.bar"}))))
-  (testing "."
-    (is (= {:%check (:Type (get a "A"))}
-           (from a {:%check "A.Type"})))))
-
-
 (deftest enclose-map-i
   (testing "nil behaviour"
     (is (nil? (enclose-map nil nil))))
   (testing "."
     (is (= {} (enclose-map {} nil))))
+  (testing "."
+    (is (= {:A 1} (enclose-map {:A 1} nil))))
   (testing ".."
     (is (= {"k" {:a 1}} (enclose-map {:a 1} "k"))))
   (testing "..."
     (is (= {"k" {:b {:a 1}}} (enclose-map {:a 1} "k.b")))))
 
-
-(comment
-(deftest to-i
-  (testing "to!"
-    (to! "test" {:B "aaa"})
-    (is (= "aaa" (st/key->val (stu/exch-key "test" "B")))
-        "stores string")))
-
-(deftest to-ii
-  (testing "to! with simple path"
-    (to! "test" {:B "aaa"} "dd")
-    (is (=  "aaa"  (:B (st/key->val (stu/exch-key "test" "dd"))))
-        "stores string under path ")))
-
-(deftest to-iii
-  (testing "to! with double path"
-    (to! "test" {:C "aaa"} "ee.ff")
-    (is (= {:ff {:C "aaa"}} (st/key->val (stu/exch-key "test" "ee")))
-        "stores string under path ")))
-
-(deftest to-iv
-  (testing "to! with nil path"
-    (to! "test" {:B "aaa"} nil)
-    (is (= "aaa"  (st/key->val (stu/exch-key "test" "B")))
-        "don't crash ")))
-
-(deftest to-v
-  (testing "to! with map"
-    (to! "test" {:C {:D "aaa"}})
-    (is (= {:D "aaa"} (st/key->val (stu/exch-key "test" "C")))
-        "stores map")))
-)
