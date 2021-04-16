@@ -17,6 +17,27 @@
                    :Ready false}
         "Target_pressure" {:Selected 1 :Unit "Pa" :Ready true}})
 
+(def t {:ToExchange {:Filling_Pressure_current {:Value 100 
+                                                :Unit "mbar"}
+                     :Filling_Pressure_Dev {:Value 0.5 
+                                            :Unit "1"}
+                     :Filling_Pressure_Ok {:Ready false}}}) 
+  
+(deftest to-vec-i
+  (testing "to ."
+    (is (= [{:no-idx "B" :value {:A 1}}]  (to-vec a {:no-idx "B" :value {:A 1}})))
+    "stores string")
+  (testing "to .."
+    (is (= [{:no-idx "E" :value {:Ready "true" :A 1}}]  (to-vec a {:no-idx "E" :value {:A 1}})))
+    "stores string")
+  (testing "to ..."
+    (is (= [{:no-idx "B" :value {:A 1}}]  (to-vec a {:no-idx nil :value {:B {:A 1}}})))
+    "stores string")
+  (testing "to ..."
+    (is (= [{:no-idx "B" :value {:C {:A 1}}}]  (to-vec a {:no-idx "B.C" :value {:A 1}})))
+        "stores string"))
+
+
 (deftest stop-if-i
   (testing "StopIf"
     (is (= true (stop-if a {:StopIf "C"}))
@@ -85,3 +106,36 @@
     (is (= {"k" {:a 1}} (enclose-map {:a 1} "k"))))
   (testing "..."
     (is (= {"k" {:b {:a 1}}} (enclose-map {:a 1} "k.b")))))
+
+
+(comment
+(deftest to-i
+  (testing "to!"
+    (to! "test" {:B "aaa"})
+    (is (= "aaa" (st/key->val (stu/exch-key "test" "B")))
+        "stores string")))
+
+(deftest to-ii
+  (testing "to! with simple path"
+    (to! "test" {:B "aaa"} "dd")
+    (is (=  "aaa"  (:B (st/key->val (stu/exch-key "test" "dd"))))
+        "stores string under path ")))
+
+(deftest to-iii
+  (testing "to! with double path"
+    (to! "test" {:C "aaa"} "ee.ff")
+    (is (= {:ff {:C "aaa"}} (st/key->val (stu/exch-key "test" "ee")))
+        "stores string under path ")))
+
+(deftest to-iv
+  (testing "to! with nil path"
+    (to! "test" {:B "aaa"} nil)
+    (is (= "aaa"  (st/key->val (stu/exch-key "test" "B")))
+        "don't crash ")))
+
+(deftest to-v
+  (testing "to! with map"
+    (to! "test" {:C {:D "aaa"}})
+    (is (= {:D "aaa"} (st/key->val (stu/exch-key "test" "C")))
+        "stores map")))
+)

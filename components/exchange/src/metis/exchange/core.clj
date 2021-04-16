@@ -87,30 +87,7 @@
   (when (string? s)
     (first (string/split s #"\."))))
 
-(defn enclose-map
-  "Encloses the given map `m` with respect to the key `k`.
 
-  Example:
-  ```clojure
-  (enclose-map {:gg \"ff\"} \"mm.ll\")
-  ;; gives:
-  ;; {\"mm\" {:ll {:gg \"ff\"}}}
-
-  (enclose-map {:gg \"ff\"} \"mm\")
-  ;; gives:
-  ;; {\"mm\" {:gg \"ff\"}}
-
-  (enclose-map {\"mm\" \"ff\"} nil)
-  ;; gives:
-  ;; {\"mm\" \"ff\"}
-  ```"
-  [m p]
-  (if p
-    (let [a (path->first-string p)]
-      (if-let [b (path->second-kw p)]
-        {a {b m}}
-        {a m}))
-    m))
 
 (defn get-val [a p]
   (or (get a p)
@@ -149,6 +126,42 @@
     (not (ok? a p)) true
     (ok? a p) false))
 
+(defn enclose-map
+  "Encloses the given map `m` with respect to the key `k`.
+
+  Example:
+  ```clojure
+  (enclose-map {:gg \"ff\"} \"mm.ll\")
+  ;; gives:
+  ;; {\"mm\" {:ll {:gg \"ff\"}}}
+
+  (enclose-map {:gg \"ff\"} \"mm\")
+  ;; gives:
+  ;; {\"mm\" {:gg \"ff\"}}
+
+  (enclose-map {\"mm\" \"ff\"} nil)
+  ;; gives:
+  ;; {\"mm\" \"ff\"}
+  ```"
+  [m p]
+  (if p
+    (let [a (path->first-string p)]
+      (if-let [b (path->second-kw p)]
+        {a {b m}}
+        {a m}))
+    m))
+
+(defn fit-in [o m]
+  (if o
+    (if (and (map? o) (map? m))
+      (merge o m)
+      m)
+    m))
+
+(defn to-vec [a {x :value p :no-idx  :as m}]
+  (into [] (map
+            (fn [[k v]] (assoc m :no-idx (name k) :value (fit-in (get a k) v)))
+            (enclose-map x p))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.
