@@ -1,4 +1,6 @@
 (ns metis.exchange.interface
   (:require [metis.exchange.core :as core]))
 
-(defn from [m e] (core/from m e))
+(defn all [m] (core/all m))
+
+(defn from [a m] (core/from a m))

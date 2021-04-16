@@ -12,6 +12,8 @@
                                 ;; Components
                                 "components/config/src"
                                 "components/config/resources"
+                                "components/exchange/src"
+                                "components/exchange/resources"
                                 "components/flow-control/src"
                                 "components/flow-control/resources"
                                 "components/ltmem/src"
@@ -56,6 +58,7 @@
                                  "components/scheduler/test"
                                  "components/model/test"
                                  "components/utils/test"
+                                 "components/exchange/test"
                                  ]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]

@@ -5,7 +5,7 @@
             [clojure.string :as string]
             [metis.stmem.interface :as stmem]))
 
-  (comment
+(comment
     
 (defn exch-key
   "Returns the base key for the exchange path.
@@ -21,19 +21,7 @@
   {:pre [(not (nil? s))]}
   (stu/exch-key mp-id (first (string/split s #"\."))))
 
-(defn key->second-kw
-  "Returns the keyword or nil.
-
-  ```clojure
-  (key->second-kw \"foo\" )
-  ;; nil
-  (key->second-kw \"foo.bar\" )
-  ;; :bar
-  ```"  
-  [s]
-  (when-let [x (second (string/split s #"\."))] (keyword x)))
-
-(defn key->first-kw
+(defn path->first-kw
   "Returns the keyword or nil.
 
   ```clojure
@@ -64,8 +52,8 @@
   ```"
   [m k]
   (if-not k m
-          (let [a (key->first-kw k)]
-            (if-let [b (key->second-kw k)]
+          (let [a (path->first-kw k)]
+            (if-let [b (path->second-kw k)]
               {a {b m}}
               {a m}))))
 
@@ -136,45 +124,58 @@
     (nil? k)                true
     (not (exists? mp-id k)) false
     (not (ok? mp-id k))     true))
-
-
-(defn read!
-  "Returns e.g the *compare value* belonging to a `mp-id` and an
-  ExchangePath `k`. First try is to simply request to
-  `<mp-id>@exchange@<k>`. If this is `nil` Second try is to get the
-  *keyword* `kw` from `k` if `k` looks like this: `aaa.bbb`. If `kw`
-  is not `nil` it is used to extract the related value.
-
-  ```clojure
-  (read! \"ref\" \"A.Unit\")
-  ;; \"Pa\"
-  ```"
-  [mp-id p]
-  (if-let [val-p (st/key->val (stu/exch-key mp-id p))]
-    val-p
-    (let [val-k (st/key->val (exch-key mp-id p))]
-      (if-let [kw (key->second-kw p)]
-        (kw val-k)
-        val-k))))
-
-(defn from
-  "Builds a map by replacing the values of the input map `m`.
-  The replacements are gathered `from!` the `exchange` interface with
-  the keys: `<mp-id>@exchange@<input-map-value>`
-
-  Example:
-  ```clojure
-  (from {:mp-id mpd-ref} {:%check A})
-  ;; =>
-  ;; {:%check {:Type \"ref\" :Unit \"Pa\" :Value 100.0}}
-  ```"
-  [m e]
-  (when (and (map? m) (map? e))
-    (u/apply-to-map-values #(read! mp-id %) m)))
+    
 
 )
 
 
-(defn all
-  [{mp-id :mp-id}]
-  (stmem/get-maps {:mp-id mp-id :struct :exch :no-idx :*})) 
+(defn path->second-kw
+  "Returns the keyword or nil.
+
+  ```clojure
+  (key->second-kw \"foo\" )
+  ;; nil
+  (key->second-kw \"foo.bar\" )
+  ;; :bar
+  ```"  
+  [s]
+  (when (string? s)
+    (when-let [x (second (string/split s #"\."))] (keyword x))))
+
+(defn path->first-string
+  "Returns the keyword or nil.
+
+  ```clojure
+  (key->second-kw \"foo\" )
+  ;; nil
+  (key->second-kw \"foo.bar\" )
+  ;; :bar
+  ```"  
+  [s]
+  (when (string? s)
+    (first (string/split s #"\."))))
+
+(defn from
+  "Builds a map by replacing the values of the input map `m`.
+  The replacements are gathered from `a` the complete exchange interface
+  
+  Example:
+  ```clojure
+  (from {\"A\" {:Type \"ref\", :Unit \"Pa\", :Value 100.0},
+         \"B\" \"token\",
+         \"Target_pressure\" {:Selected 1, :Unit \"Pa\"}} {:%check A})
+  ;; =>
+  ;; {:%check {:Type \"ref\" :Unit \"Pa\" :Value 100.0}}
+  ```"
+  [a m]
+  (when (and (map? a) (map? m))
+    (into {} (map (fn [[k p]] (if-let [v (get a p)]
+                                {k v}
+                                (when-let [kw (path->second-kw p)]
+                                  {k (kw (get a (path->first-string p)))})))
+                  m))))
+
+(defn all [{mp-id :mp-id}]
+  (into {} (map
+            (fn [m] {(:no-idx m) (:value m)})
+            (stmem/get-maps {:mp-id mp-id :struct :exch :no-idx :*})))) 

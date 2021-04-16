@@ -8,7 +8,7 @@
 ;; get doc
 ;;------------------------------
 (defn get-doc 
-  "Gets a document from the long term memory."
+  "Gets a document from the db."
   [id]
   (mu/log ::get-doc :message "try to get document" :doc-id id)
   (try
@@ -40,10 +40,11 @@
      (catch Exception e (mu/log ::all-tasks :error (.getMessage e))))))
 
 ;;------------------------------
-;; tasks
+;; mpds
 ;;------------------------------
 (defn all-mpds
-  "Returns all measurement program definitions in long term memory."
+  "Returns all measurement program definitions from the long term
+  memory."
   ([]
    (all-mpds c/config))
   ([{conn :ltmem-conn design :ltmem-mpds-design view :ltmem-mpds-view}]

@@ -1,9 +1,9 @@
 # Μητις
 
-<img src="metis.png" width="10%" alt="metis" id="logo">
+<img src="metis.png" width="20%" alt="metis" id="logo">
 
 
-## metis arch: Polylith
+## Polylith
 
 The Polylith documentation can be found here:
 
@@ -12,20 +12,23 @@ The Polylith documentation can be found here:
 - The [RealWorld example app documentation](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app)
 
 You can also get in touch with the Polylith Team via our [forum](https://polylith.freeflarum.com) or on [Slack](https://clojurians.slack.com/archives/C013B7MQHJQ).
-
+ 
 ## notes
 
-`(require '[com.ashafa.clutch :as c])`
+### emacs
 
-not
-
-`(require '[com.ashafa/clutch :as c])`
+```elisp
+((clojure-mode . ((cider-preferred-build-tool . clojure-cli)
+                  (cider-clojure-cli-global-options . "-A:dev"))))
+```
+### start
 
 Start with alias (here `:dev`) dependency
 `clj -A:dev`
 
 
-## clj --help
+### clj --help
+
 ```
 Version: 1.10.2.774
 
