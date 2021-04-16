@@ -3,7 +3,8 @@
     :doc "Handles the access to the exchange interface."}
   (:require [com.brunobonacci.mulog :as mu]
             [clojure.string :as string]
-            [metis.stmem.interface :as stmem]))
+            [metis.stmem.interface :as stmem]
+            [metis.utils.interface :as utils]))
 
 (comment
     
@@ -91,39 +92,6 @@
         (if res-ok? {:ok true} {:error "not all write processes succeed"}))
       {:ok true :warn "nothing to write"})
     {:error "mp-id must be a string"})))
-
-(defn ok?
-  "Checks a certain exchange endpoint to evaluate
-  to true"
-  [mp-id k]
-  (contains? u/ok-set (read! mp-id k)))
-
-(defn exists? [mp-id k] (some? (read! mp-id k)))
-
-(defn stop-if
-  "Checks if the exchange path given with `:MpName` and `:StopIf`
-  evaluates to true."
-  [{mp-id :MpName k :StopIf}]
-  (if k
-    (ok? mp-id k)
-    true))
-
-(defn run-if
-  "Checks if the exchange path given with `:MpName` and `:RunIf`
-  evaluates to true."
-  [{mp-id :MpName k :RunIf}]
-  (if k
-    (ok? mp-id k)
-    true))
-
-(defn only-if-not
-  "Runs the task `only-if-not` the exchange path given with `:MpName`
-  and `:OnlyIfNot` evaluates to true."
-  [{mp-id :MpName k :OnlyIfNot}]
-  (cond
-    (nil? k)                true
-    (not (exists? mp-id k)) false
-    (not (ok? mp-id k))     true))
     
 
 )
@@ -155,6 +123,44 @@
   (when (string? s)
     (first (string/split s #"\."))))
 
+(defn get-val [a p]
+  (or (get a p)
+      (when-let [kw (path->second-kw p)]
+        (kw (get a (path->first-string p))))))
+
+
+(defn ok?
+  "Checks a certain exchange endpoint to evaluate to true"
+  [a p]
+  (contains? utils/ok-set (get-val a p)))
+
+(defn exists? [a p] (some? (get-val a p)))
+
+(defn stop-if
+  "Checks if the exchange path given with `:StopIf` evaluates to true."
+  [a {p :StopIf}]
+  (if p
+    (ok? a p)
+    true))
+
+(defn run-if
+  "Checks if the exchange path given with `:RunIf` evaluates to true."
+  [a {p :RunIf}]
+  (if p
+    (ok? a p)
+    true))
+
+(defn only-if-not
+  "Runs the task `only-if-not` the exchange path given with `:OnlyIfNot`
+  evaluates to true."
+  [a {p :OnlyIfNot}]
+  (cond
+    (nil? p) true
+    (not (exists? a p)) false
+    (not (ok? a p)) true
+    (ok? a p) false))
+
+
 (defn from
   "Builds a map by replacing the values of the input map `m`.
   The replacements are gathered from `a` the complete exchange interface
@@ -169,11 +175,7 @@
   ```"
   [a m]
   (when (and (map? a) (map? m))
-    (into {} (map (fn [[k p]] (if-let [v (get a p)]
-                                {k v}
-                                (when-let [kw (path->second-kw p)]
-                                  {k (kw (get a (path->first-string p)))})))
-                  m))))
+    (into {} (map (fn [[k p]] {k (get-val a p)}) m))))
 
 (defn all [{mp-id :mp-id}]
   (into {} (map
