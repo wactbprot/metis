@@ -1,8 +1,8 @@
 (ns metis.exchange.interface
-  (:require [metis.exchange.core :as core]))
+  (:require [metis.exchange.api :as api]))
 
-(defn all [m] (core/all m))
+(defn all [m] (api/all m))
 
-(defn from [m] (core/from m))
+(defn from [m] (api/from m))
 
-(defn to [m] (core/to m))
+(defn to [m] (api/to m))

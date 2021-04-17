@@ -57,6 +57,7 @@
                                  "components/model/test"
                                  "components/utils/test"
                                  "components/exchange/test"
+                                 "components/tasks/test"
                                  ]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]

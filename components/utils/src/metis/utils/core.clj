@@ -94,3 +94,44 @@
       (str a "month") (get-month d)
       (str a "day") (get-day d)
       (str a "time") (get-time d)})))
+
+(comment
+(defn apply-to-map-values
+  "Applies function `f` to the values of the map `m`."
+  [f m]
+  (into {} (map (fn [[k v]]
+                  (if (map? v)
+                    [k (apply-to-map-values f v)]
+                    [k (f v)]))
+                m)))
+
+(defn apply-to-map-keys
+  "Applies function `f` to the keys of the map `m`."
+  [f m]
+  (into {} (map (fn [[k v]]
+                  (if (map? v)
+                    [(f k) (apply-to-map-keys f v)]
+                    [(f k) v]))
+                m)))
+)
+
+
+(defn apply-to-map-values
+  "Applies function `f` to the values of the map `m`."
+  [f m]
+  (into {}
+        (map (fn [[k v]]
+              (cond
+                (map? v) [k (apply-to-map-values f v)]
+                :default [k (f v)]))
+             m)))
+
+(defn apply-to-map-keys
+  "Applies function `f` to the keys of the map `m`."
+  [f m]
+  (into {}
+        (map (fn [[k v]]
+               (cond
+                 (map? v) [(f k) (apply-to-map-keys f v)]
+                 :default [(f k) v]))
+             m)))

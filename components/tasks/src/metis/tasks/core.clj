@@ -1,11 +1,9 @@
 (ns metis.tasks.core
-  (:require [metis.flow-contol.interface :as fc]
+  (:require [cheshire.core :as che]
+            [metis.exchange.interface :as exch]
             [metis.stmem.interface :as stmem]
+            [clojure.string :as string]
             [metis.utils.interface :as utils]))
-
-
-(comment
-  
 
 (defn outer-replace-map
   "Replaces tokens (given in the m) in the task.
@@ -18,14 +16,15 @@
   ;; {:TaskName \"foo\", :Value \"1580652820247\"}
   (outer-replace-map nil {:TaskName \"foo\" :Value \"%time\"})
   ;; {:TaskName \"foo\", :Value \"%time\"}
-  ```
-  "
+  ```"
   [m task]
   (if (map? m)
-    (u/json->map (reduce
-                  (fn [s [k v]] (string/replace s (re-pattern (name k)) (str v)))
-                  (u/map->json task) m))
+    (che/decode
+     (reduce
+      (fn [s [k v]] (string/replace s (re-pattern (name k)) (str v)))
+      (che/encode task) m) true)
     task))
+
 
 (defn inner-replace-map
   "Applies the generated function  `f` to the
@@ -36,17 +35,14 @@
   runtime.
   "
   [m task]
-  (let [nm (u/apply-to-map-keys name m)
+  (let [nm (utils/apply-to-map-keys name m)
         f (fn [v]
             (if-let [r (get nm  v)]
-              (if (map? r) (u/apply-to-map-keys keyword r) r)
+              (if (map? r) (utils/apply-to-map-keys keyword r) r)
               v))]
-    (u/apply-to-map-values f task)))
+    (utils/apply-to-map-values f task)))
 
-
-(defn extract-use-value
-  [task m k]
-  ((keyword (m k)) (task k)))
+(defn extract-use-value [task m k] ((keyword (m k)) (task k)))
 
 (defn str->singular-kw
   "Takes a keyword or string and removes the tailing
@@ -79,16 +75,12 @@
   ```"
   [m task]
   (if (map? m)
-    (merge task
-           (into {}
-                 (map
-                  (fn [k]
-                    (hash-map
-                     (str->singular-kw k)
-                     (extract-use-value task m k)))
-                  (keys m))))
+    (merge task (into {} (map
+                          (fn [k] (hash-map
+                                   (str->singular-kw k)
+                                   (extract-use-value task m k)))
+                          (keys m))))
     task))
-
 
 (defn assemble
   "Assembles the `task` from the given
@@ -119,27 +111,24 @@
   ;; }
   ```
   "
-  [meta-task mp-id state-key]
-  (let [db-task   (:Task         meta-task)
-        use-map   (:Use          meta-task)
-        rep-map   (:Replace      meta-task)
-        def-map   (:Defaults     meta-task)
-        glo-map   (:Globals      meta-task)
-        exch-map  (:FromExchange db-task)
-        from-map  (exch/from! mp-id exch-map)]
+  [m]
+  (let [db-task (:Task m)
+        use-map (:Use m)
+        rep-map (:Replace m)
+        def-map (:Defaults m)
+        glo-map (:Globals m)
+        exch-map (:FromExchange db-task)
+        from-map (exch/from m exch-map)]
     (assoc 
      (->> (dissoc db-task :Use :Replace)
-          (merge-use-map     use-map)
+          (merge-use-map use-map)
           (inner-replace-map from-map)
           (outer-replace-map rep-map)
           (outer-replace-map def-map)
           (outer-replace-map glo-map)
           (outer-replace-map from-map))
-     :Use       use-map
-     :Replace   rep-map
-     :MpName    mp-id
-     :StateKey  state-key)))
-)
+     :Use use-map
+     :Replace rep-map)))
 
 
 (defn gen-meta-task
@@ -152,21 +141,18 @@
   (gen-meta-task {:TaskName \"Common-wait\" :Replace {\"%waittime\" 10}})
   ```"
   [{task-name :TaskName :as pre-task}]
-  (let [stmem-task (stmem/get-val {:task-name task-name})]
-    {:Task (dissoc stmem-task :Defaults) 
+  (let [task (stmem/get-val {:task-name task-name})]
+    {:Task (dissoc task :Defaults) 
      :Use (:Use pre-task)
      :Globals (utils/date-map)
-     :Defaults (:Defaults stmem-task)
+     :Defaults (:Defaults task)
      :Replace (:Replace pre-task)}))
 
 (defn build
   "Builds and returns the assembled `task` for the given position map
-  `m`. Since the functions in the `cmp.task` namespace are (kept)
-  independent from the tasks position, this info (`:StateKey` holds
-  the position of the task) have to be`assoc`ed (done in
-  `tsk/assemble`)." 
+  `m`." 
   [m]
-  (try (let [pre-task (stmem/get-val (assoc m :struct :defin))
-             meta-task  (gen-meta-task pre-task)]
-         (assemble meta-task))
-         (catch Exception e (fc/set-state (assoc m :value :error :message (.getMessage e))))))
+  (try 
+    (merge (assemble (gen-meta-task (stmem/get-val (assoc m :struct :defin)))) m)
+    (catch Exception e
+      (stmem/set-state (assoc m :value :error :message (.getMessage e))))))
