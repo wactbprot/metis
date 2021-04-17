@@ -1,5 +1,6 @@
 (ns metis.cli.core
   (:require [metis.config.interface :as c]
+            [metis.exchange.interface :as exchange]
             [metis.model.interface :as model]
             [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]))
