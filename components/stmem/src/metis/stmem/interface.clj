@@ -25,8 +25,8 @@
 
 
 
-(defn set-state [m] (fc/set-state [m]))
+(defn set-state [m] (fc/set-state m))
 
-(defn set-states [m] (fc/set-states [m]))
+(defn set-states [m] (fc/set-states m))
 
-(defn set-ctrl [m] (fc/set-ctrl [m]))
+(defn set-ctrl [m] (fc/set-ctrl m))

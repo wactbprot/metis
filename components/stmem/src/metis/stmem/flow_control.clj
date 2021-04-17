@@ -29,6 +29,9 @@
 (defn set-state
   "Sets the state to `(:value m)`."
   [m] 
+      (prn "ll")
+    (prn m)
+
   (let [kw  (:value m)
         msg (:message m)]
     (if (= kw :error )

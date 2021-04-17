@@ -111,14 +111,14 @@
   ;; }
   ```
   "
-  [m]
-  (let [db-task (:Task m)
-        use-map (:Use m)
-        rep-map (:Replace m)
-        def-map (:Defaults m)
-        glo-map (:Globals m)
+  [task m]
+  (let [db-task (:Task task)
+        use-map (:Use task)
+        rep-map (:Replace task)
+        def-map (:Defaults task)
+        glo-map (:Globals task)
         exch-map (:FromExchange db-task)
-        from-map (exch/from m exch-map)]
+        from-map (exch/from (exch/all m) (assoc m :value exch-map))]
     (assoc 
      (->> (dissoc db-task :Use :Replace)
           (merge-use-map use-map)
@@ -148,11 +148,20 @@
      :Defaults (:Defaults task)
      :Replace (:Replace pre-task)}))
 
-(defn build
-  "Builds and returns the assembled `task` for the given position map
-  `m`." 
+(defn get-task
   [m]
+  (stmem/get-val (assoc m :struct :defin)))
+
+(defn build
+  "Builds and returns the assembled `task` for the `pre-task`. A `pre-task`
+  contains at least a `:TaskName`. Optional is `:Replace` and `Use`.
+
+  Example:
+  ```clojure
+  (build {:TaskName \"Common-wait}
+  ``` " 
+  [pre-task m]
   (try 
-    (merge (assemble (gen-meta-task (stmem/get-val (assoc m :struct :defin)))) m)
+    (assemble (gen-meta-task pre-task) m)
     (catch Exception e
       (stmem/set-state (assoc m :value :error :message (.getMessage e))))))

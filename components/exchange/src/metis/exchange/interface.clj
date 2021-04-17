@@ -3,6 +3,6 @@
 
 (defn all [m] (api/all m))
 
-(defn from [m] (api/from m))
+(defn from [a m] (api/from a m))
 
-(defn to [m] (api/to m))
+(defn to [a m] (api/to a m))
