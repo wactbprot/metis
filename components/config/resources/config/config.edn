@@ -56,7 +56,7 @@
  :stmem-notif-sep "@"
  :stmem-key-sep "@"
  ;; register relax
- :stmem-reg-relax 5 ;; ms
+ :stmem-reg-relax 20 ;; ms
  ;; modify relax
  :stmem-mod-relax 20 ;; ms
  :stmem-trans {:tasks "tasks"

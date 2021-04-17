@@ -14,8 +14,6 @@
                                 "components/config/resources"
                                 "components/exchange/src"
                                 "components/exchange/resources"
-                                "components/flow-control/src"
-                                "components/flow-control/resources"
                                 "components/ltmem/src"
                                 "components/ltmem/resources"
                                 "components/model/src"

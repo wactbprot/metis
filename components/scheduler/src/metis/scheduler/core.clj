@@ -2,7 +2,6 @@
   ^{:author "wactbprot"
     :doc "Starts and stops a scheduler."}
   (:require [metis.config.interface :as c]
-            [metis.flow-control.interface :as fc]
             [com.brunobonacci.mulog :as mu]
             [metis.scheduler.proc :as proc]
             [metis.stmem.interface :as stmem]
@@ -26,8 +25,8 @@
         cmd (if (= cmd :mon) :mon :ready)]
     (mu/log ::handle-all-exec :message "all tasks executed, set new cmd" :command cmd)
     (stmem/de-register (assoc (dissoc m :par-idx :seq-idx) :func :ctrl))
-    (fc/set-states (asssoc m :value :ready))
-    (fc/set-ctrl (assoc m :value cmd))))
+    (stmem/set-states (asssoc m :value :ready))
+    (stmem/set-ctrl (assoc m :value cmd))))
  
 ;;------------------------------
 ;; start-next
@@ -41,7 +40,7 @@
   (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
         m (proc/next-map v)]
       (cond
-        (proc/errors? v) (fc/set-ctrl (assoc (first v) :value :error))
+        (proc/errors? v) (stem/set-ctrl (assoc (first v) :value :error))
         (proc/all-executed? v) (handle-all-exec v)
         (nil? m) (mu/log ::start-next :message "no operation")
         :else (worker/start m))))
@@ -76,10 +75,10 @@
       :mon (start-state m)
       :stop (do
               (stop-state m)
-              (fc/set-states (assoc m :ready))
+              (stem/set-states (assoc m :ready))
       :reset (do
                (stop-state m)
-               (fc/set-states (assoc m :ready)))
+               (stem/set-states (assoc m :ready)))
       :suspend (stop-state m)
       :error (mu/log ::dispatch :error "at ctrl interface")
       (mu/log ::dispatch :message "default case ctrl dispach function" :command cmd))))
