@@ -100,13 +100,12 @@
   (def proto {:TaskName \"Common-wait\"
                     :Replace {\"%waittime\" 10}})
   (assemble
-    (gen-meta-task proto \"ref\" \"ref@container@0@state@0@0\"))
+    (gen-meta-task proto {:mp-id :no-idx 0 :seq-idx 0 :par-idx 0}))
   ;; {:Action  \"wait\",
   ;;  :Comment  \"Ready in  10 ms\",
   ;;  :TaskName \"Common-wait\",
   ;;  :WaitTime \"10\",
   ;;  :MpName   \"ref\"
-  ;;  :StateKey \"ref@container@0@state@0@0\"
   ;;  ...
   ;; }
   ```
@@ -119,16 +118,17 @@
         glo-map (:Globals task)
         exch-map (:FromExchange db-task)
         from-map (exch/from (exch/all m) (assoc m :value exch-map))]
-    (assoc 
-     (->> (dissoc db-task :Use :Replace)
-          (merge-use-map use-map)
-          (inner-replace-map from-map)
-          (outer-replace-map rep-map)
-          (outer-replace-map def-map)
-          (outer-replace-map glo-map)
-          (outer-replace-map from-map))
-     :Use use-map
-     :Replace rep-map)))
+    (merge 
+     (assoc 
+      (->> (dissoc db-task :Use :Replace)
+           (merge-use-map use-map)
+           (inner-replace-map from-map)
+           (outer-replace-map rep-map)
+           (outer-replace-map def-map)
+           (outer-replace-map glo-map)
+           (outer-replace-map from-map))
+      :Use use-map
+      :Replace rep-map) m)))
 
 
 (defn gen-meta-task
