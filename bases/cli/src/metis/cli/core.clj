@@ -3,11 +3,34 @@
             [metis.exchange.interface :as exchange]
             [metis.model.interface :as model]
             [metis.ltmem.interface :as ltmem]
-            [metis.stmem.interface :as stmem]))
+            [clojure.pprint :as pp]
+            [metis.stmem.interface :as stmem]
+            [clojure.string :as string]
+            [metis.utils.interface :as utils]))
 
 (defn m-get [id] (ltmem/get-doc id))
 
-(defn ms-list [] (ltmem/all-mpds))
+(defn ms-list
+  "Returns a list of maps of the `mpd`s available at ltmem. Filters
+  the ids by the optional given substring."
+  ([]
+   (ms-list ""))
+  ([s]
+   (filter
+    #(when (map? %) (string/includes? (:id %) s))
+    (ltmem/all-mpds))))
+
+
+(defn ms-table
+  "Prints a table version of [[ms-list]]."
+  ([]
+   (ms-table ""))
+  ([s]
+   (pp/print-table
+    (mapv
+     #(update % :display utils/short-string)
+     (ms-list s)))))
+
 
 (defn m-build [id] (-> id ltmem/get-doc model/build-mpd))
 

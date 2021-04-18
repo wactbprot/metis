@@ -31,7 +31,6 @@
   ([d]
    (str (tm-c/to-long d))))
 
-  
 ;;------------------------------
 ;; strings
 ;;------------------------------
@@ -39,10 +38,9 @@
   "Short a `string` `s` to `n` or `45` chars. Returns `nil` is `s` is
   not a `string`."
   ([s]
-   (when (string? s) (short-string s 40)))
+   (when (string? s) (short-string s 30)))
   ([s n]
    (when (string? s) (if (< (count s) n) s (str (subs s 0 n) "...")))))
-
 
 ;;------------------------------
 ;; numbers
@@ -95,7 +93,6 @@
       (str a "day") (get-day d)
       (str a "time") (get-time d)})))
 
-(comment
 (defn apply-to-map-values
   "Applies function `f` to the values of the map `m`."
   [f m]
@@ -113,25 +110,3 @@
                     [(f k) (apply-to-map-keys f v)]
                     [(f k) v]))
                 m)))
-)
-
-
-(defn apply-to-map-values
-  "Applies function `f` to the values of the map `m`."
-  [f m]
-  (into {}
-        (map (fn [[k v]]
-              (cond
-                (map? v) [k (apply-to-map-values f v)]
-                :default [k (f v)]))
-             m)))
-
-(defn apply-to-map-keys
-  "Applies function `f` to the keys of the map `m`."
-  [f m]
-  (into {}
-        (map (fn [[k v]]
-               (cond
-                 (map? v) [(f k) (apply-to-map-keys f v)]
-                 :default [(f k) v]))
-             m)))
