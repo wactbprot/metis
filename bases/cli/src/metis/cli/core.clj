@@ -31,7 +31,6 @@
      #(update % :display utils/short-string)
      (ms-list s)))))
 
-
 (defn m-build [id] (-> id ltmem/get-doc model/build-mpd))
 
 (defn m-build-ref [] (model/build-mpd (c/mpd-ref)))

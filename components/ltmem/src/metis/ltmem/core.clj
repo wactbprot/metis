@@ -36,7 +36,7 @@
   ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view}]
    (mu/log ::all-tasks :message "get tasks from ltm")
    (try
-     (map :value (couch/get-view conn design view))
+     (mapv :value (couch/get-view conn design view))
      (catch Exception e (mu/log ::all-tasks :error (.getMessage e))))))
 
 ;;------------------------------
@@ -50,7 +50,7 @@
   ([{conn :ltmem-conn design :ltmem-mpds-design view :ltmem-mpds-view}]
    (mu/log ::all-mpds :message "get mpds from ltm")
   (try
-    (map :value (couch/get-view conn design view))
+    (mapv :value (couch/get-view conn design view))
     (catch Exception e (mu/log ::all-mpds :error (.getMessage e))))))
 
 ;;------------------------------
@@ -76,4 +76,3 @@
   (if-let [db-doc (get-doc (:_id doc))]
     (assoc doc :_rev (:_rev db-doc))
     doc))
-
