@@ -28,9 +28,14 @@ Start with alias (here `:dev`) dependency
 `clj -A:dev`
 
 
-### clj --help
+### clj
+
+* https://clojure.org/guides/deps_and_cli
+* https://clojure.org/reference/repl_and_main
+* https://github.com/seancorfield/dot-clojure
 
 ```
+$ clj --help
 Version: 1.10.2.774
 
 You use the Clojure tools ('clj' or 'clojure') to run Clojure programs

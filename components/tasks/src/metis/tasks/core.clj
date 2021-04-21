@@ -148,9 +148,7 @@
      :Defaults (:Defaults task)
      :Replace (:Replace pre-task)}))
 
-(defn get-task
-  [m]
-  (stmem/get-val (assoc m :struct :defin)))
+(defn get-task [m] (stmem/get-val (assoc m :struct :defin)))
 
 (defn build
   "Builds and returns the assembled `task` for the `pre-task`. A `pre-task`
