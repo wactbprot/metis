@@ -58,17 +58,14 @@
   it. Handles the `:RunIf` case. The `:StopIf` case is handeled by the
   `workers` after processing the task."  
   [m]
-
-  (prn (tasks/build m))
-
-  #_(let [task (tsk/build m)]
+  (let [pre-task (stmem/get-val (assoc m :struct :defin))
+        task     (tasks/build pre-task m)]
     (if (exch/run-if task)
       (if (exch/only-if-not task)
         (dispatch task)
         (do
           (Thread/sleep (cfg/stop-if-delay (cfg/config)))
-          (st/set-state! (:StateKey task) :executed "state set by only-if-not")))
+          (stmem/set-state (assoc m :value :executed :message "state set by only-if-not"))))
       (do
         (Thread/sleep (cfg/stop-if-delay (cfg/config)))
-        (st/set-state! (:StateKey task) :ready "state set by run-if")))))
-
+        (stmem/set-state (assoc m :value :ready :message "state set by run-if"))))))

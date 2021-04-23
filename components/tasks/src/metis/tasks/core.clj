@@ -57,11 +57,7 @@
   ```
   "
   [s]
-  (->> s
-       name
-       (re-matches #"^(\w*)(s)$")
-       second
-       keyword))
+  (->> s name (re-matches #"^(\w*)(s)$") second keyword))
 
 (defn merge-use-map
   "The use keyword enables a replace mechanism.
@@ -148,7 +144,8 @@
      :Defaults (:Defaults task)
      :Replace (:Replace pre-task)}))
 
-(defn get-task [m] (stmem/get-val (assoc m :struct :defin)))
+(comment
+  (defn get-pre-task [m] (stmem/get-val (assoc m :struct :defin))))
 
 (defn build
   "Builds and returns the assembled `task` for the `pre-task`. A `pre-task`
