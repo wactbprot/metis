@@ -1,4 +1,8 @@
-{:polylith {:vcs "git"
+{
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}
+        org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}}
+                              
+ :polylith {:vcs "git"
             :top-namespace "metis"
             :interface-ns "interface"
             :default-profile-name "default"
@@ -33,9 +37,7 @@
                                 "bases/cli/resources"
                                 ]
                   
-                  :extra-deps {org.clojure/clojure {:mvn/version "1.10.3"}
-                               org.clojure/tools.deps.alpha {:mvn/version "0.8.695"}
-                               com.taoensso/carmine {:mvn/version "3.0.0"}
+                  :extra-deps { com.taoensso/carmine {:mvn/version "3.0.0"}
                                com.ashafa/clutch {:mvn/version "0.4.0"}
                                org.clojars.wactbprot/vl-data-insert {:mvn/version "0.2.1"}
                                cheshire/cheshire {:mvn/version "5.10.0"}
@@ -51,14 +53,18 @@
                                com.brunobonacci/mulog {:mvn/version "0.6.0"}
                                com.brunobonacci/mulog-elasticsearch {:mvn/version "0.6.0"}
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
+
+            :codox {:extra-deps {codox/codox {:mvn/version "0.10.7"}}
+                    :exec-fn codox.main/generate-docs
+                    :exec-args {:language :clojure
+                                :output-path "docs"}}
             
             :test {:extra-paths ["components/stmem/test"
                                  "components/scheduler/test"
                                  "components/model/test"
                                  "components/utils/test"
                                  "components/exchange/test"
-                                 "components/tasks/test"
-                                 ]}
+                                 "components/tasks/test"]}
             
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith

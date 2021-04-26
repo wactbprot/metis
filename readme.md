@@ -27,6 +27,11 @@ You can also get in touch with the Polylith Team via our [forum](https://polylit
 Start with alias (here `:dev`) dependency
 `clj -A:dev`
 
+### codox
+
+```
+clojure -Sdeps '{:deps {codox/codox {:mvn/version "0.10.7"}}}' -X:dev codox.main/generate-docs :source-paths '["components/stmem/src" "components/model/src" "components/tasks/src" "components/ltmem/src"]'
+```
 
 ### clj
 
