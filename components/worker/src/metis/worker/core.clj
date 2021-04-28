@@ -60,12 +60,13 @@
   [m]
   (let [pre-task (stmem/get-val (assoc m :struct :defin))
         task     (tasks/build pre-task m)]
-    (if (exch/run-if task)
+    (prn task)
+    #_(if (exch/run-if task)
       (if (exch/only-if-not task)
-        (dispatch task)
+        (prn task)
         (do
-          (Thread/sleep (cfg/stop-if-delay (cfg/config)))
+          ;(Thread/sleep (cfg/stop-if-delay (cfg/config)))
           (stmem/set-state (assoc m :value :executed :message "state set by only-if-not"))))
       (do
-        (Thread/sleep (cfg/stop-if-delay (cfg/config)))
+        ;(Thread/sleep (cfg/stop-if-delay (cfg/config)))
         (stmem/set-state (assoc m :value :ready :message "state set by run-if"))))))

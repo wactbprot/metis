@@ -56,8 +56,19 @@
 
             :codox {:extra-deps {codox/codox {:mvn/version "0.10.7"}}
                     :exec-fn codox.main/generate-docs
-                    :exec-args {:language :clojure
-                                :output-path "docs"}}
+                    :exec-args {:source-paths  ["components/worker/src"
+                                                "components/config/src"
+                                                "components/exchange/src"
+                                                "components/ltmem/src"
+                                                "components/model/src"
+                                                ;"components/scheduler/src"
+                                                "components/stmem/src"
+                                                "components/tasks/src"
+                                                "components/utils/src"
+                                        
+                                                ]
+                                :language :clojure
+                                :output-path "docso"}}
             
             :test {:extra-paths ["components/stmem/test"
                                  "components/scheduler/test"
