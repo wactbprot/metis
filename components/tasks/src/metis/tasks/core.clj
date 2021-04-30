@@ -113,7 +113,7 @@
         def-map (:Defaults task)
         glo-map (:Globals task)
         exch-map (:FromExchange db-task)
-        from-map (exch/from (exch/all m) (assoc m :value exch-map))]
+        from-map (exch/from (assoc m :value exch-map))]
     (merge 
      (assoc 
       (->> (dissoc db-task :Use :Replace)

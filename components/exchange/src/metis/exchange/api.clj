@@ -11,8 +11,10 @@
             (stmem/get-maps {:mp-id mp-id :struct :exch :no-idx :*}))))
 
 (defn to
-  [a m]
-  (map stmem/set-val (core/to-vec a m)))
+  ([m]
+   (to (all m) m))
+  ([a m]
+  (map stmem/set-val (core/to-vec a m))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.
@@ -26,6 +28,17 @@
   ;; =>
   ;; {:%check {:Type \"ref\" :Unit \"Pa\" :Value 100.0}}
   ```"
-  [a m]
+  ([m]
+   (to (all m) m))
+  ([a m]
   (when (and (map? a) (map? m))
-    (into {} (map (fn [[k p]] {k (core/get-val a p)}) m))))
+    (into {} (map (fn [[k p]] {k (core/get-val a p)}) m)))))
+
+(defn run-if [m] (run-if (all m) m))
+
+
+(defn run-if [m] (run-if (all m) m))
+
+(defn stop-if [m] (stop-if (all m) m))
+
+(defn only-if-not [m] (only-if-not (all m) m))
