@@ -43,7 +43,7 @@
         (proc/errors? v) (stmem/set-ctrl (assoc (first v) :value :error))
         (proc/all-executed? v) (handle-all-exec v)
         (nil? m) (mu/log ::start-next :message "no operation")
-        :else (worker/start m))))
+        :else (worker/run m))))
 
 ;;------------------------------
 ;; start state
