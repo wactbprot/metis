@@ -38,4 +38,8 @@
 
 (defn set-ctrl [m] (fc/set-ctrl m))
 
+(defn set-ctrl-run [m] (fc/set-ctrl (assoc m :value :run)))
+
+(defn set-ctrl-error [m] (fc/set-ctrl (assoc m :value :error)))
+
 (defn map->key [m] (trans/map->key m))
