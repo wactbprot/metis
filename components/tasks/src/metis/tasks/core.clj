@@ -120,7 +120,7 @@
           globals-map (utils/date-map)]
       (assemble (prepair pre-task raw-task from-map globals-map m)))
     (catch Exception e
-      (stmem/set-state (assoc m :value :error :message (.getMessage e))))))
+      (stmem/set-state-error (assoc m :message (.getMessage e))))))
 
 (comment
   ;; get-task takes all side effects

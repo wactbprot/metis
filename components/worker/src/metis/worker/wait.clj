@@ -13,10 +13,9 @@
   (wait! {:WaitTime 1000 :mp-id \"test\" :struct \"test\" :no-idx 0 :par-idx 0 :seq-idx 0})
   ```"
   [{wait-time :WaitTime :as m}]
-  (stmem/set-state  (assoc m :value :working :message "start waittime"))
+  (stmem/set-state-working  (assoc m :message "start waittime"))
   (Thread/sleep (u/ensure-int wait-time))
-  (stmem/set-state  (assoc m :value :working :message "wait time over")))
+  (stmem/set-state-executed  (assoc m :message "wait time over")))
 
 (comment
-  (wait! {:WaitTime 1000 :mp-id "test" :struct "test" :no-idx 0 :par-idx 0 :seq-idx 0})
-  )
+  (wait! {:WaitTime 1000 :mp-id "test" :struct "test" :no-idx 0 :par-idx 0 :seq-idx 0}))

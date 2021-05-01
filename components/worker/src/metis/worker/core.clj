@@ -44,7 +44,7 @@
     ;; :TCP            (start! devhub!            task)
     ;; :VXI11          (start! devhub!            task)
     ;; :EXECUTE        (start! devhub!            task)
-    (stmem/set-state (assoc task :value :error :message "No worker for action"))))
+    (stmem/set-state-error (assoc task :message "No worker for action"))))
 
 ;;------------------------------
 ;; check-in
@@ -62,11 +62,24 @@
          (dispatch task)
          (do
            (Thread/sleep stop-if-delay)
-           (stmem/set-state (assoc m :value :executed :message "state set by only-if-not"))))
+           (stmem/set-state-executed (assoc m :message "state set by only-if-not"))))
        (do
          (Thread/sleep stop-if-delay)
-         (stmem/set-state (assoc m :value :ready :message "state set by run-if")))))))
+         (stmem/set-state-ready (assoc m  :message "state set by run-if")))))))
 
 (comment
-  (run {:mp-id "mpd-ref" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0})
+  (def m {:mp-id "mpd-ref" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0})
+  (run m)
+  (tasks/get-task m)
+  (dispatch {:WaitTime "100",
+             :no-idx 0,
+             :TaskName "Common-wait",
+             :Comment "Ready in  100 ms",
+             :par-idx 0,
+             :mp-id "mpd-ref",
+             :seq-idx 0,
+             :Replace {:%waittime 100},
+             :Action "wait",
+             :Use nil,
+             :struct "cont"})
   )

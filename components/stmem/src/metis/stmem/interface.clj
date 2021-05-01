@@ -26,6 +26,14 @@
 
 (defn set-state [m] (fc/set-state m))
 
+(defn set-state-working [m] (fc/set-state (assoc m :value :working))) 
+
+(defn set-state-executed [m] (fc/set-state (assoc m :value :executed)))
+
+(defn set-state-error [m] (fc/set-state (assoc m :value :error))) 
+
+(defn set-state-ready [m] (fc/set-state (assoc m :value :ready))) 
+
 (defn set-states [m] (fc/set-states m))
 
 (defn set-ctrl [m] (fc/set-ctrl m))
