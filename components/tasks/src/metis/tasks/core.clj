@@ -80,83 +80,70 @@
 
 (defn assemble
   "Assembles the `task` from the given
-  `meta-task` in a special order:
+  `meta-m`aps in a special order:
 
   * merge Use
   * replace from Replace
   * replace from Defaults
   * replace from Globals
-  
-  `assoc`s the structs afterwards.
+   ```"
+  [{from-m :FromExchange globals-m :Globals def-m :Defaults use-m :Use rep-m :Replace task :Task}]
+   (assoc 
+    (->> task
+         (merge-use-map use-m)
+         (inner-replace-map from-m)
+         (outer-replace-map rep-m)
+         (outer-replace-map def-m)
+         (outer-replace-map globals-m)
+         (outer-replace-map from-m))
+    :Use use-m
+    :Replace rep-m))
 
-  TODO:
-  clarify :PreInput
-  
-  ```clojure
-  (def proto {:TaskName \"Common-wait\"
-                    :Replace {\"%waittime\" 10}})
-  (assemble
-    (gen-meta-task proto {:mp-id :no-idx 0 :seq-idx 0 :par-idx 0}))
-  ;; {:Action  \"wait\",
-  ;;  :Comment  \"Ready in  10 ms\",
-  ;;  :TaskName \"Common-wait\",
-  ;;  :WaitTime \"10\",
-  ;;  :MpName   \"ref\"
-  ;;  ...
-  ;; }
-  ```
-  "
-  [task m]
-  (let [db-task (:Task task)
-        use-map (:Use task)
-        rep-map (:Replace task)
-        def-map (:Defaults task)
-        glo-map (:Globals task)
-        exch-map (:FromExchange db-task)
-        from-map (exch/from (assoc m :value exch-map))]
-    (merge 
-     (assoc 
-      (->> (dissoc db-task :Use :Replace)
-           (merge-use-map use-map)
-           (inner-replace-map from-map)
-           (outer-replace-map rep-map)
-           (outer-replace-map def-map)
-           (outer-replace-map glo-map)
-           (outer-replace-map from-map))
-      :Use use-map
-      :Replace rep-map) m)))
+(defn prepair
+  "Prepairs the task for assemble step."
+  [{rep-m :Replace use-m :Use} raw-task from-m globals-m m]
+  {:Task (merge (dissoc raw-task :Defaults :Use :Replace) m) 
+   :Replace rep-m
+   :Use use-m
+   :Defaults (:Defaults raw-task)
+   :FromExchange from-m
+   :Globals globals-m})
 
-
-(defn gen-meta-task
-  "Gathers all information for the given `proto-task` (map).
-  The `proto-task` should be a map containing the `:TaskName`
-  `keyword` at least. String version makes a `map` out of `s`
-  and calls related method.
-
-  ```clojure
-  (gen-meta-task {:TaskName \"Common-wait\" :Replace {\"%waittime\" 10}})
-  ```"
-  [{task-name :TaskName :as pre-task}]
-  (let [task (stmem/get-val {:task-name task-name})]
-    {:Task (dissoc task :Defaults) 
-     :Use (:Use pre-task)
-     :Globals (utils/date-map)
-     :Defaults (:Defaults task)
-     :Replace (:Replace pre-task)}))
-
-(comment
-  (defn get-pre-task [m] (stmem/get-val (assoc m :struct :defin))))
-
-(defn build
-  "Builds and returns the assembled `task` for the `pre-task`. A `pre-task`
-  contains at least a `:TaskName`. Optional is `:Replace` and `Use`.
-
-  Example:
-  ```clojure
-  (build {:TaskName \"Common-wait}
-  ``` " 
-  [pre-task m]
-  (try 
-    (assemble (gen-meta-task pre-task) m)
+(defn get-task
+  "Trys to gather all information belonging to `m`. Calls `prepair` and
+  `assemble` function.`" 
+  [m]
+  (try
+    (let [pre-task    (stmem/get-val (assoc m :func :defin))
+          raw-task    (stmem/get-val {:task-name (:TaskName pre-task)})
+          from-map    (exch/from (exch/all m) (:FromExchange raw-task))
+          globals-map (utils/date-map)]
+      (assemble (prepair pre-task raw-task from-map globals-map m)))
     (catch Exception e
       (stmem/set-state (assoc m :value :error :message (.getMessage e))))))
+
+(comment
+  ;; get-task takes all side effects
+  ;; prepair and assemple and the rest is pure
+  (let [m        {:mp-id "mpd-ref" :struct :cont :func :defin :no-idx 0 :par-idx 0 :seq-idx 0}
+        pre-task {:Replace {"%waittime" 200}}
+        _        (stmem/get-val m)
+        raw-task {:Action "wait",
+                  :Comment "%waitfor  %waittime ms",
+                  :TaskName "Common-wait",
+                  :WaitTime "%waittime",
+                  :FromExchange {:%check "A"}
+                  :Defaults {:%waittime 1000}}
+        _         (stmem/get-val {:task-name "Common-wait"})
+        from-map {:%check {:Type "ref", :Unit "Pa", :Value 100.0}}
+        _        (exch/from (exch/all m) (:FromExchange raw-task))
+        glob-map {"%hour" "09",
+                  "%minute" "06",
+                  "%second" "22",
+                  "%year" "2021",
+                   "%month" "05",
+                  "%day" "01",
+                  "%time" "1619859982354"}
+        _         (utils/date-map)
+        ]
+    (assemble (prepair pre-task raw-task from-map glob-map m))))

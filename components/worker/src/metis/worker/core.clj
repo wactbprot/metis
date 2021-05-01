@@ -5,22 +5,19 @@
             [metis.config.interface :as c]
             [com.brunobonacci.mulog :as mu]
             [metis.stmem.interface :as stmem]
-            [metis.tasks.interface :as tasks]))
+            [metis.tasks.interface :as tasks]
+            [metis.worker.wait :refer [wait!]]))
 
 ;;------------------------------
 ;;  future registry 
 ;;------------------------------
-(defonce future-reg (atom {}))
-
-(comment
-  (defn start!
-  "Starts the worker in a new threat. This means that all workers
-  may be single threated."
-    [worker task]
-  (let [state-key (:StateKey task)]
-    (mu/log ::start! :message "registered worker" :key state-key)
-    (swap! future-reg assoc
-           state-key (future (worker task)))))
+(defonce future-registry (atom {}))
+ 
+(defn start!
+  "Starts the worker in a new threat. "
+  [worker task]
+  (swap! future-registry
+         assoc (stmem/map->key task) (future (worker task))))
 
 ;;------------------------------
 ;;  dispatch 
@@ -28,29 +25,27 @@
 (defn dispatch
   "Dispatch depending on the `:Action`."
   [task]
-  (let [action    (keyword (:Action task))
-        state-key (:StateKey task)]
-    (mu/log ::dispatch :message "dispatch task" :key state-key)
-    (condp = action
-      :select         (start! select-definition! task)
-      :runMp          (start! run-mp!            task)
-      :stopMp         (start! stop-mp!           task)
-      :writeExchange  (start! write-exchange!    task)
-      :readExchange   (start! read-exchange!     task)
-      :wait           (start! wait!              task)
-      :getDate        (start! get-date!          task)
-      :getTime        (start! get-time!          task)
-      :message        (start! message!           task)
-      :genDbDoc       (start! gen-db-doc!        task)
-      :replicateDB    (start! replicate!         task)
-      :Anselm         (start! devproxy!          task)
-      :DevProxy       (start! devproxy!          task)
-      :MODBUS         (start! devhub!            task)
-      :TCP            (start! devhub!            task)
-      :VXI11          (start! devhub!            task)
-      :EXECUTE        (start! devhub!            task)
-      (st/set-state! state-key :error "No worker for action"))))
-)
+  (mu/log ::dispatch :message "dispatch task")
+  (condp = (keyword (:Action task))
+    :wait           (start! wait!              task)
+    ;; :select         (start! select-definition! task)
+    ;; :runMp          (start! run-mp!            task)
+    ;; :stopMp         (start! stop-mp!           task)
+    ;; :writeExchange  (start! write-exchange!    task)
+    ;; :readExchange   (start! read-exchange!     task)
+    ;; :getDate        (start! get-date!          task)
+    ;; :getTime        (start! get-time!          task)
+    ;; :message        (start! message!           task)
+    ;; :genDbDoc       (start! gen-db-doc!        task)
+    ;; :replicateDB    (start! replicate!         task)
+    ;; :Anselm         (start! devproxy!          task)
+    ;; :DevProxy       (start! devproxy!          task)
+    ;; :MODBUS         (start! devhub!            task)
+    ;; :TCP            (start! devhub!            task)
+    ;; :VXI11          (start! devhub!            task)
+    ;; :EXECUTE        (start! devhub!            task)
+    (stmem/set-state (assoc task :value :error :message "No worker for action"))))
+
 ;;------------------------------
 ;; check-in
 ;;------------------------------
@@ -60,15 +55,18 @@
   `workers` after processing the task."  
   ([m]
    (run c/config m))
-  ([{stop-if-delay :stop-if-delay } m]
-   (let [pre-task (stmem/get-val (assoc m :struct :defin))
-         task     (tasks/build pre-task m)]
-     (if (exch/run-if task)
-       (if (exch/only-if-not task)
-         (prn task)
+  ([{stop-if-delay :stop-if-delay} m]
+   (let [task (tasks/get-task m)]
+     (if (exch/run-if (exch/all m) task)
+       (if (exch/only-if-not (exch/all m)task)
+         (dispatch task)
          (do
            (Thread/sleep stop-if-delay)
            (stmem/set-state (assoc m :value :executed :message "state set by only-if-not"))))
        (do
          (Thread/sleep stop-if-delay)
          (stmem/set-state (assoc m :value :ready :message "state set by run-if")))))))
+
+(comment
+  (run {:mp-id "mpd-ref" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0})
+  )

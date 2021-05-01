@@ -29,16 +29,7 @@
   ;; {:%check {:Type \"ref\" :Unit \"Pa\" :Value 100.0}}
   ```"
   ([m]
-   (to (all m) m))
+   (from (all m) m))
   ([a m]
   (when (and (map? a) (map? m))
     (into {} (map (fn [[k p]] {k (core/get-val a p)}) m)))))
-
-(defn run-if [m] (run-if (all m) m))
-
-
-(defn run-if [m] (run-if (all m) m))
-
-(defn stop-if [m] (stop-if (all m) m))
-
-(defn only-if-not [m] (only-if-not (all m) m))
