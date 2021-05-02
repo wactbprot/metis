@@ -33,5 +33,5 @@
         msg (:message m)]
     (if (= kw :error )
       (mu/log ::set-state :error (or msg "will set stat interface to error"))
-      (mu/log ::set-state :message (str (or msg "will set state interface to " kw))))
+      (mu/log ::set-state :message (or msg (str "will set state interface to " kw))))
     (stmem/set-val (assoc m :func :state :value (name kw)))))
