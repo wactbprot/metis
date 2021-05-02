@@ -11,8 +11,8 @@
   (let [kw  (:value m)
         msg (:message m)]
     (if (= kw :error )
-      (mu/log ::set-ctrl :error "will set ctrl interface to error")
-      (mu/log ::set-ctrl :message (str "will set ctrl interface to " kw)))
+      (mu/log ::set-ctrl :error "will set ctrl interface to error" :m m)
+      (mu/log ::set-ctrl :message (str "will set ctrl interface to " kw) :m m))
     (stmem/set-val (assoc (dissoc m :par-idx :seq-idx) :func :ctrl :value (name kw)))))
 
 ;;------------------------------
@@ -23,7 +23,7 @@
   [m]
   (let [kw  (:value m)
         msg (:message m)]
-    (mu/log ::set-states :message (or msg  "will set all states"))
+    (mu/log ::set-states :message (or msg  "will set all states") :m m)
     (stmem/set-vals (assoc m :func :state :seq-idx :* :par-idx :* :value (name kw)))))
 
 (defn set-state
@@ -32,6 +32,6 @@
   (let [kw  (:value m)
         msg (:message m)]
     (if (= kw :error )
-      (mu/log ::set-state :error (or msg "will set stat interface to error"))
-      (mu/log ::set-state :message (or msg (str "will set state interface to " kw))))
+      (mu/log ::set-state :error (or msg "will set stat interface to error") :m m)
+      (mu/log ::set-state :message (or msg (str "will set state interface to " kw)) :m m))
     (stmem/set-val (assoc m :func :state :value (name kw)))))

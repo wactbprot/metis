@@ -3,10 +3,30 @@
             [metis.exchange.interface :as exchange]
             [metis.model.interface :as model]
             [metis.ltmem.interface :as ltmem]
+            [com.brunobonacci.mulog :as mu]
             [clojure.pprint :as pp]
             [metis.stmem.interface :as stmem]
+            [metis.scheduler.interface :as scheduler]
             [clojure.string :as string]
             [metis.utils.interface :as utils]))
+
+;;------------------------------
+;; logging system
+;;------------------------------
+(defonce logger (atom nil))
+
+(defn init-log! [{conf :mulog }]
+  (mu/set-global-context! {:app-name "cmp"})
+  (mu/start-publisher! conf))
+
+(defn stop-log! [conf]
+  (mu/log ::stop)
+  (@logger)
+  (reset! logger nil))
+
+(defn start-log! [conf]
+  (mu/log ::start)
+  (reset! logger (init-log! conf)))
 
 (defn m-get [id] (ltmem/get-doc id))
 
@@ -42,3 +62,8 @@
 (defn t-clear [] (model/clear-tasks))
 
 (defn e-all [id] (exchange/all {:mp-id id}))
+
+(defn m-start [id] (scheduler/start id))
+
+(defn m-stop [id] (scheduler/stop id))
+
