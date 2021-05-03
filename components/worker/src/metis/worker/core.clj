@@ -15,19 +15,20 @@
  
 (defn start!
   "Starts the worker in a new threat. "
-  [worker task]
+  [worker task m]
   (swap! future-registry
-         assoc (stmem/map->key task) (future (worker task))))
+         assoc (stmem/map->key task) (future (worker task m))))
 
 ;;------------------------------
 ;;  dispatch 
 ;;------------------------------
 (defn dispatch
   "Dispatch depending on the `:Action`."
-  [task]
-  (mu/log ::dispatch :message "dispatch task")
+  [task m]
+  (mu/log ::dispatch :message "dispatch task" :m m)
   (condp = (keyword (:Action task))
-    :wait           (start! wait!              task)
+    :wait (start! wait! task m)
+    
     ;; :select         (start! select-definition! task)
     ;; :runMp          (start! run-mp!            task)
     ;; :stopMp         (start! stop-mp!           task)
@@ -59,7 +60,7 @@
    (let [task (tasks/get-task m)]
      (if (exch/run-if (exch/all m) task)
        (if (exch/only-if-not (exch/all m)task)
-         (dispatch task)
+         (dispatch task m)
          (do
            (Thread/sleep stop-if-delay)
            (stmem/set-state-executed (assoc m :message "state set by only-if-not"))))
@@ -72,14 +73,15 @@
   (run m)
   (tasks/get-task m)
   (dispatch {:WaitTime "100",
-             :no-idx 0,
              :TaskName "Common-wait",
              :Comment "Ready in  100 ms",
-             :par-idx 0,
              :mp-id "mpd-ref",
-             :seq-idx 0,
              :Replace {:%waittime 100},
              :Action "wait",
-             :Use nil,
-             :struct "cont"})
+             :Use nil}
+            {:mp-id "mpd-ref"
+             :struct :cont
+             :no-idx 0
+             :par-idx 0
+             :seq-idx 0})
   )

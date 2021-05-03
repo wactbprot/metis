@@ -117,7 +117,7 @@
 ;;------------------------------
 (defn clear-mpd
   [{mp-id :mp-id}]
-  (stmem/del-vals {:mp-id mp-id})) 
+  (stmem/del-vals {:mp-id mp-id :struct :*})) 
 
 ;;------------------------------
 ;; build tasks

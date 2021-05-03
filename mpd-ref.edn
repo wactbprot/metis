@@ -74,18 +74,18 @@
     ;; The "array of arrays"-structure controlls what happens 
     ;; parallel and what sequential.
     :Definition
-    [;; First: start a wait task with 100 ms waittime.
-     ;; At the same time start a wait task with 200 ms waittime.
-     [{:TaskName "Common-wait", :Replace {:%waittime 100}}
-      {:TaskName "Common-wait", :Replace {:%waittime 200}}]
+    [;; First: start a wait task with 1000 ms waittime.
+     ;; At the same time start a wait task with 2000 ms waittime.
+     [{:TaskName "Common-wait", :Replace {:%waittime 1000}}
+      {:TaskName "Common-wait", :Replace {:%waittime 2000}}]
      ;; After first step is executed: start 4 wait tasks 
-     ;; with 100 ms waittime, step is executed within 100ms
-     [{:TaskName "Common-wait", :Replace {:%waittime 100}}
-      {:TaskName "Common-wait", :Replace {:%waittime 100}}
-      {:TaskName "Common-wait", :Replace {:%waittime 100}}
-      {:TaskName "Common-wait", :Replace {:%waittime 100}}]
-     ;; After the second step is executed: wait 200ms
-     [{:TaskName "Common-wait", :Replace {:%waittime 200}}]
+     ;; with 100 ms waittime, step is executed within 1000ms
+     [{:TaskName "Common-wait", :Replace {:%waittime 1000}}
+      {:TaskName "Common-wait", :Replace {:%waittime 1000}}
+      {:TaskName "Common-wait", :Replace {:%waittime 1000}}
+      {:TaskName "Common-wait", :Replace {:%waittime 1000}}]
+     ;; After the second step is executed: wait 2000ms
+     [{:TaskName "Common-wait", :Replace {:%waittime 2000}}]
      ;; all together should take less than 1s
      ]}
    ;; second container

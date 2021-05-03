@@ -65,7 +65,10 @@
   ([f]
    (wrap-assoc-value c/config f))
   ([config f]
-   (fn [m] (f (assoc m :value (api/get-val m))))))
+   (fn [m]
+     (let [m (assoc m :value (api/get-val m))]
+       (mu/log ::wrap-assoc-value :message  "listener callback, assoc value" :m m)
+       (f m)))))
 
 ;;------------------------------
 ;; generate listener
@@ -88,6 +91,7 @@
                 wrap-key->map
                 wrap-msg->key
                 wrap-skip-psubs)]
+     (mu/log ::gen-listener :message (str "will subscribe to: " pat))
      (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat))))) 
 
 (defn registered? [k] (contains? @listeners k))
@@ -129,7 +133,7 @@
          (when (string/starts-with? k (:mp-id m))
             (mu/log ::clean-register :message "will clean" :key k)
            (close-listener v)
-           {:ok (map? (swap! listeners dissoc k))}))
+           (swap! listeners dissoc k)))
        @listeners))
 
 (defn de-register
@@ -137,7 +141,7 @@
   atom."
   [m]
   (let [k (reg-key m)]
+    (mu/log ::de-register :message "will de-register" :key k)
     (when (registered? k)
-      (mu/log ::de-register :message "will de-register" :key k)
       (close-listener (@listeners k))
       {:ok (map? (swap! listeners dissoc k))})))

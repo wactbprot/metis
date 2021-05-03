@@ -102,7 +102,7 @@
 (defn prepair
   "Prepairs the task for assemble step."
   [{rep-m :Replace use-m :Use} raw-task from-m globals-m m]
-  {:Task (merge (dissoc raw-task :Defaults :Use :Replace) m) 
+  {:Task (dissoc raw-task :Defaults :Use :Replace) 
    :Replace rep-m
    :Use use-m
    :Defaults (:Defaults raw-task)

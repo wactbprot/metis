@@ -1,5 +1,4 @@
-{
- :mulog {:type :multi
+{:mulog {:type :multi
          :publishers[
                      ;; send events to the stdout
                      {:type :console

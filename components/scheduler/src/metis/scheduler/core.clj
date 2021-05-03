@@ -17,16 +17,21 @@
   [m]
   (mu/log ::stop-state :message "de-register")
   (stmem/de-register (assoc m :func :state :seq-idx :* :par-idx :*)))
+
+(defn new-ctrl [m]
+  (let [m   (assoc (dissoc m :par-idx :seq-idx) :func :ctrl)
+        cmd (keyword (stmem/get-val m))
+        cmd (if (= cmd :mon) :mon :ready)
+        m   (assoc m :value cmd)]
+    (mu/log ::handle-all-exec :message "set new ctrl" :m m)
+    (stmem/set-ctrl m)))
   
 (defn handle-all-exec
   [v]
-  (let [m (assoc (dissoc (first v) :par-idx :seq-idx) :func :ctrl)
-        cmd (keyword (stmem/get-val m))
-        cmd (if (= cmd :mon) :mon :ready)]
-    (mu/log ::handle-all-exec :message "all tasks executed, set new cmd" :command cmd)
-    (stmem/de-register (assoc (dissoc m :par-idx :seq-idx) :func :ctrl))
-    (stmem/set-states (assoc m :value :ready))
-    (stmem/set-ctrl (assoc m :value cmd))))
+  (let [m (first v)]
+    (mu/log ::handle-all-exec :message "all tasks executed" :m m)
+    (stop-state m)
+    (stmem/set-states (assoc m :func :state :seq-idx :* :par-idx :* :value :ready))))
  
 ;;------------------------------
 ;; start-next
@@ -39,12 +44,12 @@
   [m]
   (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
         m (proc/next-map v)]
+    (mu/log ::start-next :message "before cond" :m m)
     (cond
       (proc/errors? v) (stmem/set-ctrl (assoc (first v) :value :error))
       (proc/all-executed? v) (handle-all-exec v)
       (nil? m) (mu/log ::start-next :message "no operation")
-      :else
-      (worker/run m))))
+      :else (worker/run m))))
 
 ;;------------------------------
 ;; start state
@@ -70,7 +75,7 @@
   problem and set the corresponding state from `:error` to `ready` and
   the processing goes on."
   [m]
-  (mu/log ::dispatch :error "start dispach" :m m)
+  (mu/log ::dispatch :message "start dispach" :m m)
   (let [cmd (keyword (:value m))]
     (condp = cmd
       :run (start-state m)
@@ -95,8 +100,9 @@
   `mp-id`. After stopping, the system will no longer react on
   changes (write events) at the `ctrl` interface."
   [mp-id]
-  (mu/log ::stop :message "de-register and clean all ctrl listener" :m m)
-  (stmem/clean-register {:mp-id mp-id}))
+  (let [m {:mp-id mp-id}]
+    (mu/log ::stop-ctrl :message "de-register and clean all ctrl listener" :m m)
+    (stmem/clean-register m)))
 
 ;;------------------------------
 ;; start-ctrl
@@ -107,5 +113,7 @@
   ([mp-id]
    (start-ctrl c/config mp-id))
   ([config mp-id]
-   (mu/log ::start :message "register ctrl listener" :m m)
-   (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :ctrl} dispatch)))
+   (prn "..:")
+   (let [m {:mp-id mp-id :struct :* :no-idx :* :func :ctrl}]
+     (mu/log ::start-ctrl :message "register ctrl listener" :m m)
+     (stmem/register m dispatch))))
