@@ -20,9 +20,9 @@
 
 (defn start-defins!
   "Starts the matching `definitions` structure. `register`s a level 1
-  callback. Sets the state of the calling element to `executed` if the
-  `ctrl` of the `definitions` structure turns to `ready` (or `error` if
-  `error`)."          
+  callback. This callback sets the state of the calling task to
+  `executed` if the `ctrl` of the matching `definitions` structure
+  turns to `ready` (or `error` if `error`)."          
   [match-m m]
   (let [match-m (assoc match-m :struct :defins :func :ctrl :level 1)]
     (stmem/register match-m (gen-callback match-m m))
@@ -73,11 +73,11 @@
   (let [f (match-class-fn cls)
         v (-> {:mp-id mp-id :struct :defins} get-classes f)
         v (filterv #(-> % get-conds resolve-conds conds-match?) v)]
-    (prn v)
     (if-not (empty? v)
       (start-defins! (first v) m)
       (stmem/set-state-error (assoc m :message "no matching definition")))))
 
 (comment
   (def cond-v (stmem/get-maps {:mp-id "mpd-ref" :struct :defins :func :cond :no-idx :* :seq-idx :*}))
-  (def cls-v (stmem/get-maps {:mp-id "mpd-ref" :struct :defins :func :cls :no-idx :*})))
+  (def cls-v (stmem/get-maps {:mp-id "mpd-ref" :struct :defins :func :cls :no-idx :*}))
+  (select-definition! {:DefinitionClass "wait"} {:mp-id "mpd-ref"}))

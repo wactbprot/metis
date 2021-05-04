@@ -76,8 +76,10 @@
                :nc "ncont"
                :nd "ndefins"
                :name "name"
-               :state "state"
-               :ctrl "ctrl"
+               :retry "retry" ; func
+               :resp "response" ; func
+               :state "state" ; func
+               :ctrl "ctrl" ; func
                :exch "exchange"
                :* "*"}
  ;; for order or sorting reasons
