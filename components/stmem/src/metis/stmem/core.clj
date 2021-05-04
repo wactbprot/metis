@@ -43,7 +43,6 @@
 (defn del-vals
   "Deletes all given keys (`ks`)."
   [ks]
-  (prn ks)
   (run! del-val ks))
 
 ;;------------------------------

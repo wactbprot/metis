@@ -6,7 +6,8 @@
             [com.brunobonacci.mulog :as mu]
             [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
-            [metis.worker.wait :refer [wait!]]))
+            [metis.worker.wait :refer [wait!]]
+            [metis.worker.select-definition :refer [select-definition!]]))
 
 ;;------------------------------
 ;;  future registry 
@@ -27,9 +28,8 @@
   [task m]
   (mu/log ::dispatch :message "dispatch task" :m m)
   (condp = (keyword (:Action task))
-    :wait (start! wait! task m)
-    
-    ;; :select         (start! select-definition! task)
+    :wait   (start! wait!              task m)
+    :select (start! select-definition! task m)
     ;; :runMp          (start! run-mp!            task)
     ;; :stopMp         (start! stop-mp!           task)
     ;; :writeExchange  (start! write-exchange!    task)

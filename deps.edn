@@ -55,10 +55,13 @@
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
 
             :codox {:extra-deps {codox/codox {:mvn/version "0.10.7"}
-                                 ;; clozhang/codox-theme {:mvn/version "0.1.0-SNAPSHOT"}
+                                 gov.nasa.earthdata/codox-theme {:mvn/version "1.0.0-SNAPSHOT"}
+                                        ;clojang/codox-theme {:mvn/version "0.2.0-SNAPSHOT"}                                 
+                                 ;clozhang/codox-theme {:mvn/version "0.1.0-SNAPSHOT"}
                                  }
                     :exec-fn codox.main/generate-docs
-                    :exec-args {:source-paths  ["components/worker/src"
+                    :exec-args {:source-paths  ["bases/cli/src"
+                                                "components/worker/src"
                                                 "components/config/src"
                                                 "components/exchange/src"
                                                 "components/ltmem/src"
@@ -68,7 +71,7 @@
                                                 "components/tasks/src"
                                                 "components/utils/src"]
                                 :metadata {:doc/format :markdown}
-                                ; :themes [:clozhang]
+                                :themes [:clojang]
                                 :language :clojure
                                 :output-path "docs"}}
             

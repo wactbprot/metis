@@ -62,7 +62,9 @@
   "Builds the mpd with the given `mp-id`."
   (-> mp-id ltmem/get-doc model/build-mpd))
  
-(defn m-build-ref [] (model/build-mpd (c/mpd-ref)))
+(defn m-build-ref []
+  "Builds the reference mpd `mpd-ref.edn`."
+  (model/build-mpd (c/mpd-ref)))
 
 (defn m-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
 
