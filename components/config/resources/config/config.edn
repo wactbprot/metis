@@ -62,20 +62,20 @@
  ;; modify relax
  :stmem-mod-relax 50 ;; ms
  :stmem-trans {:tasks "tasks"
-               :cont "container"
-               :defin "definition"
-               :defins "definitions"
+               :cont "container" ; struct
+               :id "id" ; struct
+               :defins "definitions" ; struct
                :title "title"
                :descr "description"
                :elem "elements"
                :cond "cond"
                :cls "class"
-               :id "id"
                :meta "meta"
                :std "standard"
                :nc "ncont"
                :nd "ndefins"
                :name "name"
+               :defin "definition" ; func
                :retry "retry" ; func
                :resp "response" ; func
                :state "state" ; func
