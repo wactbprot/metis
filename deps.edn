@@ -80,6 +80,8 @@
                                 :output-path "docs"}}
             
             :test {:extra-paths ["components/stmem/test"
+                                 "components/ltmem/test"
+                                 "components/document/test"
                                  "components/scheduler/test"
                                  "components/model/test"
                                  "components/utils/test"

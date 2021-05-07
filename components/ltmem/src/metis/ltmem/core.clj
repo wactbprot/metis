@@ -84,3 +84,5 @@
    (if-let [db-doc (get-doc conf (:_id doc))]
      (assoc doc :_rev (:_rev db-doc))
      doc)))
+
+

@@ -8,6 +8,7 @@
             [com.ashafa.clutch :as couch]
             [vl-data-insert.core :as insert]
             [com.brunobonacci.mulog :as mu]
+            [metis.stmem.interface :as stmem]
             [clojure.string :as string]))
 
 (defn doc->id [{id :_id}] id)
@@ -78,8 +79,10 @@
   ;; [cal-2018-ce3-kk-75003_0002]
   ```"
   [{mp-id :mp-id :as m}]
-  (mapv :no-idx (stmem/get-vals {:mp-id mp-id :struct :id :no-idx :*})))
+  (mapv :no-idx (stmem/get-maps {:mp-id mp-id :struct :id :no-idx :*})))
 ;; --------------------------------------------------------------------------^untested v next
+
+(comment
 ;;------------------------------
 ;; renew
 ;;------------------------------
@@ -91,6 +94,7 @@
     (mapv (fn [id] (rm mpd-id id)) (ids mpd-id))
     (mapv (fn [id] (add mpd-id id)) v))
   {:ok true})
+
 
 ;;------------------------------
 ;; store with doc-lock
@@ -127,3 +131,4 @@
             {:error "got " n-err " during attempt to store results"}
             {:ok true}))))
     {:ok true :warn "no doc-path or no mp-id or no results"}))
+)
