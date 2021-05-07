@@ -9,23 +9,27 @@
 ;;------------------------------
 (defn get-doc 
   "Gets a document from the db."
-  [id]
-  (mu/log ::get-doc :message "try to get document" :doc-id id)
-  (try
-    (couch/get-document (:ltmem-conn c/config) id)
-    (catch Exception e (mu/log ::get-doc :error (.getMessage e) :doc-id id))))
-
+  ([id]
+   (get-doc c/config id))
+  ([{conn :ltmem-conn} id]
+   (mu/log ::get-doc :message "try to get document" :doc-id id)
+   (try
+     (couch/get-document conn id)
+     (catch Exception e (mu/log ::get-doc :error (.getMessage e) :doc-id id)))))
+  
 ;;------------------------------
 ;; put doc
 ;;------------------------------
 (defn put-doc
   "Puts a document to the long term memory."
-  [doc]
-  (mu/log ::put-doc :message "try to put document" :doc-id (:_id doc))
-  (try
-    (couch/put-document (:ltmem-conn c/config) doc)
-    (catch Exception e (mu/log ::put-doc :error (.getMessage e) :doc-id (:_id doc)))))
-
+  ([doc]
+   (put-doc c/config doc))
+  ([{conn :ltmem-conn} doc]
+   (mu/log ::put-doc :message "try to put document" :doc-id (:_id doc))
+   (try
+     (couch/put-document conn doc)
+     (catch Exception e (mu/log ::put-doc :error (.getMessage e) :doc-id (:_id doc))))))
+  
 ;;------------------------------
 ;; tasks
 ;;------------------------------
@@ -67,12 +71,16 @@
   ;; =>
   ;; false
   ```"
-  [id]
-  (map? (get-doc id)))
+  ([id]
+   (exist? c/config id))
+  ([conf id]
+   (map? (get-doc conf id))))
   
 (defn rev-refresh
   "Refreshs the revision `_rev` of the document if it exist."
-  [doc]
-  (if-let [db-doc (get-doc (:_id doc))]
-    (assoc doc :_rev (:_rev db-doc))
-    doc))
+  ([doc]
+   (rev-refresh c/config doc))
+  ([conf doc]
+   (if-let [db-doc (get-doc conf (:_id doc))]
+     (assoc doc :_rev (:_rev db-doc))
+     doc)))
