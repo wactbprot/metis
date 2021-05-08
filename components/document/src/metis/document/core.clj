@@ -15,7 +15,8 @@
 (defn doc->version
   "Returns the version of the document as an integer value:"
   [{rev :_rev}]
-  (when-let [v (first (string/split rev  #"-"))] (Integer/parseInt v)))
+  (when rev
+    (when-let [v (first (string/split rev  #"-"))] (Integer/parseInt v))))
 
 ;;------------------------------
 ;; extract doc info
@@ -25,15 +26,10 @@
   [doc]
   {:doc-version (doc->version doc) :doc-id (doc->id doc)})
 
-(defn doc-type
-  "Returns the type of the document. Assumes the type of the document to
-  be the first key hierarchy beside `:_id` and `:_rev`."
-  [doc m]
-  (first (filter #(not (or (= :_id %) (= :_rev %))) (keys doc))))
-
 (defmulti doc-info
   "Extracts informations about a document depending on the type."
-  doc-type)
+  (fn [doc]
+    (first (filter #(not (or (= :_id %) (= :_rev %))) (keys doc)))))
 
 (defmethod doc-info :Calibration [doc] (assoc (base-info doc) :doc-type "Calibration"))
 (defmethod doc-info :Measurement [doc] (assoc (base-info doc) :doc-type "Measurement"))
