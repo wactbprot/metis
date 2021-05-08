@@ -2,6 +2,7 @@
 
 <img src="metis.png" alt="metis" id="logo">
 
+[![codecov](https://codecov.io/gh/wactbprot/metis/branch/master/graph/badge.svg?token=8OC8H7R9V5)](https://codecov.io/gh/wactbprot/metis)
 ## notes
 
 ### polylith
