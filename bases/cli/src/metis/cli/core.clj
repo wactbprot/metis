@@ -93,3 +93,8 @@
 (defn t-build [] (model/build-tasks (ltmem/all-tasks)))
 
 (defn t-clear [] (model/clear-tasks))
+
+;;------------------------------
+;; d- document commands
+;;------------------------------
+(defn d-add [id] (-> id ltmem/get-doc document/add))

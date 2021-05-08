@@ -4,10 +4,9 @@
           in.  This may be calibration documents but also measurement
           docs."}
   (:require [metis.config.interface :as c]
-            [metis.ltmem.interface :as ltmem]
             [com.ashafa.clutch :as couch]
             [vl-data-insert.core :as insert]
-            [com.brunobonacci.mulog :as mu]
+            [com.brunobonacci.mulog :as µ]
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]))
 
@@ -30,9 +29,7 @@
   "Returns the type of the document. Assumes the type of the document to
   be the first key hierarchy beside `:_id` and `:_rev`."
   [doc m]
-  (first (filter (fn [kw] (not
-                           (or (= :_id kw) (= :_rev kw))))
-                 (keys doc))))
+  (first (filter #(not (or (= :_id %) (= :_rev %))) (keys doc))))
 
 (defmulti doc-info
   "Extracts informations about a document depending on the type."
@@ -48,11 +45,15 @@
 ;;------------------------------
 (defn add
   "Adds a info map to the shortterm memory."
-  [{mp-id :mp-id :as m} id]
-  (mu/log ::add :message "try to add doc info" :doc-id id :m m)
-  (if-let [doc (ltmem/get-doc id)]
-    (stmem/set-val {:mp-id mp-id :struct :id :no-idx id :value (doc-info doc)})
-    (mu/log ::add :error "no info map added" :doc-id id :m m)))
+  [{mp-id :mp-id :as m} doc]
+  (if-let [id (:_id doc)]
+    (do
+      (stmem/set-val {:mp-id mp-id :struct :id :no-idx id :value (doc-info doc)})
+      (µ/log ::add :message "doc info added" :m m)
+      {:ok true})
+    (do
+      (µ/log ::add :error "document contains no id" :m m)
+      {:error "no document id"})))
 
 ;;------------------------------
 ;; rm
@@ -60,7 +61,7 @@
 (defn rm
   "Removes the info map from the shortterm memory."
   [{mp-id :mp-id :as m} id]
-  (mu/log ::rm :message "will rm doc info from st-mem" :doc-id id :m m)
+  (µ/log ::rm :message "will rm doc info from st-mem" :doc-id id :m m)
   (stmem/del-val {:mp-id mp-id :struct :id :no-idx id}))
 
 ;;------------------------------
@@ -90,7 +91,7 @@
   "Renew the id interface with the give ids-vector `v`."
   [mpd-id v]
   (when (vector? v)
-    (mu/log ::refresh :message "will refresh ids")
+    (µ/log ::refresh :message "will refresh ids")
     (mapv (fn [id] (rm mpd-id id)) (ids mpd-id))
     (mapv (fn [id] (add mpd-id id)) v))
   {:ok true})
@@ -121,11 +122,11 @@
         {:ok true :warn "no documents loaded"}
         (let [res (map (fn [id]
                          (locking doc-lock
-                           (mu/log ::store! :message "lock doc" :doc-id id)
+                           (µ/log ::store! :message "lock doc" :doc-id id)
                            (let [in-doc  (lt/get-doc id)
                                  doc     (insert/store-results in-doc results doc-path)
                                  out-doc (lt/put-doc doc)]
-                             (mu/log ::store! :message "release lock" :doc-id id))))
+                             (µ/log ::store! :message "release lock" :doc-id id))))
                        ids)]
           (if-let [n-err (:error (frequencies res))]
             {:error "got " n-err " during attempt to store results"}
