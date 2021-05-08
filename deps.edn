@@ -108,11 +108,11 @@
                                    "-p" "components/model/src"
                                    "-s" "components/model/test"
                                    
-                                   "-p" "components/stmem/src"
-                                   "-s" "components/stmem/test"
+                                   ;"-p" "components/stmem/src"
+                                   ;"-s" "components/stmem/test"
 
-                                   "-p" "components/ltmem/src"
-                                   "-s" "components/ltmem/test"
+                                   ;"-p" "components/ltmem/src"
+                                   ;"-s" "components/ltmem/test"
 
                                    "-p" "components/task/src"
                                    "-s" "components/task/test"
@@ -123,8 +123,8 @@
                                    ;"-p" "components/worker/src"
                                    ;"-s" "components/worker/test"
 
-                                   "-p" "components/document/src"
-                                   "-s" "components/document/test"
+                                   ;"-p" "components/document/src"
+                                   ;"-s" "components/document/test"
 
                                    "--codecov"
                                    "--text"]}
