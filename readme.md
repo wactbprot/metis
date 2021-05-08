@@ -29,8 +29,13 @@ Start with alias (here `:dev`) dependency
 
 ### codox
 
-```
+```shell
 clojure -Sdeps '{:deps {codox/codox {:mvn/version "0.10.7"}}}' -X:dev codox.main/generate-docs :source-paths '["components/stmem/src" "components/model/src" "components/tasks/src" "components/ltmem/src"]'
+```
+### code coverage
+
+```shell
+clojure -M:dev:coverage
 ```
 
 ### clj

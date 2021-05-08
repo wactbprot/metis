@@ -8,16 +8,17 @@
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]
             [metis.utils.interface :as u]))
-
+(comment
 (defn do-retry
   ([m]
    (do-retry c/config m))
   ([{max-retry :max-retry} m]
-   (let [m (assoc m :func :retry)]
-     (if (>= (u/ensure-int (stmem/get-val m)) max-retry)
+   (let [m (assoc m :func :retry)
+         n (stmem/get-val m)]
+     (if (>= (u/ensure-int n) max-retry)
        (do
          (µ/log ::retry! :error "reached max-retry" :m m)
-         (st/set-val! retry-key 0)
+         (stmem/set-val (assoc m :value 0))
          {:error "max retry"})
        (do
          (µ/log ::retry! :message "retry" :m m)
@@ -46,7 +47,7 @@
   (if-let [err (:error body)]
     (stmem/set-state-error (assoc m :message err))
     (let [
-          do-retry (:Retry      body)
+          retry    (:Retry      body)
           to-exch  (:ToExchange body)
           results  (:Result     body)
           ids      (:ids        body)
@@ -88,3 +89,4 @@
         (µ/log ::check :error "request for failed" :m m ))            
       (µ/log ::check :error "body can not be parsed" :m m))
     (µ/log ::check :error "no status in header" :m m)))
+)
