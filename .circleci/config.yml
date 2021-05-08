@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: clojure -M:coverage
+          command: clojure -M:dev:coverage
 
       - run:
           name: Send test coverage to Codecov
