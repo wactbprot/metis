@@ -31,5 +31,14 @@
         "")
     (is (not (some #{"test"} (ids {:mp-id "test"})))
         "is there")))
- 
+
+
+(deftest renew-i
+  (testing "renew documents"
+    (ltmem/put-doc conf {:_id "test_a"})
+    (ltmem/put-doc conf {:_id "test_b"})
+    (renew conf {:mp-id "test"} ["test_a" "test_b"])
+    (is (= #{"test_a" "test_b"} (set (ids {:mp-id "test"})))
+        "")))
+
 

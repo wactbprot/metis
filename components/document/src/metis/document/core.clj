@@ -46,10 +46,11 @@
   ([m id]
    (add c/config m id))
   ([conf {mp-id :mp-id :as m} id]
+   (prn id)
    (if-let [doc (ltmem/get-doc conf id)]
      (do
        (µ/log ::add :message "doc info added" :m m)
-       (stmem/set-val {:mp-id mp-id :struct :id :no-idx id :value (doc-info doc)}))
+       (prn (stmem/set-val {:mp-id mp-id :struct :id :doc-id id :value (doc-info doc)})))
      (do
        (µ/log ::add :error "document contains no id" :m m)
        {:error "no document id"}))))
@@ -61,7 +62,7 @@
   "Removes the info map from the short term memory."
   [{mp-id :mp-id :as m} id]
   (µ/log ::rm :message "will rm doc info from stmem" :doc-id id :m m)
-  (stmem/del-val {:mp-id mp-id :struct :id :no-idx id}))
+  (stmem/del-val {:mp-id mp-id :struct :id :doc-id id}))
 
 ;;------------------------------
 ;; ids
@@ -77,23 +78,29 @@
   ;; [aaa]
   ```"
   [{mp-id :mp-id :as m}]
-  (mapv (comp :doc-id :value) (stmem/get-maps {:mp-id mp-id :struct :id :no-idx :*})))
-;; --------------------------------------------------------------------------^untested v next
+  (mapv (comp :doc-id :value) (stmem/get-maps {:mp-id mp-id :struct :id :doc-id :*})))
 
-(comment
+
 ;;------------------------------
 ;; renew
 ;;------------------------------
-(defn renew!
-  "Renew the id interface with the give ids-vector `v`."
-  [mpd-id v]
-  (when (vector? v)
-    (µ/log ::refresh :message "will refresh ids")
-    (mapv (fn [id] (rm mpd-id id)) (ids mpd-id))
-    (mapv (fn [id] (add mpd-id id)) v))
-  {:ok true})
+(defn renew
+  "Renew the id interface with the give ids-vector `v`.
+  TODO: function always returns ok which is not ok."
+  ([m v]
+   (renew c/config m v))
+  ([conf {mp-id :mp-id} v]
+   (when (and mp-id (vector? v))
+     (let [m {:mp-id mp-id}]
+       (µ/log ::refresh :message "will rm all ids")
+       (doall (mapv #(rm m %) (ids m)))
+       (prn (ids m))
+       (µ/log ::refresh :message "will add ids provided")
+       (doall (mapv #(add conf m %) v))
+       (prn (ids m))))
+   {:ok true}))
 
-
+(comment
 ;;------------------------------
 ;; store with doc-lock
 ;;------------------------------

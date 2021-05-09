@@ -49,6 +49,10 @@
   [{s :stmem-key-sep :as config} m]
   (when-let [p (:exch m)] (str s p)))
 
+(defn map->doc-id-part
+  [{s :stmem-key-sep :as config} m]
+  (when-let [p (:doc-id m)] (str s p)))
+
 (defn map->metapath-part
   [{trans :stmem-trans s :stmem-key-sep} m]
   (when-let [p (:metapath m)] (str s (if (keyword? p) (p trans) p))))
@@ -69,7 +73,7 @@
 (defn map->def-key
   [config m]
   (str (map->struct-part config m)
-       (map->no-idx-part config m) (map->exch-part config m) (map->metapath-part config m) 
+       (map->no-idx-part config m) (map->exch-part config m) (map->doc-id-part config m) (map->metapath-part config m) 
        (map->func-part config m)
        (map->seq-par-idx-part config m)))
 
@@ -88,7 +92,7 @@
 ;;------------------------------
 (defn care-no-idx [config v]
   (when-let [s (get v 2)]
-    (if (re-matches #"[0-9]*" s)  (utils/ensure-int s) s)))
+    (if (re-matches #"[0-9]*" s) (utils/ensure-int s) s)))
 
 (defn care-struct [{retrans :stmem-retrans} v] (get retrans  (get v 1)))
 

@@ -60,7 +60,7 @@
           (cond
             (:error res) (stmem/set-state-error m)
             (:ok    res) (stmem/set-state-ready m)))
-        (let [res-ids   (doc/renew! m)
+        (let [res-ids   (doc/renew m ids)
               res-exch  (exch/to (exch/all m) to-exch)
               res-doc   (doc/store results doc-path m)
               m         (assoc m :func :state)]
