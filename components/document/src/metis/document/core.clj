@@ -2,18 +2,20 @@
   ^{:author "wactbprot"
     :doc "Handles the documents in which the produced data is stored
           in.  This may be calibration documents but also measurement
-          docs."}
+          docs. The document component needs access to ltmem and
+          stmem."}
   (:require [metis.config.interface :as c]
             [com.ashafa.clutch :as couch]
             [vl-data-insert.core :as insert]
             [com.brunobonacci.mulog :as µ]
+            [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]))
 
 (defn doc->id [{id :_id}] id)
 
 (defn doc->version
-  "Returns the version of the document as an integer value:"
+  "Returns the version of the document as an integer value."
   [{rev :_rev}]
   (when rev
     (when-let [v (first (string/split rev  #"-"))] (Integer/parseInt v))))
@@ -40,43 +42,42 @@
 ;; add
 ;;------------------------------
 (defn add
-  "Adds a info map to the shortterm memory."
-  [{mp-id :mp-id :as m} doc]
-  (if-let [id (:_id doc)]
-    (do
-      (stmem/set-val {:mp-id mp-id :struct :id :no-idx id :value (doc-info doc)})
-      (µ/log ::add :message "doc info added" :m m)
-      {:ok true})
-    (do
-      (µ/log ::add :error "document contains no id" :m m)
-      {:error "no document id"})))
+  "Adds a info map to the short term memory."
+  ([m id]
+   (add c/config m id))
+  ([conf {mp-id :mp-id :as m} id]
+   (if-let [doc (ltmem/get-doc conf id)]
+     (do
+       (µ/log ::add :message "doc info added" :m m)
+       (stmem/set-val {:mp-id mp-id :struct :id :no-idx id :value (doc-info doc)}))
+     (do
+       (µ/log ::add :error "document contains no id" :m m)
+       {:error "no document id"}))))
 
 ;;------------------------------
 ;; rm
 ;;------------------------------
 (defn rm
-  "Removes the info map from the shortterm memory."
+  "Removes the info map from the short term memory."
   [{mp-id :mp-id :as m} id]
-  (µ/log ::rm :message "will rm doc info from st-mem" :doc-id id :m m)
+  (µ/log ::rm :message "will rm doc info from stmem" :doc-id id :m m)
   (stmem/del-val {:mp-id mp-id :struct :id :no-idx id}))
 
 ;;------------------------------
 ;; ids
 ;;------------------------------
 (defn ids
-  "Returns the vector of ids added.
+  "Returns the vector of ids added to the short term memory.
 
   Example:
   ```clojure
-  (add \"devs\" \"cal-2018-ce3-kk-75003_0002\")
-  ;; hiob DEBUG [cmp.lt-mem:14] - try to get 
-  ;; document with id: cal-2018-ce3-kk-75003_0002
-  ;; OK
-  (ids \"devs\")
-  ;; [cal-2018-ce3-kk-75003_0002]
+  (add {:mp-id \"test\"} \"aaa\")
+  ;; ...
+  (ids \"test\")
+  ;; [aaa]
   ```"
   [{mp-id :mp-id :as m}]
-  (mapv :no-idx (stmem/get-maps {:mp-id mp-id :struct :id :no-idx :*})))
+  (mapv (comp :doc-id :value) (stmem/get-maps {:mp-id mp-id :struct :id :no-idx :*})))
 ;; --------------------------------------------------------------------------^untested v next
 
 (comment
