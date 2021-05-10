@@ -46,11 +46,10 @@
   ([m id]
    (add c/config m id))
   ([conf {mp-id :mp-id :as m} id]
-   (prn id)
    (if-let [doc (ltmem/get-doc conf id)]
      (do
        (µ/log ::add :message "doc info added" :m m)
-       (prn (stmem/set-val {:mp-id mp-id :struct :id :doc-id id :value (doc-info doc)})))
+       (stmem/set-val {:mp-id mp-id :struct :id :doc-id id :value (doc-info doc)}))
      (do
        (µ/log ::add :error "document contains no id" :m m)
        {:error "no document id"}))))
@@ -94,10 +93,8 @@
      (let [m {:mp-id mp-id}]
        (µ/log ::refresh :message "will rm all ids")
        (doall (mapv #(rm m %) (ids m)))
-       (prn (ids m))
        (µ/log ::refresh :message "will add ids provided")
-       (doall (mapv #(add conf m %) v))
-       (prn (ids m))))
+       (doall (mapv #(add conf m %) v))))
    {:ok true}))
 
 (comment

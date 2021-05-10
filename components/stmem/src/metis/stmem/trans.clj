@@ -50,8 +50,8 @@
   (when-let [p (:exch m)] (str s p)))
 
 (defn map->doc-id-part
-  [{s :stmem-key-sep :as config} m]
-  (when-let [p (:doc-id m)] (str s p)))
+  [{trans :stmem-trans s :stmem-key-sep :as config} m]
+  (when-let [p (:doc-id m)] (str s (if (keyword? p) (p trans) p))))
 
 (defn map->metapath-part
   [{trans :stmem-trans s :stmem-key-sep} m]
@@ -72,10 +72,15 @@
 
 (defn map->def-key
   [config m]
-  (str (map->struct-part config m)
-       (map->no-idx-part config m) (map->exch-part config m) (map->doc-id-part config m) (map->metapath-part config m) 
-       (map->func-part config m)
-       (map->seq-par-idx-part config m)))
+  (str
+   (map->struct-part config m)
+   (str ;this str only groups the next parts
+    (map->no-idx-part config m)
+    (map->exch-part config m)
+    (map->doc-id-part config m)
+    (map->metapath-part config m)) 
+   (map->func-part config m)
+   (map->seq-par-idx-part config m)))
 
 (defn map->key
   ([m]
