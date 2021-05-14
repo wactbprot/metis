@@ -26,19 +26,24 @@
         "is there")))
 
 (deftest rm-ii
-  (testing "add document to stmem"
+  (testing "rm document from stmem"
     (is (contains? (rm {:mp-id "test"} "test") :ok)
         "")
     (is (not (some #{"test"} (ids {:mp-id "test"})))
         "is there")))
 
-
-(deftest renew-i
+(deftest renew-rm-i
   (testing "renew documents"
     (ltmem/put-doc conf {:_id "test_a"})
     (ltmem/put-doc conf {:_id "test_b"})
     (renew conf {:mp-id "test"} ["test_a" "test_b"])
     (is (= #{"test_a" "test_b"} (set (ids {:mp-id "test"})))
-        "")))
+        "contains a and b")
+    (rm {:mp-id "test"} "test_a")
+    (is (= #{"test_b"} (set (ids {:mp-id "test"})))
+        "contains b")
+    (rm {:mp-id "test"} "test_b")
+    (is (empty? (ids {:mp-id "test"}))
+        "contains nothing")))
 
 
