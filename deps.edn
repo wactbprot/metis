@@ -57,10 +57,7 @@
                                clj-http/clj-http {:mvn/version "3.10.0"}}}
 
             :codox {:extra-deps {codox/codox {:mvn/version "0.10.7"}
-                                 gov.nasa.earthdata/codox-theme {:mvn/version "1.0.0-SNAPSHOT"}
-                                        ;clojang/codox-theme {:mvn/version "0.2.0-SNAPSHOT"}                                 
-                                 ;clozhang/codox-theme {:mvn/version "0.1.0-SNAPSHOT"}
-                                 }
+                                 gov.nasa.earthdata/codox-theme {:mvn/version "1.0.0-SNAPSHOT"}}
                     :exec-fn codox.main/generate-docs
                     :exec-args {:source-paths  ["bases/cli/src"
 
@@ -75,7 +72,7 @@
                                                 "components/utils/src"
                                                 "components/worker/src"]
                                 :metadata {:doc/format :markdown}
-                                :themes [:clojang]
+                                :themes [:eosdis]
                                 :language :clojure
                                 :output-path "docs"}}
             
@@ -87,8 +84,9 @@
                                  "components/utils/test"
                                  "components/exchange/test"
                                  "components/tasks/test"]}
-            
-            :coverage {:extra-paths ["components/stmem/test"
+            :kaocha {:extra-deps
+                     {lambdaisland/kaocha {:mvn/version "1.0.829"}}}
+ :coverage {:extra-paths ["components/stmem/test"
                                      "components/ltmem/test"
                                      "components/document/test"
                                      "components/scheduler/test"

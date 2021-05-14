@@ -1,5 +1,6 @@
 (ns metis.cli.core
   (:require [metis.config.interface :as c]
+            [metis.document.interface :as document]
             [metis.exchange.interface :as exchange]
             [metis.model.interface :as model]
             [metis.ltmem.interface :as ltmem]
@@ -97,4 +98,4 @@
 ;;------------------------------
 ;; d- document commands
 ;;------------------------------
-(defn d-add [id] (-> id ltmem/get-doc document/add))
+(defn d-add [mp-id doc-id]  (document/add {:mp-id mp-id} doc-id))
