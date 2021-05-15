@@ -28,6 +28,5 @@ jobs:
           cli: 1.10.1.693 # Clojure CLI based on tools.deps
 
       - name: Execute clojure code on Linux
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: clojure -e "(+ 1 1)"
+        run: clojure -X:dev:codox
         shell: bash
