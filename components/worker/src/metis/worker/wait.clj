@@ -10,7 +10,7 @@
 
   Example:
   ```clojure
-  (wait! {:WaitTime 1000 :mp-id \"test\" :struct \"test\" :no-idx 0 :par-idx 0 :seq-idx 0})
+  (wait! {:WaitTime 1000 :mp-id \"test\" :struct :cont :func :defin :no-idx 0 :par-idx 0 :seq-idx 0})
   ```"
   [{wait-time :WaitTime :as task} m]
   (stmem/set-state-working  (assoc m :message "start waittime"))
