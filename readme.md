@@ -2,7 +2,9 @@
 
 <img src="metis.png" alt="metis" id="logo">
 
-[![start with workflow](https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg)](https://github.com/wactbprot/metis/actions/workflows/main.yml)
+[![codox](https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg)](https://github.com/wactbprot/metis/actions/workflows/main.yml)
+
+[api documentation](https://wactbprot.github.io/metis/)
 
 ## notes
 
