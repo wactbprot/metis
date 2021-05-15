@@ -41,7 +41,7 @@
                      :stmem-trans {:* "*"
                                    :b "b"
                                    :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c :level 2})))))
-
+(comment
 (deftest register-de-register-i
   (testing "re-de-reg works"
     (let [r (atom (rand-int 1000))
@@ -70,3 +70,4 @@
       (is (= (dec (dec (dec (dec  x))))
              @r)
           "The set-val function does not trigger after de-register."))))
+)
