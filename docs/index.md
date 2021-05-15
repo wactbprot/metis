@@ -1,3 +1,0 @@
-# documentation
-
-[API](./index.html)
