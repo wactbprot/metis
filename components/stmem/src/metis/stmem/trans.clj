@@ -77,7 +77,7 @@
    (str ;this str only groups the next parts
     (map->no-idx-part config m)
     (map->exch-part config m)
-    (map->doc-id-part config m)
+    ( map->doc-id-part config m)
     (map->metapath-part config m)) 
    (map->func-part config m)
    (map->seq-par-idx-part config m)))

@@ -59,9 +59,11 @@
 ;;------------------------------
 (defn rm
   "Removes the info map from the short term memory."
-  [{mp-id :mp-id :as m} id]
-  (µ/log ::rm :message "will rm doc info from stmem" :doc-id id :m m)
-  (stmem/del-val {:mp-id mp-id :struct :id :doc-id id}))
+  ([m id]
+   (rm c/config m id))
+  ([conf {mp-id :mp-id :as m} id]
+   (µ/log ::rm :message "will rm doc info from stmem" :doc-id id :m m)
+   (stmem/del-val {:mp-id mp-id :struct :id :doc-id id})))
 
 ;;------------------------------
 ;; ids
@@ -89,7 +91,7 @@
   ([m v]
    (renew c/config m v))
   ([conf {mp-id :mp-id} v]
-   (when (and mp-id (vector? v))
+   (when (and (string? mp-id) (vector? v))
      (let [m {:mp-id mp-id}]
        (µ/log ::refresh :message "will rm all ids")
        (doall (mapv #(rm m %) (ids m)))

@@ -36,13 +36,16 @@
   (testing "renew documents"
     (ltmem/put-doc conf {:_id "test_a"})
     (ltmem/put-doc conf {:_id "test_b"})
-    (renew conf {:mp-id "test"} ["test_a" "test_b"])
+    (is (contains?
+         (renew conf {:mp-id "test"} ["test_a" "test_b"]) :ok)) 
     (is (= #{"test_a" "test_b"} (set (ids {:mp-id "test"})))
         "contains a and b")
-    (rm {:mp-id "test"} "test_a")
+    (is (contains?
+         (rm {:mp-id "test"} "test_a") :ok)) 
     (is (= #{"test_b"} (set (ids {:mp-id "test"})))
         "contains b")
-    (rm {:mp-id "test"} "test_b")
+    (is (contains?
+         (rm {:mp-id "test"} "test_b") :ok)) 
     (is (empty? (ids {:mp-id "test"}))
         "contains nothing")))
 
