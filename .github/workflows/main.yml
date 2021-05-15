@@ -28,9 +28,9 @@ jobs:
           cli: 1.10.1.693 # Clojure CLI based on tools.deps
 
       - name: Set up CouchDB
-        uses: "cobot/couchdb-action@master"
+        uses: cobot/couchdb-action@master
         with:
-          couchdb version: '2.3.1'
+          couchdb version: 2.3.1
 
      - name: Execute clojure code on Linux
         run: clojure -X:dev:codox
