@@ -49,8 +49,8 @@
     (let [
           retry    (:Retry      body)
           to-exch  (:ToExchange body)
-          results  (:Result     body)
           ids      (:ids        body)
+          results  (:Result     body)
           doc-path (:DocPath    task)
           mp-id    (:MpName     task)]
       
@@ -62,7 +62,7 @@
             (:ok    res) (stmem/set-state-ready m)))
         (let [res-ids   (doc/renew m ids)
               res-exch  (exch/to (exch/all m) to-exch)
-              res-doc   (doc/store results doc-path m)
+              res-doc   (doc/store-results m results doc-path)
               m         (assoc m :func :state)]
           (cond
             (:error res-exch) (stmem/set-state-error (assoc m :message "error at exchange"))

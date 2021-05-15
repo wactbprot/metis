@@ -110,8 +110,9 @@
   (locking doc-lock
     (µ/log ::execute :message "execute store with lock doc" :doc-id id)
     (let [d (ltmem/get-doc conf id)
-          d (i/store-results d results doc-path)]
-      (ltmem/put-doc conf d))))
+          d (i/store-results d results doc-path)
+          d (ltmem/put-doc conf d)]
+      {:ok (contains? d :_rev)})))
 
 (defn store-results
   "Stores the `results` vector under the `doc-path` of every document
@@ -131,5 +132,5 @@
   ([conf {mp-id :mp-id :as m} results doc-path]
    (if (and (string? mp-id) (vector? results) (string? doc-path))
      (doall
-      (map #(execute conf % results doc-path) (ids m)))
+      (into {} (map #(execute conf % results doc-path) (ids m))))
      {:error "wrong input params"})))

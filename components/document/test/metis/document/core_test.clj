@@ -53,7 +53,7 @@
   (testing "renew documents"
     (let [_       (add conf {:mp-id "test"} "test")
           old-rev (:_rev (ltmem/get-doc conf "test"))
-          res     (store-results conf
+          _       (store-results conf
                                  {:mp-id "test"}
                                  [{:Test "test"}]
                                  "test.path")
