@@ -6,7 +6,7 @@
           stmem."}
   (:require [metis.config.interface :as c]
             [com.ashafa.clutch :as couch]
-            [vl-data-insert.core :as insert]
+            [vl-data-insert.core :as i]
             [com.brunobonacci.mulog :as µ]
             [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]
@@ -99,40 +99,37 @@
        (doall (mapv #(add conf m %) v))))
    {:ok true}))
 
-(comment
+
 ;;------------------------------
 ;; store with doc-lock
 ;;------------------------------
 (def doc-lock (Object.))
-(defn store!
-  "Stores the `results` vector under the `doc-path` of every document
-  loaded at the given `mp-id`. Checks if the version of each document
-  is `+1`.  Returns `{:ok true}` or `{:error <problem>}`.
 
+(defn execute
+  [conf id results doc-path]
+  (locking doc-lock
+    (µ/log ::execute :message "execute store with lock doc" :doc-id id)
+    (let [d (ltmem/get-doc conf id)
+          d (i/store-results d results doc-path)]
+      (ltmem/put-doc conf d))))
+
+(defn store-results
+  "Stores the `results` vector under the `doc-path` of every document
+  active at the given `mp-id`.
+  
   Example:
   ```clojure
   (def results [{:Type \"cmp-test\" :Unit \"Pa\" :Value 1}
                {:Type \"cmp-test2\" :Unit \"Pa\" :Value 2}])
-
+  
   (def doc-path  \"Calibration.Measurement.Values.Pressure\")  
-
-  (store! \"ref\" results doc-path)
+  
+  (store-results {:mp-id \"ref\"} results doc-path)
   ```"  
-  [mp-id results doc-path]
-  (if (and (string? mp-id) (vector? results) (string? doc-path))
-    (let [ids (ids mp-id)]
-      (if (empty? ids)
-        {:ok true :warn "no documents loaded"}
-        (let [res (map (fn [id]
-                         (locking doc-lock
-                           (µ/log ::store! :message "lock doc" :doc-id id)
-                           (let [in-doc  (lt/get-doc id)
-                                 doc     (insert/store-results in-doc results doc-path)
-                                 out-doc (lt/put-doc doc)]
-                             (µ/log ::store! :message "release lock" :doc-id id))))
-                       ids)]
-          (if-let [n-err (:error (frequencies res))]
-            {:error "got " n-err " during attempt to store results"}
-            {:ok true}))))
-    {:ok true :warn "no doc-path or no mp-id or no results"}))
-)
+  ([m results doc-path]
+   (store-results c/config m results doc-path))
+  ([conf {mp-id :mp-id :as m} results doc-path]
+   (if (and (string? mp-id) (vector? results) (string? doc-path))
+     (doall
+      (map #(execute conf % results doc-path) (ids m)))
+     {:error "wrong input params"})))
