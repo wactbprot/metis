@@ -32,8 +32,12 @@ jobs:
         with:
           couchdb version: 2.3.1
 
-      - name: Execute clojure code on Linux
+      - name: execute codox
         run: clojure -X:dev:codox
+        shell: bash
+
+      - name: execute cloverage
+        run: clojure -M:dev:coverage
         shell: bash
 
       - name: Deploy
