@@ -32,6 +32,11 @@ jobs:
         with:
           couchdb version: 2.3.1
 
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: 5
+
       - name: execute codox
         run: clojure -X:dev:codox
         shell: bash
@@ -45,7 +50,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
-      
+
       - uses: actions/upload-artifact@v1
         with:
           name: documentation
