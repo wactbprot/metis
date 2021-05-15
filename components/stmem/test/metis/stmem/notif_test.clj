@@ -41,6 +41,8 @@
                      :stmem-trans {:* "*"
                                    :b "b"
                                    :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c :level 2})))))
+
+(prn "next up: notif: disabled in favour of ci")
 (comment
 (deftest register-de-register-i
   (testing "re-de-reg works"
