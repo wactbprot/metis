@@ -1,0 +1,59 @@
+<html>
+ <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="../../coverage.css"/>  <title> metis/exchange/interface.clj </title>
+ </head>
+ <body>
+<span class="covered" title="1 out of 1 forms covered">
+                001&nbsp;&nbsp;(ns&nbsp;metis.exchange.interface
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                002&nbsp;&nbsp;&nbsp;&nbsp;(:require&nbsp;[metis.exchange.api&nbsp;:as&nbsp;api]
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                003&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[metis.exchange.core&nbsp;:as&nbsp;core]))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                004&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 4 forms covered">
+                005&nbsp;&nbsp;(defn&nbsp;all&nbsp;[m]&nbsp;(api&#x2F;all&nbsp;m))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                006&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                007&nbsp;&nbsp;(defn&nbsp;from&nbsp;[a&nbsp;m]&nbsp;(api&#x2F;from&nbsp;a&nbsp;m))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                008&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                009&nbsp;&nbsp;(defn&nbsp;from-path&nbsp;[a&nbsp;p]&nbsp;(core&#x2F;get-val&nbsp;a&nbsp;p))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                010&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                011&nbsp;&nbsp;(defn&nbsp;to&nbsp;[a&nbsp;m]&nbsp;(api&#x2F;to&nbsp;a&nbsp;m))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                012&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                013&nbsp;&nbsp;(defn&nbsp;run-if&nbsp;[a&nbsp;m]&nbsp;(core&#x2F;run-if&nbsp;a&nbsp;m))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                014&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                015&nbsp;&nbsp;(defn&nbsp;stop-if&nbsp;[a&nbsp;m]&nbsp;(core&#x2F;stop-if&nbsp;a&nbsp;m))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                016&nbsp;&nbsp;
+                </span><br/>
+<span class="partial" title="1 out of 5 forms covered">
+                017&nbsp;&nbsp;(defn&nbsp;only-if-not&nbsp;[a&nbsp;m]&nbsp;(core&#x2F;only-if-not&nbsp;a&nbsp;m))
+                </span><br/>
+ </body>
+</html>

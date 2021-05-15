@@ -1,0 +1,356 @@
+<html>
+ <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="../../coverage.css"/>  <title> metis/stmem/trans.clj </title>
+ </head>
+ <body>
+<span class="covered" title="1 out of 1 forms covered">
+                001&nbsp;&nbsp;(ns&nbsp;metis.stmem.trans
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                002&nbsp;&nbsp;&nbsp;&nbsp;(:require&nbsp;[metis.stmem.core&nbsp;:as&nbsp;core]
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                003&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[metis.config.interface&nbsp;:as&nbsp;c]
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                004&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[cheshire.core&nbsp;:as&nbsp;che]
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[clojure.string&nbsp;:as&nbsp;string]
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                006&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[metis.utils.interface&nbsp;:as&nbsp;utils]))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                007&nbsp;&nbsp;
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                008&nbsp;&nbsp;;;------------------------------
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                009&nbsp;&nbsp;;;&nbsp;map&nbsp;to&nbsp;key&nbsp;utils
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                010&nbsp;&nbsp;;;------------------------------
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                011&nbsp;&nbsp;(defn&nbsp;pad-ok?
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                012&nbsp;&nbsp;&nbsp;&nbsp;&quot;Checks&nbsp;if&nbsp;the&nbsp;padding&nbsp;of&nbsp;`i`&nbsp;is&nbsp;ok.&nbsp;`\&quot;*\&quot;`&nbsp;serves&nbsp;pattern&nbsp;matching.&quot;
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                013&nbsp;&nbsp;&nbsp;&nbsp;([idx]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                014&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(pad-ok?&nbsp;c&#x2F;config&nbsp;idx))
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                015&nbsp;&nbsp;&nbsp;&nbsp;([config&nbsp;idx]
+                </span><br/>
+<span class="partial" title="4 out of 6 forms covered">
+                016&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(cond
+                </span><br/>
+<span class="covered" title="8 out of 8 forms covered">
+                017&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(and&nbsp;(string?&nbsp;idx)
+                </span><br/>
+<span class="covered" title="2 out of 2 forms covered">
+                018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(=&nbsp;(count&nbsp;idx)
+                </span><br/>
+<span class="covered" title="3 out of 3 forms covered">
+                019&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(:stmem-key-pad-length&nbsp;config)))&nbsp;true
+                </span><br/>
+<span class="covered" title="3 out of 3 forms covered">
+                020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(=&nbsp;idx&nbsp;&quot;*&quot;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true&nbsp;
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false)))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                022&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                023&nbsp;&nbsp;(defn&nbsp;lpad
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                024&nbsp;&nbsp;&nbsp;&nbsp;&quot;Left&nbsp;pad&nbsp;the&nbsp;given&nbsp;number&nbsp;if&nbsp;it&nbsp;is&nbsp;not&nbsp;a&nbsp;string.&quot;
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                025&nbsp;&nbsp;&nbsp;&nbsp;([idx]
+                </span><br/>
+<span class="not-covered" title="0 out of 4 forms covered">
+                026&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(lpad&nbsp;c&#x2F;config&nbsp;idx))
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                027&nbsp;&nbsp;&nbsp;&nbsp;([config&nbsp;idx]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;(pad-ok?&nbsp;idx)
+                </span><br/>
+<span class="not-covered" title="0 out of 1 forms covered">
+                029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idx
+                </span><br/>
+<span class="covered" title="15 out of 15 forms covered">
+                030&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;idx&nbsp;(format&nbsp;(str&nbsp;&quot;%0&quot;&nbsp;(:stmem-key-pad-length&nbsp;config)&nbsp;&quot;d&quot;)&nbsp;(utils&#x2F;ensure-int&nbsp;idx))))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                031&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                032&nbsp;&nbsp;(defn&nbsp;map-&gt;task-key
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                033&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep}&nbsp;m]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                034&nbsp;&nbsp;&nbsp;&nbsp;(let&nbsp;[task-name&nbsp;(:task-name&nbsp;m)]
+                </span><br/>
+<span class="covered" title="14 out of 14 forms covered">
+                035&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;(:tasks&nbsp;trans)&nbsp;s&nbsp;(if&nbsp;(keyword?&nbsp;task-name)&nbsp;(task-name&nbsp;trans)&nbsp;task-name))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                036&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                037&nbsp;&nbsp;(defn&nbsp;map-&gt;struct-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                038&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep}&nbsp;m]
+                </span><br/>
+<span class="covered" title="5 out of 5 forms covered">
+                039&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;&nbsp;(:mp-id&nbsp;m)
+                </span><br/>
+<span class="covered" title="9 out of 9 forms covered">
+                040&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[p&nbsp;(:struct&nbsp;m)]
+                </span><br/>
+<span class="partial" title="13 out of 14 forms covered">
+                041&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;(:mp-id&nbsp;m)&nbsp;s&nbsp;(if&nbsp;(keyword?&nbsp;p)&nbsp;(p&nbsp;trans)&nbsp;p)))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                042&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                043&nbsp;&nbsp;(defn&nbsp;map-&gt;no-idx-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                044&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep&nbsp;:as&nbsp;config}&nbsp;m]
+                </span><br/>
+<span class="partial" title="6 out of 9 forms covered">
+                045&nbsp;&nbsp;&nbsp;&nbsp;(when-let[no-idx&nbsp;(:no-idx&nbsp;m)]
+                </span><br/>
+<span class="not-covered" title="0 out of 16 forms covered">
+                046&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(=&nbsp;:*&nbsp;no-idx)&nbsp;(:*&nbsp;trans)&nbsp;(lpad&nbsp;config&nbsp;(:no-idx&nbsp;m))))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                047&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                048&nbsp;&nbsp;(defn&nbsp;map-&gt;exch-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                049&nbsp;&nbsp;&nbsp;&nbsp;[{s&nbsp;:stmem-key-sep&nbsp;:as&nbsp;config}&nbsp;m]
+                </span><br/>
+<span class="partial" title="6 out of 13 forms covered">
+                050&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[p&nbsp;(:exch&nbsp;m)]&nbsp;(str&nbsp;s&nbsp;p)))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                051&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                052&nbsp;&nbsp;(defn&nbsp;map-&gt;doc-id-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                053&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep&nbsp;:as&nbsp;config}&nbsp;m]
+                </span><br/>
+<span class="covered" title="20 out of 20 forms covered">
+                054&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[p&nbsp;(:doc-id&nbsp;m)]&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(keyword?&nbsp;p)&nbsp;(p&nbsp;trans)&nbsp;p))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                055&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                056&nbsp;&nbsp;(defn&nbsp;map-&gt;metapath-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                057&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep}&nbsp;m]
+                </span><br/>
+<span class="partial" title="6 out of 20 forms covered">
+                058&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[p&nbsp;(:metapath&nbsp;m)]&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(keyword?&nbsp;p)&nbsp;(p&nbsp;trans)&nbsp;p))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                059&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                060&nbsp;&nbsp;(defn&nbsp;map-&gt;func-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                061&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep}&nbsp;m]
+                </span><br/>
+<span class="partial" title="6 out of 20 forms covered">
+                062&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[p&nbsp;(:func&nbsp;m)]&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(keyword?&nbsp;p)&nbsp;(p&nbsp;trans)&nbsp;p))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                063&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                064&nbsp;&nbsp;(defn&nbsp;map-&gt;seq-par-idx-part
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                065&nbsp;&nbsp;&nbsp;&nbsp;[{trans&nbsp;:stmem-trans&nbsp;s&nbsp;:stmem-key-sep&nbsp;:as&nbsp;config}&nbsp;m]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                066&nbsp;&nbsp;&nbsp;&nbsp;(let&nbsp;[sdx&nbsp;(:seq-idx&nbsp;m)
+                </span><br/>
+<span class="covered" title="3 out of 3 forms covered">
+                067&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pdx&nbsp;(:par-idx&nbsp;m)]
+                </span><br/>
+<span class="partial" title="2 out of 3 forms covered">
+                068&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;sdx
+                </span><br/>
+<span class="not-covered" title="0 out of 14 forms covered">
+                069&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(number?&nbsp;sdx)&nbsp;(lpad&nbsp;config&nbsp;sdx)&nbsp;(:*&nbsp;trans))
+                </span><br/>
+<span class="not-covered" title="0 out of 3 forms covered">
+                070&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;pdx
+                </span><br/>
+<span class="not-covered" title="0 out of 14 forms covered">
+                071&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;s&nbsp;(if&nbsp;(number?&nbsp;pdx)&nbsp;(lpad&nbsp;config&nbsp;pdx)&nbsp;(:*&nbsp;trans))))))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                072&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                073&nbsp;&nbsp;(defn&nbsp;map-&gt;def-key
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                074&nbsp;&nbsp;&nbsp;&nbsp;[config&nbsp;m]
+                </span><br/>
+<span class="covered" title="2 out of 2 forms covered">
+                075&nbsp;&nbsp;&nbsp;&nbsp;(str
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                076&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;struct-part&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="2 out of 2 forms covered">
+                077&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;;this&nbsp;str&nbsp;only&nbsp;groups&nbsp;the&nbsp;next&nbsp;parts
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                078&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;no-idx-part&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                079&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;exch-part&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                080&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;map-&gt;doc-id-part&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                081&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;metapath-part&nbsp;config&nbsp;m))&nbsp;
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                082&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;func-part&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                083&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;seq-par-idx-part&nbsp;config&nbsp;m)))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                084&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                085&nbsp;&nbsp;(defn&nbsp;map-&gt;key
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                086&nbsp;&nbsp;&nbsp;&nbsp;([m]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                087&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;key&nbsp;c&#x2F;config&nbsp;m))
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                088&nbsp;&nbsp;&nbsp;&nbsp;([config&nbsp;m]
+                </span><br/>
+<span class="covered" title="12 out of 12 forms covered">
+                089&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;(and&nbsp;(map?&nbsp;m)&nbsp;(seq&nbsp;m))&nbsp;
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                090&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;(:task-name&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                091&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;task-key&nbsp;config&nbsp;m)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                092&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(map-&gt;def-key&nbsp;config&nbsp;m)))))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                093&nbsp;&nbsp;
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                094&nbsp;&nbsp;
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                095&nbsp;&nbsp;;;------------------------------
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                096&nbsp;&nbsp;;;&nbsp;key&nbsp;to&nbsp;map&nbsp;&nbsp;utils
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                097&nbsp;&nbsp;;;------------------------------
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                098&nbsp;&nbsp;(defn&nbsp;care-no-idx&nbsp;[config&nbsp;v]
+                </span><br/>
+<span class="covered" title="9 out of 9 forms covered">
+                099&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[s&nbsp;(get&nbsp;v&nbsp;2)]
+                </span><br/>
+<span class="covered" title="9 out of 9 forms covered">
+                100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;(re-matches&nbsp;#&quot;[0-9]*&quot;&nbsp;s)&nbsp;(utils&#x2F;ensure-int&nbsp;s)&nbsp;s)))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                101&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="6 out of 6 forms covered">
+                102&nbsp;&nbsp;(defn&nbsp;care-struct&nbsp;[{retrans&nbsp;:stmem-retrans}&nbsp;v]&nbsp;(get&nbsp;retrans&nbsp;&nbsp;(get&nbsp;v&nbsp;1)))
+                </span><br/>
+<span class="blank" title="0 out of 0 forms covered">
+                103&nbsp;&nbsp;
+                </span><br/>
+<span class="covered" title="1 out of 1 forms covered">
+                104&nbsp;&nbsp;(defn&nbsp;key-&gt;map
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                105&nbsp;&nbsp;&nbsp;&nbsp;([k]
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                106&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(key-&gt;map&nbsp;c&#x2F;config&nbsp;k))
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                107&nbsp;&nbsp;&nbsp;&nbsp;([{re-sep&nbsp;:re-sep&nbsp;retrans&nbsp;:stmem-retrans&nbsp;:as&nbsp;config}&nbsp;k]
+                </span><br/>
+<span class="covered" title="3 out of 3 forms covered">
+                108&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when&nbsp;k
+                </span><br/>
+<span class="covered" title="10 out of 10 forms covered">
+                109&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(when-let&nbsp;[v&nbsp;(string&#x2F;split&nbsp;k&nbsp;re-sep)]
+                </span><br/>
+<span class="covered" title="10 out of 10 forms covered">
+                110&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{:mp-id&nbsp;(get&nbsp;v&nbsp;0)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                111&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:struct&nbsp;(care-struct&nbsp;config&nbsp;v)
+                </span><br/>
+<span class="covered" title="4 out of 4 forms covered">
+                112&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:no-idx&nbsp;(care-no-idx&nbsp;config&nbsp;v)
+                </span><br/>
+<span class="covered" title="5 out of 5 forms covered">
+                113&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:func&nbsp;(get&nbsp;retrans&nbsp;(get&nbsp;v&nbsp;3))
+                </span><br/>
+<span class="covered" title="5 out of 5 forms covered">
+                114&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:seq-idx&nbsp;(utils&#x2F;ensure-int&nbsp;(get&nbsp;v&nbsp;4))
+                </span><br/>
+<span class="covered" title="5 out of 5 forms covered">
+                115&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:par-idx&nbsp;(utils&#x2F;ensure-int&nbsp;(get&nbsp;v&nbsp;5))}))))
+                </span><br/>
+<span class="not-tracked" title="0 out of 0 forms covered">
+                116&nbsp;&nbsp;&nbsp;&nbsp;
+                </span><br/>
+ </body>
+</html>
