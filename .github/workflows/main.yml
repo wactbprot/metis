@@ -38,12 +38,23 @@ jobs:
         with:
           redis-version: 5
 
-      - name: execute codox
-        run: clojure -X:dev:codox
-        shell: bash
-
       - name: execute coverage
         run: clojure -M:dev:coverage
+        shell: bash
+
+      - name: deploy coverage
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/coverage
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: coverage
+          path: target/coverage
+
+      - name: execute codox
+        run: clojure -X:dev:codox
         shell: bash
 
       - name: deploy codox
@@ -57,13 +68,3 @@ jobs:
           name: documentation
           path: docs
 
-      - name: deploy coverage
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/coverage
-
-      - uses: actions/upload-artifact@v1
-        with:
-          name: coverage
-          path: target/coverage

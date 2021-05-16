@@ -70,10 +70,11 @@
                                                 "components/stmem/src"
                                                 "components/tasks/src"
                                                 "components/utils/src"
-                                                "components/worker/src"]
+                                                "components/worker/src"
+                                                ]
                                 :metadata {:doc/format :markdown}
                                 :themes [:rdash]
-                                :doc-files ["readme.md" "coverage.txt"]
+                                :doc-files ["readme.md"]
                                 :source-uri "https://github.com/wactbprot/metis/blob/master/{filepath}#L{line}"
                                 :language :clojure
                                 :output-path "docs"}}
