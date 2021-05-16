@@ -15,7 +15,7 @@
    (do-retry c/config m))
   ([{max-retry :max-retry} m]
    (let [m (assoc m :func :retry)
-         n (stmem/get-val m)]
+         n (or (stmem/get-val m) 0)]
      (if (>= (u/ensure-int n) max-retry)
        (do
          (µ/log ::retry! :error "reached max-retry" :m m)
@@ -38,7 +38,7 @@
   to the state key (done)."
   [body task m]
   (µ/log ::dispatch :message "try to write response" :m m)
-  (stmem/set-val (assoc :func :resp :value body))
+  (stmem/set-val (assoc m :func :resp :value body))
   (if-let [err (:error body)]
     (stmem/set-state-error (assoc m :message err))
     (let [res-retry (if (contains? body :Retry) (do-retry m) {:ok true})
@@ -64,11 +64,11 @@
 (defn check
   "Checks a response from outer space.  Lookes at the status, parses the
   body and dispathes."
-  [res task m]
-  (if-let [status (:status res)]
-    (if-let [body (che/decode (:body res) true)]
-      (if (< status 400) 
-        (dispatch body task m) 
+  [result task m]
+  (if-let [status (:status result)]
+    (if-let [body (che/decode (:body result) true)]
+      (if (< status 400)
+        (dispatch body task m)
         (µ/log ::check :error "request for failed" :m m ))            
       (µ/log ::check :error "body can not be parsed" :m m))
     (µ/log ::check :error "no status in header" :m m)))
