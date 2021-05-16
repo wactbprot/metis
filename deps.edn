@@ -85,6 +85,7 @@
                                  "components/model/test"
                                  "components/utils/test"
                                  "components/exchange/test"
+                                 "components/worker/test"
                                  "components/tasks/test"]}
             :coverage {:extra-paths ["components/stmem/test"
                                      "components/ltmem/test"
@@ -93,6 +94,7 @@
                                      "components/model/test"
                                      "components/utils/test"
                                      "components/exchange/test"
+                                     "components/worker/test"
                                      "components/tasks/test"]
                        :extra-deps {cloverage/cloverage {:mvn/version "1.2.1"}}
                        :main-opts ["-m" "cloverage.coverage"
@@ -118,8 +120,8 @@
                                    "-p" "components/utils/src"
                                    "-s" "components/utils/test"
 
-                                   ;"-p" "components/worker/src"
-                                   ;"-s" "components/worker/test"
+                                   "-p" "components/worker/src"
+                                   "-s" "components/worker/test"
 
                                    "-p" "components/document/src"
                                    "-s" "components/document/test"
