@@ -73,7 +73,7 @@
                                                 "components/worker/src"]
                                 :metadata {:doc/format :markdown}
                                 :themes [:rdash]
-                                :doc-files ["readme.md"]
+                                :doc-files ["readme.md" "coverage.txt"]
                                 :source-uri "https://github.com/wactbprot/metis/blob/master/{filepath}#L{line}"
                                 :language :clojure
                                 :output-path "docs"}}
@@ -124,7 +124,7 @@
                                    "-p" "components/document/src"
                                    "-s" "components/document/test"
 
-                                   "--codecov"
+                                   "--no-html"
                                    "--text"]}
 
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]

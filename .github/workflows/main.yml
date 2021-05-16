@@ -41,11 +41,11 @@ jobs:
         run: clojure -X:dev:codox
         shell: bash
 
-      - name: execute cloverage
+      - name: execute coverage
         run: clojure -M:dev:coverage
         shell: bash
 
-      - name: Deploy
+      - name: deploy codox
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +56,7 @@ jobs:
           name: documentation
           path: docs
 
-      - name: Deploy
+      - name: deploy coverage
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
