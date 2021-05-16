@@ -1,6 +1,6 @@
 ✔ (ns metis.document.core
 ?   ^{:author "wactbprot"
-?     :doc "Handles the documents in which the produced data is stored
+?     :doc "Handles the documents in which the produced data are stored
 ?           in.  This may be calibration documents but also measurement
 ?           docs. The document component needs access to ltmem and
 ?           stmem."}
@@ -34,8 +34,11 @@
 ✔     (first (filter #(not (or (= :_id %) (= :_rev %))) (keys doc)))))
   
 ~ (defmethod doc-info :Calibration [doc] (assoc (base-info doc) :doc-type "Calibration"))
+  
 ~ (defmethod doc-info :Measurement [doc] (assoc (base-info doc) :doc-type "Measurement"))
+  
 ~ (defmethod doc-info :State       [doc] (assoc (base-info doc) :doc-type "State"))
+  
 ✔ (defmethod doc-info :default     [doc] (assoc (base-info doc) :doc-type "default"))
   
 ? ;;------------------------------
