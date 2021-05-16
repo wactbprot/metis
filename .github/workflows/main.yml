@@ -32,7 +32,8 @@ jobs:
         with:
           couchdb version: 2.3.1
 
-      - name: Start Redis
+      - name: start Redis
+        # no keyspace notification, check if confable
         uses: supercharge/redis-github-action@1.2.0
         with:
           redis-version: 5
