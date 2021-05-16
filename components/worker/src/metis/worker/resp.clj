@@ -38,7 +38,7 @@
   to the state key (done)."
   [body task m]
   (µ/log ::dispatch :message "try to write response" :m m)
-  (stmem/set-val (assoc :func :resp :value body))
+  (stmem/set-val (assoc m :func :resp :value body))
   (if-let [err (:error body)]
     (stmem/set-state-error (assoc m :message err))
     (let [res-retry (if (contains? body :Retry) (do-retry m) {:ok true})
