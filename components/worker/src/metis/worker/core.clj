@@ -28,8 +28,13 @@
   [task m]
   (mu/log ::dispatch :message "dispatch task" :m m)
   (condp = (keyword (:Action task))
-    :wait   (start! wait!              task m)
-    :select (start! select-definition! task m)
+    :wait    (start! wait!              task m)
+    :select  (start! select-definition! task m)
+    :MODBUS  (start! devhub!            task m)
+    :TCP     (start! devhub!            task m)
+    :VXI11   (start! devhub!            task m)
+    :EXECUTE (start! devhub!            task m)
+
     ;; :runMp          (start! run-mp!            task)
     ;; :stopMp         (start! stop-mp!           task)
     ;; :writeExchange  (start! write-exchange!    task)
@@ -41,10 +46,6 @@
     ;; :replicateDB    (start! replicate!         task)
     ;; :Anselm         (start! devproxy!          task)
     ;; :DevProxy       (start! devproxy!          task)
-    ;; :MODBUS         (start! devhub!            task)
-    ;; :TCP            (start! devhub!            task)
-    ;; :VXI11          (start! devhub!            task)
-    ;; :EXECUTE        (start! devhub!            task)
     (stmem/set-state-error (assoc task :message "No worker for action"))))
 
 ;;------------------------------

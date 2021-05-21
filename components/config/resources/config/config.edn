@@ -78,6 +78,7 @@
                :defin "definition" ; func
                :retry "retry" ; func
                :resp "response" ; func
+               :req "request" ; func
                :state "state" ; func
                :ctrl "ctrl" ; func
                :exch "exchange"
