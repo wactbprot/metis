@@ -7,6 +7,7 @@
             [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
             [metis.worker.wait :refer [wait!]]
+            [metis.worker.devhub :refer [devhub!]]
             [metis.worker.select-definition :refer [select-definition!]]))
 
 ;;------------------------------
