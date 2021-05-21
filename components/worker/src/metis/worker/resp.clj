@@ -11,20 +11,20 @@
             [metis.utils.interface :as u]))
 
 (defn do-retry
-  ([m]
+  ([body m]
    (do-retry c/config m))
-  ([{max-retry :max-retry} m]
-   (let [m (assoc m :func :retry)
-         n (or (stmem/get-val m) 0)]
-     (if (>= (u/ensure-int n) max-retry)
-       (do
-         (µ/log ::retry! :error "reached max-retry" :m m)
-         (stmem/set-val (assoc m :value 0))
-         {:error "max retry"})
-       (do
-         (µ/log ::retry! :message "retry" :m m)
-         (stmem/set-val (assoc m :value (inc n)))
-         {:ok "retry"})))))
+  ([{max-retry :max-retry} body m]
+   (if (contains? body :Retry)
+     (let [m (assoc m :func :retry)
+           n (or (stmem/get-val m) 0)]
+       (if (>= (u/ensure-int n) max-retry)
+         (do (µ/log ::retry! :error "reached max-retry" :m m)
+             (stmem/set-val (assoc m :value 0))
+             {:error "max retry"})
+         (do (µ/log ::retry! :message "retry" :m m)
+             (stmem/set-val (assoc m :value (inc n)))
+             {:ok true})))
+     {:ok true})))
 
 (defn dispatch
   "Dispatches responds from outer space. Expected responses are:
@@ -41,13 +41,14 @@
   (stmem/set-val (assoc m :func :resp :value body))
   (if-let [err (:error body)]
     (stmem/set-state-error (assoc m :message err))
-    (let [res-retry (if (contains? body :Retry) (do-retry m) {:ok true})
+    (let [res-retry (do-retry body m) 
           res-exch  (exch/to (exch/all m) (:ToExchange body))
           res-ids   (doc/renew m (:ids body))
           res-doc   (doc/store-results m (:Result body) (:DocPath task))]
       (cond
         (:error res-retry) (stmem/set-state-error (assoc m :message "error at retry"))
         (:error res-exch)  (stmem/set-state-error (assoc m :message "error at exchange"))
+        (:error res-ids)   (stmem/set-state-error (assoc m :message "error at ids refresh"))
         (:error res-doc)   (stmem/set-state-error (assoc m :message "error at document"))
         (and
          (:ok res-retry)

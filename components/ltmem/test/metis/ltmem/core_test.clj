@@ -5,8 +5,8 @@
 
 (def conf
   (let [db "metis_test"
-        usr (System/getenv "DB_ADMIN")
-        pwd (System/getenv "DB_PWD")]
+        usr (or (System/getenv "DB_ADMIN") (System/getenv "CAL_USR"))
+        pwd (or (System/getenv "DB_PWD")  (System/getenv "CAL_PWD"))]
     {:ltmem-db db
      :ltmem-conn (str "http://"
                       (when (and usr pwd) (str usr ":" pwd "@"))
