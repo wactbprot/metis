@@ -6,17 +6,13 @@
             [clj-http.client :as http]
             [com.brunobonacci.mulog :as µ]
             [metis.worker.resp :as resp]
-            [metis.stmem.interface :as stmem]
-            [metis.utils.interface :as u]))
+            [metis.stmem.interface :as stmem]))
 
 (defn devhub!
   "Sends `:Value` to [devhub](https://wactbprot.github.io/devhub/) which
   resolves `PreScript` and `PostScript`.
   
-  ```clojure
-   (devhub! {:Action \"TCP\" :Port 23 :Host \"localhost\" :Value \"Hi!\"}
-   {:mp-id \"test\" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0})
-  ```"
+  NOTE: `resp/check` is not invoked if a HTTP 500 error occurs on `http/post`."
   [task m]
   (stmem/set-state-working (assoc m :message "start devhub request"))
   (let [req (assoc (:json-post-header c/config) :body (che/encode task))
@@ -27,7 +23,8 @@
       (resp/check (http/post url req) task m)
       (catch Exception e (stmem/set-state-error (assoc m :message (.getMessage e)))))))
 
-
 (comment
-  (devhub! {:Action "TCP" :Port 23 :Host "localhost" :Value "Hi!"}
-           {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0}))
+  (def m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :resp})
+  (def t {:Action "VXI11" :Device "gpib0,4" :Host "e75416" :Value "MEAS:PRES?\n"})
+  (devhub! t m)
+  (stmem/get-val m))

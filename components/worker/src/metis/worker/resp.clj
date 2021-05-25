@@ -12,7 +12,7 @@
 
 (defn do-retry
   ([body m]
-   (do-retry c/config m))
+   (do-retry c/config body m))
   ([{max-retry :max-retry} body m]
    (if (contains? body :Retry)
      (let [m (assoc m :func :retry)
