@@ -26,13 +26,12 @@
     (mu/log ::handle-all-exec :message "set new ctrl" :m m)
     (stmem/set-ctrl m)))
   
-(defn handle-all-exec
-  [v]
-  (let [m (first v)]
-    (mu/log ::handle-all-exec :message "all tasks executed" :m m)
-    (stop-state m)
-    (stmem/set-states (assoc m :func :state :seq-idx :* :par-idx :* :value :ready))))
- 
+(defn handle-all-exec [m]
+  (mu/log ::handle-all-exec :message "all tasks executed" :m m)
+  (new-ctrl m)
+  (stmem/set-states (assoc m :value :ready))
+  (stop-state m))
+
 ;;------------------------------
 ;; start-next
 ;;------------------------------
@@ -47,7 +46,7 @@
     (mu/log ::start-next :message "before cond" :m m)
     (cond
       (proc/errors? v) (stmem/set-ctrl (assoc (first v) :value :error))
-      (proc/all-executed? v) (handle-all-exec v)
+      (proc/all-executed? v) (handle-all-exec (first v))
       (nil? m) (mu/log ::start-next :message "no operation")
       :else (worker/run m))))
 
