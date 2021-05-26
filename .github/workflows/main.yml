@@ -26,33 +26,7 @@ jobs:
         with:
           # Install just one or all simultaneously
           cli: 1.10.1.693 # Clojure CLI based on tools.deps
-
-      - name: Set up CouchDB
-        uses: cobot/couchdb-action@master
-        with:
-          couchdb version: 2.3.1
-
-      - name: start Redis
-        # no keyspace notification, check if confable
-        uses: supercharge/redis-github-action@1.2.0
-        with:
-          redis-version: 5
-
-      - name: execute coverage
-        run: clojure -M:dev:coverage
-        shell: bash
-
-      - name: deploy coverage
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/coverage
-
-      - uses: actions/upload-artifact@v1
-        with:
-          name: coverage
-          path: target/coverage
-
+	  
       - name: execute codox
         run: clojure -X:dev:codox
         shell: bash
