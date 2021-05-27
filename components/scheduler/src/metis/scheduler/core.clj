@@ -8,111 +8,107 @@
             [metis.worker.interface :as worker]))
 
 ;;------------------------------
-;; stop state
+;; state of state interface 
 ;;------------------------------
-(defn stop-state
-  "Registers a stmem listener for the `state`-interface of a `container` or 
-  `definitions` struct. [[start-next]] is the callback of this
-  listener."
-  [m]
-  (mu/log ::stop-state :message "de-register")
-  (stmem/de-register (assoc m :func :state :seq-idx :* :par-idx :*)))
+(defn state-interface [m]
+  (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*)))
 
-(defn new-ctrl [m]
-  (let [m   (assoc (dissoc m :par-idx :seq-idx) :func :ctrl)
-        cmd (keyword (stmem/get-val m))
-        cmd (if (= cmd :mon) :mon :ready)
-        m   (assoc m :value cmd)]
-    (mu/log ::handle-all-exec :message "set new ctrl" :m m)
-    (stmem/set-ctrl m)))
-  
-(defn handle-all-exec [m]
-  (mu/log ::handle-all-exec :message "all tasks executed" :m m)
-  (new-ctrl m)
-  (stmem/set-states (assoc m :value :ready))
-  (stop-state m))
+(defn state
+  "`state` `proc`esses  on the state vector in order to find out whats next todo. The input `v`ector
+  looks like this:
 
-;;------------------------------
-;; start-next
-;;------------------------------
-(defn start-next
-  "`start-next` `proc`esses the `m`ap of the task to start `next`.
-  
-  Then the `worker` set the state to `\"working\"` which triggers the
-  next call to `start-next!`: parallel tasks are started this way."
-  [m]
-  (let [v (stmem/get-maps (assoc m :func :state :seq-idx :* :par-idx :*))
-        m (proc/next-map v)]
-    (mu/log ::start-next :message "before cond" :m m)
+  ```clojure
+  [{:mp-id \"mpd-ref\",
+  :struct :cont,
+  :no-idx 0,
+  :func :state,
+  :seq-idx 0,
+  :par-idx 0,
+  :value \"ready\"}
+ {:mp-id \"mpd-ref\",
+  :struct :cont,
+  :no-idx 0,
+  :func :state,
+  :seq-idx 0,
+  :par-idx 1,
+  :value \"ready\"}
+  ```"
+  [v]
+  (let [m (proc/next-map v)]
     (cond
-      (proc/errors? v) (stmem/set-ctrl (assoc (first v) :value :error))
-      (proc/all-executed? v) (handle-all-exec (first v))
-      (nil? m) (mu/log ::start-next :message "no operation")
-      :else (worker/run m))))
+      (proc/errors? v) {:state :error :m (first v)}
+      (proc/all-executed? v) {:state :all-exec :m (first v)}
+      (nil? m) {:state :nop :m (first v)}
+      :else {:state :work :m m})))
 
 ;;------------------------------
-;; start state
+;; state of ctrl interface 
 ;;------------------------------
-(defn start-state
-  "Registers a stmem listener for the `state`-interface of a `container` or
-  `definitions` struct. [[start-next]] is the callback of this
-  listener."
+(defn ctrl [m]
+  {:ctrl (keyword (stmem/get-val (assoc (dissoc m :seq-idx :par-idx) :func :ctrl)))})
+
+;;------------------------------
+;; check
+;;------------------------------
+(defn check
+  "Processes whats todo next depending on the state of state and ctrl interface."
   [m]
-  (let [m (assoc m :func :state :seq-idx :* :par-idx :*)]
-    (mu/log ::start-state :message "register, callback and start-next" :m m)
-    (stmem/register m start-next)
-    (mu/log ::start-state :message "will call start-next first trigger" :m m)
-    (start-next m)))
- 
-;;------------------------------
-;; dispatch
-;;------------------------------
-(defn dispatch
-  "`start`s or `stop`s the state observation of container `(:no-idx m)`
-  depending on `cmd`. If an `:error` occurs the system is kept
-  running (no `stop` and `de-register`). So, no restart is necessary. Just fix the
-  problem and set the corresponding state from `:error` to `ready` and
-  the processing goes on."
-  [m]
-  (mu/log ::dispatch :message "start dispach" :m m)
-  (let [cmd (keyword (:value m))]
-    (condp = cmd
-      :run (start-state m)
-      :mon (start-state m)
-      :stop (do
-              (stop-state m)
-              (stmem/set-states (assoc m :ready))
-      :reset (do
-               (stop-state m)
-               (stmem/set-states (assoc m :ready)))
-      :suspend (stop-state m)
-      :error (mu/log ::dispatch :error "at ctrl interface" :m m)
-      (mu/log ::dispatch :message "default case ctrl dispach function")))))
+     
+  (let [s (merge (state (state-interface m)) (ctrl m))
+        m (:m s)]
+   
+    (when-not (= (:ctrl s) :check)
+      (prn  s)
+      (Thread/sleep 1000)
+    
+      (stmem/set-ctrl (assoc m :value :check))
+      (condp = (dissoc s :m)
+        {:ctrl :run    :state :error}    (stmem/set-ctrl (assoc m :value :error))
+        {:ctrl :mon    :state :error}    (stmem/set-ctrl (assoc m :value :error)) 
+        {:ctrl :stop   :state :error}    (stmem/set-ctrl (assoc m :value :error))
+        {:ctrl :run    :state :all-exec} (do
+                                           (stmem/set-states (assoc m :value :ready))
+                                           (stmem/set-ctrl (assoc m :value :ready)))
+        {:ctrl :mon    :state :all-exec} (do
+                                           (stmem/set-states (assoc m :value :ready))
+                                           (stmem/set-ctrl (assoc m :value :mon)))
+        {:ctrl :stop   :state :all-exec} (do
+                                           (stmem/set-states (assoc m :value :ready))
+                                           (stmem/set-ctrl (assoc m :value :ready)))
+        {:ctrl :reset  :state :nop}      (do
+                                           (stmem/set-states (assoc m :value :ready))
+                                           (stmem/set-ctrl (assoc m :value :ready)))
+        {:ctrl :stop   :state :nop}      (do
+                                           (stmem/set-states (assoc m :value :ready))
+                                           (stmem/set-ctrl (assoc m :value :ready)))
+        {:ctrl :run    :state :work}     (do
+                                           (worker/run m)
+                                           (stmem/set-ctrl (assoc m :value :run)))
+        {:ctrl :mon    :state :work}     (do
+                                           (worker/run m)
+                                           (stmem/set-ctrl (assoc m :value :run)))
+        (mu/log ::dispatch :message "what todo with state" :state s)))))
 
 ;;------------------------------
 ;; ctrl interface
 ;;------------------------------
 ;; stop-ctrl
 ;;------------------------------
-(defn stop-ctrl
-  "De-registers the listener for the `ctrl` interfaces of the
-  `mp-id`. After stopping, the system will no longer react on
-  changes (write events) at the `ctrl` interface."
+(defn stop
+  "De-registers the listener for the `mp-id`. After stopping, the system
+  will no longer react on changes (write events) at any interface."
   [mp-id]
-  (let [m {:mp-id mp-id}]
-    (mu/log ::stop-ctrl :message "de-register and clean all ctrl listener" :m m)
-    (stmem/clean-register m)))
+  (mu/log ::stop-ctrl :message "clean mp listener")
+  (stmem/clean-register {:mp-id mp-id}))
 
 ;;------------------------------
 ;; start-ctrl
 ;;------------------------------
-(defn start-ctrl
-  "Registers a listener for the `ctrl` interface of the entire
-  `mp-id`. The [[dispatch]] function becomes the listeners `cb!`." 
+(defn start
+  "Registers a listener with the pattern `__keyspace@0*__:<mp-id>@*@*@*`.
+  The [[check]] function becomes the listeners `callback`." 
   ([mp-id]
-   (start-ctrl c/config mp-id))
+   (start c/config mp-id))
   ([config mp-id]
-   (prn "..:")
-   (let [m {:mp-id mp-id :struct :* :no-idx :* :func :ctrl}]
-     (mu/log ::start-ctrl :message "register ctrl listener" :m m)
-     (stmem/register m dispatch))))
+   (mu/log ::start-ctrl :message "register mp listener check callback")
+   (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :*} check)))

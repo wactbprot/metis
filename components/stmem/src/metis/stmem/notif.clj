@@ -32,7 +32,7 @@
    (subs-pat c/config m))
   ([config m]
    (let [{t :stmem-trans s :stmem-notif-sep db :stmem-db} config]
-     (str "__keyspace" s db (:* t) "__:" (reg-pat config m) (:* t)))))
+     (str "__keyspace" s db (:* t) "__:" (reg-pat config m)))))
 
 (defn reg-key
   ([m]
@@ -66,9 +66,7 @@
    (wrap-assoc-value c/config f))
   ([config f]
    (fn [m]
-     (let [m (assoc m :value (api/get-val m))]
-       (mu/log ::wrap-assoc-value :message  "listener callback, assoc value" :m m)
-       (f m)))))
+     (f (assoc m :value (api/get-val m))))))
 
 ;;------------------------------
 ;; generate listener
@@ -137,8 +135,8 @@
        @listeners))
 
 (defn de-register
-  "De-registers the listener with the key `mp-id` in the `listeners`
-  atom."
+  "De-registers the listener with a key derived from `m`. `dissoc` it
+  afterwards from the `listeners` atom."
   [m]
   (let [k (reg-key m)]
     (mu/log ::de-register :message "will de-register" :key k)

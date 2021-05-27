@@ -7,6 +7,7 @@
             [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
             [metis.worker.wait :refer [wait!]]
+            [metis.worker.ctrl-mp :refer [run-mp! stop-mp!]]
             [metis.worker.devhub :refer [devhub!]]
             [metis.worker.select-definition :refer [select-definition!]]))
 
@@ -35,9 +36,8 @@
     :TCP     (start! devhub!            task m)
     :VXI11   (start! devhub!            task m)
     :EXECUTE (start! devhub!            task m)
-
-    ;; :runMp          (start! run-mp!            task)
-    ;; :stopMp         (start! stop-mp!           task)
+    :runMp   (start! run-mp!            task m)
+    :stopMp  (start! stop-mp!           task m)
     ;; :writeExchange  (start! write-exchange!    task)
     ;; :readExchange   (start! read-exchange!     task)
     ;; :getDate        (start! get-date!          task)

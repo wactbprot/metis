@@ -69,12 +69,14 @@
 
 (defn m-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
 
-(defn e-all [mp-id] (exchange/all {:mp-id mp-id}))
-
 (defn m-start [mp-id] (scheduler/start mp-id))
 
 (defn m-stop [mp-id] (scheduler/stop mp-id))
 
+;;------------------------------
+;; e- ecchange commands
+;;------------------------------
+(defn e-all [mp-id] (exchange/all {:mp-id mp-id}))
 
 ;;------------------------------
 ;; c- container commands
@@ -87,6 +89,13 @@
 
 (defn c-suspend [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :suspend}))
 
+(defn c-state [mp-id i]
+  (pp/print-table
+   (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :state :seq-idx :* :par-idx :* })))
+
+(defn c-ctrl [mp-id i]
+  (pp/print-table
+   (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :ctrl})))
 
 ;;------------------------------
 ;; t- task commands
