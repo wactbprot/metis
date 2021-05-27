@@ -26,7 +26,7 @@ jobs:
         with:
           # Install just one or all simultaneously
           cli: 1.10.1.693 # Clojure CLI based on tools.deps
-	  
+  
       - name: execute codox
         run: clojure -X:dev:codox
         shell: bash
