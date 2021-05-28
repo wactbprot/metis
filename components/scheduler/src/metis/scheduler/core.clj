@@ -41,9 +41,19 @@
 (defn ctrl [m]
   {:ctrl (keyword (stmem/get-val (assoc (dissoc m :seq-idx :par-idx) :func :ctrl)))})
 
+
+
+
 ;;------------------------------
 ;; check
 ;;------------------------------
+(defn set-state-ctrl [m s c]
+  (stmem/set-ctrl   (assoc m :value :check))
+  (stmem/set-states (assoc m :value s))
+  (stmem/set-ctrl   (assoc m :value c)))
+
+(defn set-ctrl [m c] (stmem/set-ctrl (assoc m :value c)))
+  
 (defn check
   "Processes whats todo next depending on the state of state and ctrl
   interface."
@@ -52,39 +62,29 @@
         m (:m s)]
     (when-not (= (:ctrl s) :check)
       (condp = (dissoc s :m)
-        {:ctrl :run    :state :error}    (stmem/set-ctrl (assoc m :value :error))
-        {:ctrl :mon    :state :error}    (stmem/set-ctrl (assoc m :value :error)) 
-        {:ctrl :stop   :state :error}    (stmem/set-ctrl (assoc m :value :error))
-        {:ctrl :run    :state :all-exec} (do
-                                           (stmem/set-ctrl   (assoc m :value :check))
-                                           (stmem/set-states (assoc m :value :ready))
-                                           (stmem/set-ctrl   (assoc m :value :ready)))
-        {:ctrl :mon    :state :all-exec} (do
-                                           (stmem/set-ctrl   (assoc m :value :check))
-                                           (stmem/set-states (assoc m :value :ready))
-                                           (stmem/set-ctrl   (assoc m :value :mon)))
-        {:ctrl :stop   :state :all-exec} (do
-                                           (stmem/set-ctrl   (assoc m :value :check))
-                                           (stmem/set-states (assoc m :value :ready))
-                                           (stmem/set-ctrl   (assoc m :value :ready)))
-        {:ctrl :reset  :state :nop}      (do
-                                           (stmem/set-ctrl   (assoc m :value :check))
-                                           (stmem/set-states (assoc m :value :ready))
-                                           (stmem/set-ctrl   (assoc m :value :ready)))
-        {:ctrl :stop   :state :nop}      (do
-                                           (stmem/set-ctrl   (assoc m :value :check))
-                                           (stmem/set-states (assoc m :value :ready))
-                                           (stmem/set-ctrl   (assoc m :value :ready)))
-        {:ctrl :run    :state :work}       (worker/run m)
-        {:ctrl :mon    :state :work}       (worker/run m)
-                                           
+        ;; run
+        {:ctrl :run    :state :error}    (set-ctrl m :error)
+        {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
+        {:ctrl :run    :state :work}     (worker/run m)
+        ;; mon
+        {:ctrl :mon    :state :error}    (set-ctrl m :error) 
+        {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
+        {:ctrl :mon    :state :work}     (worker/run m)
+        ;; stop
+        {:ctrl :stop   :state :error}    (set-ctrl m :error)
+        {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
+        {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
+        {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
+        ;; reset
+        {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
+        {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
+        {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
+        {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
         
         (mu/log ::dispatch :message "state not handeled" :state s)))))
 
 ;;------------------------------
-;; ctrl interface
-;;------------------------------
-;; stop-ctrl
+;; stop 
 ;;------------------------------
 (defn stop
   "De-registers the listener for the `mp-id`. After stopping, the system
@@ -97,7 +97,7 @@
 ;; start-ctrl
 ;;------------------------------
 (defn start
-  "Registers a listener with the pattern `__keyspace@0*__:<mp-id>@*@*@*`.
+  "Registers a listener with the pattern `__keyspace@<stmem-db>*__:<mp-id>@*@*@*`.
   The [[check]] function becomes the listeners `callback`." 
   ([mp-id]
    (start c/config mp-id))
