@@ -12,19 +12,24 @@
 ;;------------------------------
 (defonce listeners (atom {}))
 
+
+
 ;;------------------------------
 ;; register key utils 
 ;;------------------------------
+(defn m->struct [{t :stmem-trans} {struct :struct}] ((or struct :*) t))
+
+(defn m->no-idx [{t :stmem-trans :as config} {no-idx :no-idx}]
+  (if (number? no-idx) (trans/lpad config no-idx) (:* t)))
+
+(defn m->func [{t :stmem-trans} {func :func}] ((or func :*) t))
+
 (defn reg-pat
   ([m]
    (reg-pat c/config m))
-  ([{t :stmem-trans s :stmem-notif-sep :as config} m]
-   (let [mp-id (:mp-id m)
-         struct ((or (:struct m) :*) t)
-         no-idx (:no-idx m)
-         no-idx (if (number? no-idx) (trans/lpad config no-idx) (:* t))
-         func ((or (:func m) :*) t)]
-     (str mp-id s struct s no-idx s func))))
+  ([{t :stmem-trans s :stmem-notif-sep :as config} {mp-id :mp-id :as m}]
+   (let [pat (str mp-id s (m->struct config m) s (m->no-idx config m) s  (m->func config m))]
+     (if (string/includes? pat (:* t)) pat (str pat s (:* t))))))
    
 (defn subs-pat
   "Generates subscribe patterns."

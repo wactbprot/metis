@@ -28,14 +28,14 @@
                      :stmem-trans {:* "*"
                                    :b "b"}} {:mp-id "a" :struct :b :no-idx 5}))))
   (testing "behaviour :mp-id :struct :no-idx :func"
-    (is (= "a.b.00005.c.00000"
+    (is (= "a.b.00005.c.*.00000"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
                                    :b "b"
                                    :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c}))))
   (testing "behaviour :mp-id :struct :no-idx :func :level"
-    (is (= "a.b.00005.c.00002"
+    (is (= "a.b.00005.c.*.00002"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
@@ -45,12 +45,11 @@
 (deftest register-de-register-i
   (testing "re-de-reg works"
     (let [r (atom (rand-int 1000))
-          x @r
+          x @r 
           m {:mp-id "test" :struct :cont :no-idx 0 :func :state :seq-idx 0 :par-idx 0 :value x}
           f (fn [m] (swap! r dec))]
       (is (= x  @r))
-      (register (assoc m :seq-idx :*) f)
-      ;; (Thread/sleep 1)
+      (register m f)
       (is (= x @r)
           "The register event triggers but callback is not executed.")
       (api/set-val (assoc m :value (dec @r)))
