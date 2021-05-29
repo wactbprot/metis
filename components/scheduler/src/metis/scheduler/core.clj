@@ -41,9 +41,6 @@
 (defn ctrl [m]
   {:ctrl (keyword (stmem/get-val (assoc (dissoc m :seq-idx :par-idx) :func :ctrl)))})
 
-
-
-
 ;;------------------------------
 ;; check
 ;;------------------------------
