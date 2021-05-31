@@ -80,6 +80,7 @@
                :resp "response" ; func
                :req "request" ; func
                :state "state" ; func
+               :msg "meaasge" ; func
                :ctrl "ctrl" ; func
                :exch "exchange"
                :* "*"}
