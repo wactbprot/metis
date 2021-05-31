@@ -6,13 +6,9 @@
 (defn get-config
   "Reads a `edn` configuration in file `f`." 
   ([]
-   (get-config #_(io/file "config.edn")
-               (io/resource "config/config.edn")
-   ))
+   (get-config (io/resource "config/config.edn")))
   ([f]
    (-> f slurp edn/read-string)))
-
-
 
 (defn ltmem-base-url [c]
   (let [lt-srv (System/getenv "CMP_LT_SRV")
@@ -26,10 +22,10 @@
 (defn ltmem-conn [c] (str (ltmem-base-url c) "/" (:ltmem-db c)))
 
 (defn stmem-conn [c]
-  {:pool {}
-   :spec {:host (:stmem-srv c)
+  {:spec {:host (:stmem-srv c)
           :port (:stmem-port c)
-          :db   (:stmem-db c)}})
+          :db   (:stmem-db c)}
+   :pool {}})
 
 (def config
   (let [c (get-config)]
