@@ -65,6 +65,7 @@
                :cont "container" ; struct
                :id "id" ; struct
                :defins "definitions" ; struct
+               :exch "exchange"  ; struct
                :title "title"
                :descr "description"
                :elem "elements"
@@ -82,7 +83,6 @@
                :state "state" ; func
                :msg "meaasge" ; func
                :ctrl "ctrl" ; func
-               :exch "exchange"
                :* "*"}
  ;; for order or sorting reasons
  ;; idx, jdx and kdx are padded
