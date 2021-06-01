@@ -16,4 +16,3 @@
   (testing "generation"
     (is (= (:ltmem-db conf) (:db_name (couch/get-database (:ltmem-conn conf))))
         "db or exist (needs env var DB_ADMIN and DB_PWD)")))
-

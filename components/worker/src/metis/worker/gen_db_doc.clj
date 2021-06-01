@@ -26,16 +26,18 @@
 (defn gen-db-doc!
   "Generates a `ltmem` document from the tasks `:Value` if it dont
   exist. Adds the `document` to the `stmem` doc interface."
-  [{doc :Value :as task} m]
-  (stmem/set-state-working m)
-  (let [doc-id (:_id doc)]
-    (when-not (ltmem/exist? doc-id)
-      (try
-        (resp/check (http/put (url doc-id) (req doc)) task m)
-        (µ/log ::gen-db-doc! :message "add doc id endpoint and to ltmem" :m m)
-        (catch Exception e (stmem/set-state-error (assoc m :mesage (.getMessage e))))))
-    (doc/add m doc-id)
-    (stmem/set-state-executed (assoc m :message "add doc id endpoint"))))
+  ([task m]
+   (gen-db-doc! c/config task m))
+  ([conf {doc :Value :as task} m]
+   (stmem/set-state-working m)
+   (let [doc-id (:_id doc)]
+     (when-not (ltmem/exist? conf doc-id)
+       (try
+         (resp/check (http/put (url conf doc-id) (req conf doc)) task m)
+         (µ/log ::gen-db-doc! :message "add doc id endpoint and to ltmem" :m m)
+         (catch Exception e (stmem/set-state-error (assoc m :mesage (.getMessage e))))))
+     (doc/add conf m doc-id)
+     (stmem/set-state-executed (assoc m :message "add doc id endpoint")))))
 
 (comment
   (def m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :resp})

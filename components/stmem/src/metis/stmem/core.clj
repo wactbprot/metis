@@ -63,7 +63,7 @@
 
 (defn filter-keys-where-val
   "Returns a list of all keys belonging to the pattern `pat` where the
-  value is equal to`x`.
+  value is equal to `x`.
   
   Example:
   ```clojure
