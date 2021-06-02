@@ -27,7 +27,19 @@
 
 (deftest map->key-iii
   (testing "tasks clear pat"
-    (is (= "tasks@*" (map->key {:mp-id "tasks" :task-name :*})))))
+    (is (= "tasks@*" (map->key {:mp-id "tasks" :task-name :*}))))
+  (testing "exchange clear pat"
+    (is (= "test@exchange@*" (map->key {:mp-id "test" :struct :exch :exchpath :*}))))
+  (testing "id clear pat"
+    (is (= "test@id@*" (map->key {:mp-id "test" :struct :id :doc-id :*}))))
+  (testing "meta clear pat"
+    (is (= "test@meta@*" (map->key {:mp-id "test" :struct :meta :metapath :*}))))
+  (testing "seq-idx clear pat"
+    (is (= "test@container@000@state@*@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx :* :func :state}))))
+  (testing "par-idx clear pat"
+    (is (= "test@container@000@state@000@*" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx :* :seq-idx 0 :func :state}))))
+  (testing "no-idx clear pat"
+    (is (= "test@container@*@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx :* :par-idx 0 :seq-idx 0 :func :state})))))
 
 (deftest lpad-i
   (testing "longer string"
@@ -84,4 +96,3 @@
             :func nil,
             :seq-idx nil,
             :par-idx nil} (key->map "a@container@00000005")))))
-  
