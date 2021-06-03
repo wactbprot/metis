@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [metis.document.interface :as doc]
             [metis.ltmem.interface :as ltmem]
+            [metis.stmem.interface :as stmem]
             [metis.worker.exchange :refer :all]))
 
 
@@ -22,6 +23,6 @@
       (doc/renew conf [])
       (doc/add conf m doc-id)
       (is (= doc-id (first (doc/ids m))))
-      #_(write! {:ExchangePath "ExchPath" :Value {:Type "ind" :Unit "Pa" :Value 10}} )
-      #_(read! {:DocPath "Test"}
+      (write! {:ExchangePath "ExchPath" :Value {:Type "ind" :Unit "Pa" :Value 10}} m)
+      (read! conf {:DocPath "Test" :ExchangePath "ExchPath"} m)
       )))

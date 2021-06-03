@@ -41,6 +41,22 @@
   (testing "no-idx clear pat"
     (is (= "test@container@*@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx :* :par-idx 0 :seq-idx 0 :func :state})))))
 
+(deftest map->key-iv
+  (testing "task keys"
+    (is (= "tasks@foo" (map->key {:mp-id "tasks" :task-name "foo"}))))
+  (testing "exchange key"
+    (is (= "test@exchange@foo" (map->key {:mp-id "test" :struct :exch :exchpath "foo"}))))
+  (testing "id clear pat"
+    (is (= "test@id@foo" (map->key {:mp-id "test" :struct :id :doc-id "foo"}))))
+  (testing "meta clear pat"
+    (is (= "test@meta@ncont" (map->key {:mp-id "test" :struct :meta :metapath :nc}))))
+  (testing "seq-idx key"
+    (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}))))
+  (testing "par-idx key"
+    (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}))))
+  (testing "no-idx key"
+    (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state})))))
+
 (deftest lpad-i
   (testing "longer string"
     (is (= (lpad {:stmem-key-pad-length 3} "000003")

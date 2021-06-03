@@ -7,19 +7,20 @@
 
 (defn all [{mp-id :mp-id}]
   (into {} (map
-            (fn [m] {(:no-idx m) (:value m)})
-            (stmem/get-maps {:mp-id mp-id :struct :exch :no-idx :*}))))
+            (fn [m] {(:exchpath m) (:value m)})
+            (stmem/get-maps {:mp-id mp-id :struct :exch :exchpath :*}))))
 
 (defn to
   ([m]
    (to (all m) m))
   ([a m]
+   (prn (core/to-vec a m))
   (map stmem/set-val (core/to-vec a m))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.
   The replacements are gathered from `a` the complete exchange interface
-  
+
   Example:
   ```clojure
   (from {\"A\" {:Type \"ref\", :Unit \"Pa\", :Value 100.0},

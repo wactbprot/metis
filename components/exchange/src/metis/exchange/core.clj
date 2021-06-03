@@ -13,7 +13,7 @@
   ;; nil
   (key->second-kw \"foo.bar\" )
   ;; :bar
-  ```"  
+  ```"
   [s]
   (when (string? s)
     (when-let [x (second (string/split s #"\."))] (keyword x))))
@@ -26,7 +26,7 @@
   ;; nil
   (key->second-kw \"foo.bar\" )
   ;; :bar
-  ```"  
+  ```"
   [s]
   (when (string? s)
     (first (string/split s #"\."))))
@@ -99,7 +99,7 @@
       m)
     m))
 
-(defn to-vec [a {x :value p :no-idx  :as m}]
+(defn to-vec [a {x :value p :exchpath  :as m}]
   (into [] (map
-            (fn [[k v]] (assoc m :no-idx (name k) :value (fit-in (get a k) v)))
+            (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
             (enclose-map x p))))

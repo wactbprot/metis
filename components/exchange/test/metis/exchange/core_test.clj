@@ -17,24 +17,24 @@
                    :Ready false}
         "Target_pressure" {:Selected 1 :Unit "Pa" :Ready true}})
 
-(def t {:ToExchange {:Filling_Pressure_current {:Value 100 
+(def t {:ToExchange {:Filling_Pressure_current {:Value 100
                                                 :Unit "mbar"}
-                     :Filling_Pressure_Dev {:Value 0.5 
+                     :Filling_Pressure_Dev {:Value 0.5
                                             :Unit "1"}
-                     :Filling_Pressure_Ok {:Ready false}}}) 
-  
+                     :Filling_Pressure_Ok {:Ready false}}})
+
 (deftest to-vec-i
   (testing "to ."
-    (is (= [{:no-idx "B" :value {:A 1}}]  (to-vec a {:no-idx "B" :value {:A 1}})))
+    (is (= [{:exchpath "B" :value {:A 1}}]  (to-vec a {:exchpath "B" :value {:A 1}})))
     "stores string")
   (testing "to .."
-    (is (= [{:no-idx "E" :value {:Ready "true" :A 1}}]  (to-vec a {:no-idx "E" :value {:A 1}})))
+    (is (= [{:exchpath "E" :value {:Ready "true" :A 1}}]  (to-vec a {:exchpath "E" :value {:A 1}})))
     "stores string")
   (testing "to ..."
-    (is (= [{:no-idx "B" :value {:A 1}}]  (to-vec a {:no-idx nil :value {:B {:A 1}}})))
+    (is (= [{:exchpath "B" :value {:A 1}}]  (to-vec a {:exchpath nil :value {:B {:A 1}}})))
     "stores string")
   (testing "to ..."
-    (is (= [{:no-idx "B" :value {:C {:A 1}}}]  (to-vec a {:no-idx "B.C" :value {:A 1}})))
+    (is (= [{:exchpath "B" :value {:C {:A 1}}}]  (to-vec a {:exchpath "B.C" :value {:A 1}})))
         "stores string"))
 
 
@@ -92,4 +92,3 @@
     (is (= {"k" {:a 1}} (enclose-map {:a 1} "k"))))
   (testing "..."
     (is (= {"k" {:b {:a 1}}} (enclose-map {:a 1} "k.b")))))
-
