@@ -1,4 +1,4 @@
-(ns metis.worker.get-date-time
+(ns metis.worker.date-time
   ^{:author "wactbprot"
     :doc "Worker to create a date entry in documents."}
   (:require [metis.config.interface :as c]
@@ -17,14 +17,14 @@
       (stmem/set-state-executed (assoc m :message "get time executed"))
       (stmem/set-state-error (assoc m :message "unexpected return value")))))
   
-(defn get-date!
+(defn store-date!
   "Generates this date object: `[{:Type <type> :Value (u/get-date)}]`
   and stores it under  `DocPath`."
   [task m]
   (stmem/set-state-working m)
   (write task (u/get-date) m))
 
-(defn get-time!
+(defn store-time!
   "Generates a timestamp object `{:Type <type> :Value (u/get-time)}` and
   stores it under `:DocPath`."
   [task m]

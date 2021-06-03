@@ -3,12 +3,18 @@
     :doc "Runs the upcomming tasks of a certain container."}
   (:require [metis.exchange.interface :as exch]
             [metis.config.interface :as c]
+            [metis.worker.exchange :refer [read! write!]]
             [com.brunobonacci.mulog :as mu]
             [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
+            [metis.worker.message :refer [message!]]
             [metis.worker.wait :refer [wait!]]
+            [metis.worker.gen-db-doc :refer [gen-db-doc!]]
+            [metis.worker.date-time :refer [store-date! store-time!]]
             [metis.worker.ctrl-mp :refer [run-mp! stop-mp!]]
             [metis.worker.devhub :refer [devhub!]]
+            [metis.worker.devproxy :refer [devproxy!]]
+            [metis.worker.replicate :refer [replicate!]]
             [metis.worker.select-definition :refer [select-definition!]]))
 
 ;;------------------------------
@@ -30,23 +36,23 @@
   [task m]
   (mu/log ::dispatch :message "dispatch task" :m m)
   (condp = (keyword (:Action task))
-    :wait    (start! wait!              task m)
-    :select  (start! select-definition! task m)
-    :MODBUS  (start! devhub!            task m)
-    :TCP     (start! devhub!            task m)
-    :VXI11   (start! devhub!            task m)
-    :EXECUTE (start! devhub!            task m)
-    :runMp   (start! run-mp!            task m)
-    :stopMp  (start! stop-mp!           task m)
-    ;; :writeExchange  (start! write-exchange!    task)
-    ;; :readExchange   (start! read-exchange!     task)
-    ;; :getDate        (start! get-date!          task)
-    ;; :getTime        (start! get-time!          task)
-    ;; :message        (start! message!           task)
-    ;; :genDbDoc       (start! gen-db-doc!        task)
-    ;; :replicateDB    (start! replicate!         task)
-    ;; :Anselm         (start! devproxy!          task)
-    ;; :DevProxy       (start! devproxy!          task)
+    :wait          (start! wait!              task m)
+    :select        (start! select-definition! task m)
+    :MODBUS        (start! devhub!            task m)
+    :TCP           (start! devhub!            task m)
+    :VXI11         (start! devhub!            task m)
+    :EXECUTE       (start! devhub!            task m)
+    :runMp         (start! run-mp!            task m)
+    :stopMp        (start! stop-mp!           task m)
+    :getDate       (start! store-date!        task m)
+    :getTime       (start! store-time!        task m)
+    :Anselm        (start! devproxy!          task m)
+    :DevProxy      (start! devproxy!          task m)
+    :genDbDoc      (start! gen-db-doc!        task m)
+    :replicateDB   (start! replicate!         task m)
+    :writeExchange (start! write!             task m)
+    :readExchange  (start! read!              task m)
+    :message       (start! message!           task m)
     (stmem/set-state-error (assoc task :message "No worker for action"))))
 
 ;;------------------------------
