@@ -6,7 +6,6 @@
             [metis.exchange.interface :as exch]
             [metis.worker.exchange :refer :all]))
 
-
 (def conf
   (let [db "metis_test"
         usr (or (System/getenv "DB_ADMIN") (System/getenv "CAL_USR"))
@@ -30,5 +29,4 @@
       (write! {:ExchangePath exch-path :Value {:Type "ind" :Unit "Pa" :Value n}} m)
       (is (=  n (:Value (get (exch/all m) exch-path))))
       (read! conf {:DocPath doc-path :ExchangePath exch-path} m)
-      #_(ltmem/get-doc conf doc-id)
-      )))
+      #_(ltmem/get-doc conf doc-id))))
