@@ -7,7 +7,7 @@
 
 (defn all [{mp-id :mp-id}]
   (into {} (map
-            (fn [m] {(:exchpath m) (:value m)})
+            (fn [m] {(:no-idx m) (:value m)})
             (stmem/get-maps {:mp-id mp-id :struct :exch :exchpath :*}))))
 
 (defn to

@@ -3,6 +3,7 @@
             [metis.document.interface :as doc]
             [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]
+            [metis.exchange.interface :as exch]
             [metis.worker.exchange :refer :all]))
 
 
@@ -17,12 +18,17 @@
 
 (deftest read-i
   (testing ""
-    (let [doc-id "exch-read-test"
+    (let [doc-id    "exch-read-test"
+          exch-path "ExchPath"
+          doc-path   "Test"
+          n (rand-int 10000)
           m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}]
       (ltmem/put-doc conf {:_id doc-id})
       (doc/renew conf [])
       (doc/add conf m doc-id)
       (is (= doc-id (first (doc/ids m))))
-      (write! {:ExchangePath "ExchPath" :Value {:Type "ind" :Unit "Pa" :Value 10}} m)
-      (read! conf {:DocPath "Test" :ExchangePath "ExchPath"} m)
+      (write! {:ExchangePath exch-path :Value {:Type "ind" :Unit "Pa" :Value n}} m)
+      (is (=  n (:Value (get (exch/all m) exch-path))))
+      (read! conf {:DocPath doc-path :ExchangePath exch-path} m)
+      #_(ltmem/get-doc conf doc-id)
       )))
