@@ -1,4 +1,4 @@
-(ns metis.worker.interface-test
+(ns metis.worker.resp-test
   (:require [clojure.test :refer :all]
             [metis.worker.resp :refer :all]))
 

@@ -11,20 +11,18 @@
             [metis.utils.interface :as u]))
 
 (defn do-retry
-  ([body m]
-   (do-retry c/config body m))
-  ([{max-retry :max-retry} body m]
-   (if (contains? body :Retry)
-     (let [m (assoc m :func :retry)
-           n (or (stmem/get-val m) 0)]
-       (if (>= (u/ensure-int n) max-retry)
-         (do (µ/log ::retry! :error "reached max-retry" :m m)
-             (stmem/set-val (assoc m :value 0))
-             {:error "max retry"})
-         (do (µ/log ::retry! :message "retry" :m m)
-             (stmem/set-val (assoc m :value (inc n)))
-             {:ok true})))
-     {:ok true})))
+  ([m]
+   (do-retry c/config m))
+  ([{max-retry :max-retry} m]
+   (let [m (assoc m :func :retry)
+         n (or (stmem/get-val m) 0)]
+     (if (>= (u/ensure-int n) max-retry)
+       (do (µ/log ::retry! :error "reached max-retry" :m m)
+           (stmem/set-val (assoc m :value 0))
+           {:error "max retry"})
+       (do (µ/log ::retry! :message "retry" :m m)
+           (stmem/set-val (assoc m :value (inc n)))
+           {:ok true})))))
 
 (defn dispatch
   "Dispatches responds from outer space. Expected responses are:
@@ -36,15 +34,15 @@
   
   It's maybe a good idea to save the respons body to a key associated
   to the state key (done)."
-  [body task m]
+  [{error :error to-exch :ToExchange ids :ids result :Result retry :Retry :as body} {doc-path :DocPath :as task} m]
   (µ/log ::dispatch :message "try to write response" :m m)
   (stmem/set-val (assoc m :func :resp :value body))
-  (if-let [err (:error body)]
-    (stmem/set-state-error (assoc m :message err))
-    (let [res-retry (do-retry body m) 
-          res-exch  (exch/to (exch/all m) (:ToExchange body))
-          res-ids   (doc/renew m (:ids body))
-          res-doc   (doc/store-results m (:Result body) (:DocPath task))]
+  (if error
+    (stmem/set-state-error (assoc m :message error))
+    (let [res-retry (if retry (do-retry m)  {:ok true}) 
+          res-exch  (if to-exch (exch/to (exch/all m) to-exch) {:ok true})
+          res-ids   (if ids (doc/renew m ids) {:ok true})
+          res-doc   (if (and doc-path result) (doc/store-results m result doc-path) {:ok true})]
       (cond
         (:error res-retry) (stmem/set-state-error (assoc m :message "error at retry"))
         (:error res-exch)  (stmem/set-state-error (assoc m :message "error at exchange"))
@@ -54,10 +52,14 @@
          (:ok res-retry)
          (:ok res-ids)
          (:ok res-exch)
-         (:ok res-doc)) (if (exch/stop-if (exch/all m) task)
-                          (stmem/set-state-executed m)
-                          (stmem/set-state-ready m))
-        :unexpected (stmem/set-state-error (assoc m :message "unexpected response"))))))
+         (:ok res-doc)) (do
+                          (if (exch/stop-if (exch/all m) task)
+                            (stmem/set-state-executed m)
+                            (stmem/set-state-ready m))
+                          {:ok true})
+        :unexpected (do
+                      (stmem/set-state-error (assoc m :message "unexpected response"))
+                      {:error "unexpected response"})))))
 
 ;;------------------------------
 ;; check

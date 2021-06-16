@@ -137,3 +137,4 @@
      (doall
       (into {} (map #(execute conf % results doc-path) (ids m))))
      {:error "wrong input params"})))
+  

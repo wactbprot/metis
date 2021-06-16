@@ -58,4 +58,5 @@
                                  [{:Test "test"}]
                                  "test.path")
           new-rev (:_rev (ltmem/get-doc conf "test"))]
-      (is (not= old-rev new-rev))))) 
+      (is (not= old-rev new-rev)))))
+
