@@ -14,8 +14,7 @@
   ([m]
    (to (all m) m))
   ([a m]
-   (prn (core/to-vec a m))
-  (map stmem/set-val (core/to-vec a m))))
+   (map stmem/set-val (core/to-vec a m))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.
@@ -23,9 +22,13 @@
 
   Example:
   ```clojure
-  (from {\"A\" {:Type \"ref\", :Unit \"Pa\", :Value 100.0},
+  (def all {\"A\" {:Type \"ref\", :Unit \"Pa\", :Value 100.0},
          \"B\" \"token\",
-         \"Target_pressure\" {:Selected 1, :Unit \"Pa\"}} {:%check A})
+         \"Target_pressure\" {:Selected 1, :Unit \"Pa\"}})
+
+  (def m {:%check A})
+  
+  (from all m)
   ;; =>
   ;; {:%check {:Type \"ref\" :Unit \"Pa\" :Value 100.0}}
   ```"

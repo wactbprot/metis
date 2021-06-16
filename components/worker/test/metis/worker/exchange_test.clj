@@ -15,13 +15,25 @@
                       (when (and usr pwd) (str usr ":" pwd "@"))
                       "127.0.0.1:5984/" db)}))
 
+(deftest write-i
+  (testing "Write to stmem exchpath even with wrong path."
+    (let [m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}
+          value {:Type "ind" :Unit "Pa" :Value 1}
+          path "Test"]
+      (write! {:ExchangePath path :Value value} m)
+      (is (= value (stmem/get-val {:mp-id "test" :struct :exch :exchpath path})))))
+  (testing "Write to exch wit dot path."
+    (write! {:ExchangePath "Test.Unit" :Value "mbar"} {:mp-id "test"})
+    (is (= "mbar" (:Unit (stmem/get-val {:mp-id "test" :struct :exch :exchpath "Test"}))))))
+
+
 (deftest read-i
-  (testing ""
-    (let [doc-id    "exch-read-test"
-          exch-path "ExchPath"
-          doc-path   "Test"
-          n (rand-int 10000)
-          m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}]
+  (testing "Read from stmem (with wrong path) and write to ltmem."
+    (let [doc-id      "exch-read-test"
+          exch-path   "ExchPath"
+          doc-path    "Test"
+          n           (rand-int 10000)
+          m           {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}]
       (ltmem/put-doc conf {:_id doc-id})
       (doc/renew conf [])
       (doc/add conf m doc-id)
@@ -29,4 +41,4 @@
       (write! {:ExchangePath exch-path :Value {:Type "ind" :Unit "Pa" :Value n}} m)
       (is (=  n (:Value (get (exch/all m) exch-path))))
       (read! conf {:DocPath doc-path :ExchangePath exch-path} m)
-      #_(ltmem/get-doc conf doc-id))))
+      (is (= n (get-in (ltmem/get-doc conf doc-id) [:Test 0 :Value 0]))))))
