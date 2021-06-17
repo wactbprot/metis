@@ -100,6 +100,7 @@
     m))
 
 (defn to-vec [a {x :value p :exchpath :as m}]
-   (mapv
-    (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
-    (enclose-map x p)))
+  (map
+   (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
+   (enclose-map x p)))
+  

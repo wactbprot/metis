@@ -24,6 +24,12 @@
            (stmem/set-val (assoc m :value (inc n)))
            {:ok true})))))
 
+(defn write-to-exchange [val-m m]
+  (map (fn [[k v]]
+          (exch/to (exch/all m) (assoc m :exchpath k :value v)))
+       val-m)
+  {:ok true})
+
 (defn dispatch
   "Dispatches responds from outer space. Expected responses are:
   
@@ -36,12 +42,11 @@
   to the state key (done)."
   [{error :error to-exch :ToExchange ids :ids result :Result retry :Retry :as body} {doc-path :DocPath :as task} m]
   (µ/log ::dispatch :message "try to write response" :m m)
-  (prn (exch/all m))
   (stmem/set-val (assoc m :func :resp :value body))
   (if error
     (stmem/set-state-error (assoc m :message error))
     (let [res-retry (if retry (do-retry m)  {:ok true}) 
-          res-exch  (if to-exch (exch/to (exch/all m) to-exch) {:ok true})
+          res-exch  (if to-exch (write-to-exchange m to-exch) {:ok true})
           res-ids   (if ids (doc/renew m ids) {:ok true})
           res-doc   (if (and doc-path result) (doc/store-results m result doc-path) {:ok true})]
       (cond

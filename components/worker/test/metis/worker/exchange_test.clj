@@ -44,3 +44,6 @@
       (is (=  n (:Value (get (exch/all m) exch-path))))
       (read! conf {:DocPath doc-path :ExchangePath exch-path} m)
       (is (= n (get-in (ltmem/get-doc conf doc-id) [:Test 0 :Value 0]))))))
+
+
+
