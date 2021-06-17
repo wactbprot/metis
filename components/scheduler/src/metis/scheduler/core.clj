@@ -68,7 +68,7 @@
         {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
         {:ctrl :mon    :state :work}     (worker/run m)
         ;; stop
-        {:ctrl :stop   :state :error}    (set-ctrl m :error)
+        {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
         {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
         {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
         {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
@@ -87,7 +87,7 @@
   "De-registers the listener for the `mp-id`. After stopping, the system
   will no longer react on changes (write events) at any interface."
   [mp-id]
-  (mu/log ::stop-ctrl :message "clean mp listener")
+  (mu/log ::stop :message "clean mp listener")
   (stmem/clean-register {:mp-id mp-id}))
 
 ;;------------------------------
@@ -99,5 +99,5 @@
   ([mp-id]
    (start c/config mp-id))
   ([config mp-id]
-   (mu/log ::start-ctrl :message "register mp listener check callback")
+   (mu/log ::start :message "register mp listener check callback")
    (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :*} check)))

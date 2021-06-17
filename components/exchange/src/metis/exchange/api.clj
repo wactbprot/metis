@@ -14,7 +14,8 @@
   ([m]
    (to (all m) m))
   ([a m]
-   (map stmem/set-val (core/to-vec a m))))
+   (doall
+    (map stmem/set-val (core/to-vec a (assoc m :struct :exch))))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.

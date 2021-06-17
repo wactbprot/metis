@@ -1,15 +1,15 @@
 {:mulog {:type :multi
          :publishers[
                      ;; send events to the stdout
-                     {:type :console
-                      :pretty? true}
+                     ;;{:type :console
+                     ;; :pretty? true}
                      ;; send events to ELS
-                     ;; {:type :elasticsearch
-                     ;;  :url  "http://localhost:9200/"
-                     ;;  :els-version  :v7.x
-                     ;;  :publish-delay 1000
-                     ;;  :data-stream  "vl-log-stream"
-                     ;;  :name-mangling false}
+                      {:type :elasticsearch
+                       :url  "http://a75438:9200/"
+                       :els-version  :v7.x
+                       :publish-delay 1000
+                       :data-stream  "vl-log-stream"
+                       :name-mangling false}
                      ]}
  ;; rest api server
  :api {:port 8010}
@@ -54,7 +54,7 @@
  ;; short term memory: redis
  :stmem-srv "127.0.0.1"
  :stmem-port 6379
- :stmem-db 0
+ :stmem-db 2
  :stmem-notif-sep "@"
  :stmem-key-sep "@"
  ;; register relax

@@ -9,27 +9,31 @@
             [metis.utils.interface :as u]))
 
 (defn write
-  [{type :Type doc-path :DocPath exch-path :ExchangePath} value m]
+  [conf {type :Type doc-path :DocPath exch-path :ExchangePath} value m]
   (let [val-m {:Type type :Value value}]
     (when exch-path
-      (exch/to (exch/all m) (assoc m :no-idx exch-path :value val-m)))
-    (if (:ok (doc/store-results m [val-m] doc-path))
+      (exch/to (exch/all m) (assoc m :exchpath exch-path :value val-m)))
+    (if (:ok (doc/store-results conf m [val-m] doc-path))
       (stmem/set-state-executed (assoc m :message "get time executed"))
       (stmem/set-state-error (assoc m :message "unexpected return value")))))
   
 (defn store-date!
   "Generates this date object: `[{:Type <type> :Value (u/get-date)}]`
   and stores it under  `DocPath`."
-  [task m]
-  (stmem/set-state-working m)
-  (write task (u/get-date) m))
+  ([task m]
+   (store-date! c/config task m))
+  ([conf task m]
+   (stmem/set-state-working m)
+   (write conf task (u/get-date) m)))
 
 (defn store-time!
   "Generates a timestamp object `{:Type <type> :Value (u/get-time)}` and
   stores it under `:DocPath`."
-  [task m]
-  (stmem/set-state-working m)
-  (write task (u/get-time) m))
+  ([task m]
+   (store-time! c/config task m))
+  ([conf task m]
+   (stmem/set-state-working m)
+   (write conf task (u/get-time) m)))
 
 (comment
   {:TaskName "Common-get_date"

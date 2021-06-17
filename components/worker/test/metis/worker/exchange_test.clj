@@ -15,30 +15,32 @@
                       (when (and usr pwd) (str usr ":" pwd "@"))
                       "127.0.0.1:5984/" db)}))
 
+(def m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state})
+
+(def value {:Type "ind" :Unit "Pa" :Value 1})
+
 (deftest write-i
   (testing "Write to stmem exchpath even with wrong path."
-    (let [m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}
-          value {:Type "ind" :Unit "Pa" :Value 1}
-          path "Test"]
+    (let [path "Test"]
       (write! {:ExchangePath path :Value value} m)
-      (is (= value (stmem/get-val {:mp-id "test" :struct :exch :exchpath path})))))
-  (testing "Write to exch wit dot path."
-    (write! {:ExchangePath "Test.Unit" :Value "mbar"} {:mp-id "test"})
-    (is (= "mbar" (:Unit (stmem/get-val {:mp-id "test" :struct :exch :exchpath "Test"}))))))
-
+      (is (= value
+             (stmem/get-val {:mp-id "test" :struct :exch :exchpath path})))
+      (write! {:ExchangePath "Test.Unit" :Value "mbar"} {:mp-id "test"})
+      (is (= (assoc value :Unit "mbar")
+             (stmem/get-val {:mp-id "test" :struct :exch :exchpath path}))))))
 
 (deftest read-i
   (testing "Read from stmem (with wrong path) and write to ltmem."
     (let [doc-id      "exch-read-test"
           exch-path   "ExchPath"
           doc-path    "Test"
-          n           (rand-int 10000)
-          m           {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}]
+          n           (rand-int 10000)]
       (ltmem/put-doc conf {:_id doc-id})
-      (doc/renew conf [])
+      (doc/renew conf m [])
+      (is (empty? (first (doc/ids m))))
       (doc/add conf m doc-id)
       (is (= doc-id (first (doc/ids m))))
-      (write! {:ExchangePath exch-path :Value {:Type "ind" :Unit "Pa" :Value n}} m)
+      (write! {:ExchangePath exch-path :Value (assoc value :Value n)} m)
       (is (=  n (:Value (get (exch/all m) exch-path))))
       (read! conf {:DocPath doc-path :ExchangePath exch-path} m)
       (is (= n (get-in (ltmem/get-doc conf doc-id) [:Test 0 :Value 0]))))))

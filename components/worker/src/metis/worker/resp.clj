@@ -36,6 +36,7 @@
   to the state key (done)."
   [{error :error to-exch :ToExchange ids :ids result :Result retry :Retry :as body} {doc-path :DocPath :as task} m]
   (µ/log ::dispatch :message "try to write response" :m m)
+  (prn (exch/all m))
   (stmem/set-val (assoc m :func :resp :value body))
   (if error
     (stmem/set-state-error (assoc m :message error))

@@ -3,7 +3,7 @@
              [metis.config.interface :as c]
              [metis.stmem.core :as core]
              [taoensso.carmine :as car :refer (wcar)]
-             [com.brunobonacci.mulog :as mu]
+             [com.brunobonacci.mulog :as µ]
              [clojure.string :as string]
              [metis.stmem.trans :as trans]))
 
@@ -92,7 +92,7 @@
                 wrap-key->map
                 wrap-msg->key
                 wrap-skip-psubs)]
-     (mu/log ::gen-listener :message (str "will subscribe to: " pat))
+     (µ/log ::gen-listener :message (str "will subscribe to: " pat))
      (car/with-new-pubsub-listener conn {pat f} (car/psubscribe pat)))))
 
 (defn registered? [k] (contains? @listeners k))
@@ -132,7 +132,7 @@
   [m]
   (map (fn [[k v]]
          (when (string/starts-with? k (:mp-id m))
-            (mu/log ::clean-register :message "will clean" :key k)
+            (µ/log ::clean-register :message "will clean" :key k)
            (close-listener v)
            (swap! listeners dissoc k)))
        @listeners))
@@ -142,7 +142,7 @@
   afterwards from the `listeners` atom."
   [m]
   (let [k (reg-key m)]
-    (mu/log ::de-register :message "will de-register" :key k)
+    (µ/log ::de-register :message "will de-register" :key k)
     (when (registered? k)
       (close-listener (@listeners k))
       {:ok (map? (swap! listeners dissoc k))})))
