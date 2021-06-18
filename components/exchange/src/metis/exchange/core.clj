@@ -1,7 +1,7 @@
 (ns metis.exchange.core
   ^{:author "wactbprot"
     :doc "Handles the access to the exchange interface."}
-  (:require [com.brunobonacci.mulog :as mu]
+  (:require [com.brunobonacci.mulog :as µ]
             [clojure.string :as string]
             [metis.utils.interface :as utils]))
 
@@ -101,7 +101,8 @@
     m))
 
 (defn to-vec [a {x :value p :exchpath :as m}]
-  (mapv
-   (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
-   (enclose-map x p)))
+  (µ/trace ::to-vec [:function "exchange/to-vec"]
+           (mapv
+            (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
+            (enclose-map x p))))
   

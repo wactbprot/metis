@@ -2,7 +2,7 @@
   ^{:author "wactbprot"
     :doc "Handles the access to the exchange interface."}
   (:require [metis.exchange.core :as core]
-            [com.brunobonacci.mulog :as mu]
+            [com.brunobonacci.mulog :as µ]
             [metis.stmem.interface :as stmem]))
 
 (defn all [{mp-id :mp-id}]
@@ -14,10 +14,12 @@
   ([m]
    (to (all m) m))
   ([a m]
-   (let [res  (doall (mapv stmem/set-val
-                           (doall (core/to-vec a (assoc m :struct :exch)))))
-         err (filter :error res)]
-     (if (empty? err) {:ok true} {:error "on attempt writing to exchange"}))))
+   (µ/trace ::to [:function "exchange/to"]
+            (let [res  (doall (mapv stmem/set-val
+                                    (doall
+                                     (core/to-vec a (assoc m :struct :exch)))))
+                  err (filter :error res)]
+              (if (empty? err) {:ok true} {:error "on attempt writing to exchange"})))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.

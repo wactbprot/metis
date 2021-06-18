@@ -2,7 +2,7 @@
   ^{:author "wactbprot"
     :doc "Starts and stops a scheduler."}
   (:require [metis.config.interface :as c]
-            [com.brunobonacci.mulog :as mu]
+            [com.brunobonacci.mulog :as µ]
             [metis.scheduler.proc :as proc]
             [metis.stmem.interface :as stmem]
             [metis.worker.interface :as worker]))
@@ -55,30 +55,32 @@
   "Processes whats todo next depending on the state of state and ctrl
   interface."
   [m]
-  (let [s (merge (state (state-interface m)) (ctrl m))
-        m (:m s)]
-    (when-not (= (:ctrl s) :check)
-      (condp = (dissoc s :m)
-        ;; run
-        {:ctrl :run    :state :error}    (set-ctrl m :error)
-        {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
-        {:ctrl :run    :state :work}     (worker/run m)
-        ;; mon
-        {:ctrl :mon    :state :error}    (set-ctrl m :error) 
-        {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
-        {:ctrl :mon    :state :work}     (worker/run m)
-        ;; stop
-        {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
-        {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
-        {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
-        {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
-        ;; reset
-        {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
-        {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
-        {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
-        {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
-        
-        (mu/log ::dispatch :message "state not handeled" :state s)))))
+  (µ/trace ::check [:function "scheduler/check"]
+           
+           (let [s (merge (state (state-interface m)) (ctrl m))
+                 m (:m s)]
+             (when-not (= (:ctrl s) :check)
+               (condp = (dissoc s :m)
+                 ;; run
+                 {:ctrl :run    :state :error}    (set-ctrl m :error)
+                 {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
+                 {:ctrl :run    :state :work}     (worker/run m)
+                 ;; mon
+                 {:ctrl :mon    :state :error}    (set-ctrl m :error) 
+                 {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
+                 {:ctrl :mon    :state :work}     (worker/run m)
+                 ;; stop
+                 {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
+                 {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
+                 {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
+                 {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
+                 ;; reset
+                 {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
+                 {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
+                 {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
+                 {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
+                 
+                 (µ/log ::dispatch :message "state not handeled" :state s))))))
 
 ;;------------------------------
 ;; stop 
@@ -87,7 +89,7 @@
   "De-registers the listener for the `mp-id`. After stopping, the system
   will no longer react on changes (write events) at any interface."
   [mp-id]
-  (mu/log ::stop :message "clean mp listener")
+  (µ/log ::stop :message "clean mp listener")
   (stmem/clean-register {:mp-id mp-id}))
 
 ;;------------------------------
@@ -99,5 +101,5 @@
   ([mp-id]
    (start c/config mp-id))
   ([config mp-id]
-   (mu/log ::start :message "register mp listener check callback")
+   (µ/log ::start :message "register mp listener check callback")
    (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :*} check)))

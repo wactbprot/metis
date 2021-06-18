@@ -35,32 +35,33 @@
   It's maybe a good idea to save the respons body to a key associated
   to the state key (done)."
   [{error :error to-exch :ToExchange ids :ids result :Result retry :Retry :as body} {doc-path :DocPath :as task} m]
-  (µ/log ::dispatch :message "try to write response" :m m)
-  (stmem/set-val (assoc m :func :resp :value body))
-  (if error
-    (stmem/set-state-error (assoc m :message error))
-    (let [res-retry (if retry (do-retry m)  {:ok true}) 
-          res-exch  (if to-exch (exch/to (exch/all m) (assoc m :value to-exch)) {:ok true})
-          res-ids   (if ids (doc/renew m ids) {:ok true})
-          res-doc   (if (and doc-path result) (doc/store-results m result doc-path) {:ok true})]
-      (cond
-        (:error res-retry) (stmem/set-state-error (assoc m :message "error at retry"))
-        (:error res-exch)  (stmem/set-state-error (assoc m :message "error at exchange"))
-        (:error res-ids)   (stmem/set-state-error (assoc m :message "error at ids refresh"))
-        (:error res-doc)   (stmem/set-state-error (assoc m :message "error at document"))
-        (and
-         (:ok res-retry)
-         (:ok res-ids)
-         (:ok res-exch)
-         (:ok res-doc)) (do
-                          (if (exch/stop-if (exch/all m) task)
-                            (stmem/set-state-executed m)
-                            (stmem/set-state-ready m))
-                          {:ok true})
-        :unexpected (do
-                      (stmem/set-state-error (assoc m :message "unexpected response"))
-                      {:error "unexpected response"})))))
-
+  (µ/trace ::dispatch [:function "resp/dispatch"]
+           (µ/log ::dispatch :message "try to write response" :m m)
+           (stmem/set-val (assoc m :func :resp :value body))
+           (if error
+             (stmem/set-state-error (assoc m :message error))
+             (let [res-retry (if retry (do-retry m)  {:ok true}) 
+                   res-exch  (if to-exch (exch/to (exch/all m) (assoc m :value to-exch)) {:ok true})
+                   res-ids   (if ids (doc/renew m ids) {:ok true})
+                   res-doc   (if (and doc-path result) (doc/store-results m result doc-path) {:ok true})]
+               (cond
+                 (:error res-retry) (stmem/set-state-error (assoc m :message "error at retry"))
+                 (:error res-exch)  (stmem/set-state-error (assoc m :message "error at exchange"))
+                 (:error res-ids)   (stmem/set-state-error (assoc m :message "error at ids refresh"))
+                 (:error res-doc)   (stmem/set-state-error (assoc m :message "error at document"))
+                 (and
+                  (:ok res-retry)
+                  (:ok res-ids)
+                  (:ok res-exch)
+                  (:ok res-doc)) (do
+                                   (if (exch/stop-if (exch/all m) task)
+                                     (stmem/set-state-executed m)
+                                     (stmem/set-state-ready m))
+                                   {:ok true})
+                 :unexpected (do
+                               (stmem/set-state-error (assoc m :message "unexpected response"))
+                               {:error "unexpected response"}))))))
+  
 ;;------------------------------
 ;; check
 ;;------------------------------
