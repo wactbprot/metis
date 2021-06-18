@@ -14,8 +14,10 @@
   ([m]
    (to (all m) m))
   ([a m]
-   (doall
-    (map stmem/set-val (core/to-vec a (assoc m :struct :exch))))))
+   (let [res  (doall (mapv stmem/set-val
+                           (doall (core/to-vec a (assoc m :struct :exch)))))
+         err (filter :error res)]
+     (if (empty? err) {:ok true} {:error "on attempt writing to exchange"}))))
 
 (defn from
   "Builds a map by replacing the values of the input map `m`.

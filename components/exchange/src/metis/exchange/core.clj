@@ -86,10 +86,11 @@
   ```"
   [m p]
   (if p
-    (let [a (path->first-string p)]
-      (if-let [b (path->second-kw p)]
-        {a {b m}}
-        {a m}))
+    (let [p (name p)]
+      (let [a (path->first-string p)]
+        (if-let [b (path->second-kw p)]
+          {a {b m}}
+          {a m})))
     m))
 
 (defn fit-in [o m]
@@ -100,7 +101,7 @@
     m))
 
 (defn to-vec [a {x :value p :exchpath :as m}]
-  (map
+  (mapv
    (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
    (enclose-map x p)))
   
