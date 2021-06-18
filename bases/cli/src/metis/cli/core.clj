@@ -101,7 +101,7 @@
 
 (defn cs-title [mp-id]
   (pp/print-table
-   (stmem/get-maps {:mp-id  "mpd-se3-servo" :struct :cont :func :title :no-idx :*  })))
+   (stmem/get-maps {:mp-id mp-id :struct :cont :func :title :no-idx :*  })))
 
 ;;------------------------------
 ;; t- task commands
@@ -113,4 +113,6 @@
 ;;------------------------------
 ;; d- document commands
 ;;------------------------------
-(defn d-add [mp-id doc-id]  (document/add {:mp-id mp-id} doc-id))
+(defn d-add [mp-id doc-id] (document/add {:mp-id mp-id} doc-id))
+
+(defn d-rm [mp-id doc-id] (document/rm {:mp-id mp-id} doc-id))

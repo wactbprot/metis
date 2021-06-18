@@ -33,13 +33,21 @@
   (fn [doc]
     (first (filter #(not (or (= :_id %) (= :_rev %))) (keys doc)))))
 
-(defmethod doc-info :Calibration [doc] (assoc (base-info doc) :doc-type "Calibration"))
+(defmethod doc-info :Calibration
+  [doc]
+  (assoc (base-info doc) :doc-type "Calibration"))
 
-(defmethod doc-info :Measurement [doc] (assoc (base-info doc) :doc-type "Measurement"))
+(defmethod doc-info :Measurement
+  [doc]
+  (assoc (base-info doc) :doc-type "Measurement"))
 
-(defmethod doc-info :State       [doc] (assoc (base-info doc) :doc-type "State"))
+(defmethod doc-info :State
+  [doc]
+  (assoc (base-info doc) :doc-type "State"))
 
-(defmethod doc-info :default     [doc] (assoc (base-info doc) :doc-type "default"))
+(defmethod doc-info :default
+  [doc]
+  (assoc (base-info doc) :doc-type "default"))
 
 ;;------------------------------
 ;; add
@@ -133,8 +141,9 @@
   ([m results doc-path]
    (store-results c/config m results doc-path))
   ([conf {mp-id :mp-id :as m} results doc-path]
-   (if (and (string? mp-id) (vector? results) (string? doc-path))
-     (doall
-      (into {} (map #(execute conf % results doc-path) (ids m))))
-     {:error "wrong input params"})))
-  
+   (µ/trace ::store-results [:function "document/store-results"]
+            (if (and (string? mp-id) (vector? results) (string? doc-path))
+              (doall
+               (into {:ok true} (map #(execute conf % results doc-path) (ids m))))
+              {:error "wrong input params"}))))
+
