@@ -74,7 +74,7 @@
 (defn m-stop [mp-id] (scheduler/stop mp-id))
 
 ;;------------------------------
-;; e- ecchange commands
+;; e- exchange commands
 ;;------------------------------
 (defn e-all [mp-id] (exchange/all {:mp-id mp-id}))
 
@@ -89,6 +89,8 @@
 
 (defn c-suspend [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :suspend}))
 
+(defn c-reset [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :reset}))
+
 (defn c-state [mp-id i]
   (pp/print-table
    (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :state :seq-idx :* :par-idx :* })))
@@ -96,6 +98,10 @@
 (defn c-ctrl [mp-id i]
   (pp/print-table
    (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :ctrl})))
+
+(defn cs-title [mp-id]
+  (pp/print-table
+   (stmem/get-maps {:mp-id  "mpd-se3-servo" :struct :cont :func :title :no-idx :*  })))
 
 ;;------------------------------
 ;; t- task commands
