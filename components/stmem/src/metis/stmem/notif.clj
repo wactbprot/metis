@@ -97,6 +97,11 @@
 
 (defn registered? [k] (contains? @listeners k))
 
+(defn registered []
+  (mapv
+   (fn [[k v ]] (merge {:reg-key k} (get-in v [:connection :spec])))
+   @listeners))
+
 (defn register
   "Generates a listener for the function `f`. Registers it at the
   `listeners` atom."

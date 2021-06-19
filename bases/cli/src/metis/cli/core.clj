@@ -73,6 +73,8 @@
 
 (defn m-stop [mp-id] (scheduler/stop mp-id))
 
+(defn m-active [] (pp/print-table (stmem/registered)))
+
 ;;------------------------------
 ;; e- exchange commands
 ;;------------------------------
