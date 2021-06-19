@@ -6,8 +6,6 @@
             [clj-time.format :as tm-f]
             [clj-time.coerce :as tm-c]))
 
-(def ok-set #{"ok" :ok "true" true "yo!"})
-
 ;;------------------------------
 ;; date time
 ;;------------------------------

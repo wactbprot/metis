@@ -12,7 +12,6 @@
   [conf {type :Type doc-path :DocPath exch-path :ExchangePath} value m]
   (let [val-m {:Type type :Value value}]
     (when exch-path
-      (prn "..")
       (exch/to (exch/all m) (assoc m :exchpath exch-path :value val-m)))
     (if (:ok (doc/store-results conf m [val-m] doc-path))
       (stmem/set-state-executed (assoc m :message "get time executed"))

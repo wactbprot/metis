@@ -2,8 +2,7 @@
   ^{:author "wactbprot"
     :doc "Handles the access to the exchange interface."}
   (:require [com.brunobonacci.mulog :as µ]
-            [clojure.string :as string]
-            [metis.utils.interface :as utils]))
+            [clojure.string :as string]))
 
 (defn path->second-kw
   "Returns the keyword or nil.
@@ -39,7 +38,7 @@
 (defn ok?
   "Checks a certain exchange endpoint to evaluate to true"
   [a p]
-  (contains? utils/ok-set (get-val a p)))
+  (contains? #{"ok" :ok "true" true "yo!"} (get-val a p)))
 
 (defn exists? [a p] (some? (get-val a p)))
 
