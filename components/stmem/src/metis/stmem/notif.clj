@@ -97,7 +97,10 @@
 
 (defn registered? [k] (contains? @listeners k))
 
-(defn registered []
+(defn registered 
+  "Retuns a vector of maps containing information about the registered
+  listeners"
+  []
   (mapv
    (fn [[k v ]] (merge {:reg-key k} (get-in v [:connection :spec])))
    @listeners))

@@ -88,7 +88,7 @@
 (defn stop
   "De-registers the listener for the `mp-id`. After stopping, the system
   will no longer react on changes (write events) at any interface."
-  [mp-id]
+  [{mp-id :mp-id}]
   (µ/log ::stop :message "clean mp listener")
   (stmem/clean-register {:mp-id mp-id}))
 
@@ -98,8 +98,8 @@
 (defn start
   "Registers a listener with the pattern `__keyspace@<stmem-db>*__:<mp-id>@*@*@*`.
   The [[check]] function becomes the listeners `callback`." 
-  ([mp-id]
-   (start c/config mp-id))
-  ([config mp-id]
+  ([m]
+   (start c/config m))
+  ([config {mp-id :mp-id}]
    (µ/log ::start :message "register mp listener check callback")
    (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :*} check)))

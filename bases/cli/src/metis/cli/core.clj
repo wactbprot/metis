@@ -59,21 +59,25 @@
      #(update % :display utils/short-string)
      (ms-list s)))))
 
-(defn m-build [mp-id]
+(defn ms-active
+  "Prints a table of all active mpds"
+  [] (pp/print-table (stmem/registered)))
+
+(defn m-build
   "Builds the mpd with the given `mp-id`."
+  [mp-id]
   (-> mp-id ltmem/get-doc utils/map->safe-map model/build-mpd))
  
-(defn m-build-ref []
+(defn m-build-ref 
   "Builds the reference mpd `mpd-ref.edn`."
+  []
   (model/build-mpd (c/mpd-ref)))
 
 (defn m-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
 
-(defn m-start [mp-id] (scheduler/start mp-id))
+(defn m-start [mp-id] (scheduler/start {:mp-id mp-id}))
 
-(defn m-stop [mp-id] (scheduler/stop mp-id))
-
-(defn m-active [] (pp/print-table (stmem/registered)))
+(defn m-stop [mp-id] (scheduler/stop {:mp-id mp-id}))
 
 ;;------------------------------
 ;; e- exchange commands
