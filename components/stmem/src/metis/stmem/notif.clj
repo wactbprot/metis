@@ -110,12 +110,12 @@
   `listeners` atom."
   ([m f]
    (register c/config m f))
-  ([config m f]
+  ([{relax :stmem-reg-relax :as config} m f]
    (let [reg-key (reg-key config m)]
      (if-not (registered? reg-key)
        (do
         (swap! listeners assoc reg-key (gen-listener m f))
-        (Thread/sleep (:stmem-reg-relax config))
+        (Thread/sleep relax)
         {:ok true})
        {:ok true :warn "already registered"}))))
 
@@ -137,10 +137,10 @@
 
 (defn clean-register
   "Closes and `de-registers` **all** `listeners` belonging to `mp-id` ."
-  [m]
+  [{mp-id :mp-id}]
   (map (fn [[k v]]
-         (when (string/starts-with? k (:mp-id m))
-            (µ/log ::clean-register :message "will clean" :key k)
+         (when (string/starts-with? k mp-id)
+           (µ/log ::clean-register :message "will clean" :key k)
            (close-listener v)
            (swap! listeners dissoc k)))
        @listeners))
