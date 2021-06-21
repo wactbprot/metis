@@ -26,8 +26,11 @@
   ([m]
    (reg-pat c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} {mp-id :mp-id :as m}]
-   (let [pat (str mp-id s (m->struct config m) s (m->no-idx config m) s  (m->func config m))]
-     (if (string/includes? pat (:* t)) pat (str pat s (:* t))))))
+   (let [pat (str mp-id s
+                  (m->struct config m) s
+                  (m->no-idx config m) s
+                  (m->func config m))]
+     (if (string/includes? pat (:* t)) pat (str pat (:* t))))))
 
 (defn subs-pat
   "Generates subscribe patterns."
@@ -55,8 +58,7 @@
 
 (defn wrap-msg->key
   [f]
-  (fn [[_ _ s _]]
-    (f (second (string/split s #":")))))
+  (fn [[_ _ s _]] (f (second (string/split s #":")))))
 
 (defn wrap-key->map
   ([f]
@@ -68,8 +70,7 @@
   ([f]
    (wrap-assoc-value c/config f))
   ([config f]
-   (fn [m]
-     (f (assoc m :value (api/get-val m))))))
+   (fn [m] (f (assoc m :value (api/get-val m))))))
 
 ;;------------------------------
 ;; generate listener

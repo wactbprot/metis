@@ -9,7 +9,8 @@
             [metis.stmem.interface :as stmem]
             [metis.scheduler.interface :as scheduler]
             [clojure.string :as string]
-            [metis.utils.interface :as utils]))
+            [metis.utils.interface :as utils]
+            [metis.worker.interface :as worker]))
 
 ;;------------------------------
 ;; logging system
@@ -66,7 +67,7 @@
   []
    (pp/print-table
     (mapv
-     #(update % :value utils/short-string)
+     #(dissoc % :seq-idx :par-idx :func)
      (stmem/get-maps {:mp-id :* :struct :meta :metapath :descr}))))
 
 (defn ms-active
@@ -123,11 +124,15 @@
   [mp-id i]
   (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :reset}))
 
+(defn c-maps
+  "Prints the state table of `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :state :seq-idx :* :par-idx :* }))
+
 (defn c-state
   "Prints the state table of `c`ontainer `i` of `mp-id`."
   [mp-id i]
-  (pp/print-table
-   (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :state :seq-idx :* :par-idx :* })))
+  (pp/print-table (c-maps mp-id i)))
 
 (defn c-ctrl
   "Prints the ctrl table of `c`ontainer `i` of `mp-id`."
@@ -147,6 +152,8 @@
 (defn t-build [] (model/build-tasks (ltmem/all-tasks)))
 
 (defn t-clear [] (model/clear-tasks))
+
+(defn t-run [m] (worker/run m))
 
 ;;------------------------------
 ;; d- document commands

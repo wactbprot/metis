@@ -59,9 +59,9 @@
 ;; check-in
 ;;------------------------------
 (defn run
-  "Gets the `task` and calls the `dispach` function on
-  it. Handles the `:RunIf` case. The `:StopIf` case is handeled by the
-  `workers` after processing the task."  
+  "Gets the `task` and calls the `dispach` function on it. Handles the
+  `:RunIf` case. The `:StopIf` case is handeled by the `workers` after
+  processing the task."  
   ([m]
    (run c/config m))
   ([{stop-if-delay :stop-if-delay} m]
