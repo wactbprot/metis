@@ -32,13 +32,14 @@
 ;;------------------------------
 ;; default  keys
 ;;------------------------------
-(defn map->struct-part [{trans :stmem-trans s :stmem-key-sep} m]
-  (when  (:mp-id m)
-    (when-let [p (:struct m)]
-      (str (:mp-id m) s (if (keyword? p) (p trans) p)))))
+(defn map->struct-part
+  [{trans :stmem-trans s :stmem-key-sep} {mp-id :mp-id p :struct}]
+  (when  mp-id
+    (when p
+      (str (if (keyword? mp-id) (mp-id trans) mp-id) s (if (keyword? p) (p trans) p)))))
 
 (defn map->no-idx-part [{trans :stmem-trans s :stmem-key-sep :as config} m]
-  (when-let[no-idx (:no-idx m)]
+  (when-let [no-idx (:no-idx m)]
     (str s (if (= :* no-idx) (:* trans) (lpad config (:no-idx m))))))
 
 (defn map->func-part [{trans :stmem-trans s :stmem-key-sep} m]

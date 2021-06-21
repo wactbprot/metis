@@ -40,7 +40,7 @@
   [mp-id]
   (ltmem/get-doc mp-id))
 
-(defn ms-list
+(defn ms-list-ltmem
   "Returns a list of maps of the `mpd`s available at ltmem. Filters
   the ids by the optional given substring."
   ([]
@@ -50,7 +50,7 @@
     #(when (map? %) (string/includes? (:id %) s))
     (ltmem/all-mpds))))
 
-(defn ms-table
+(defn ms-table-ltmem
   "Prints a table version of [[ms-list]]."
   ([]
    (ms-table ""))
@@ -59,6 +59,15 @@
     (mapv
      #(update % :display utils/short-string)
      (ms-list s)))))
+
+
+(defn ms-table-stmem
+  "Prints a table of all mpds available at stmem."
+  []
+   (pp/print-table
+    (mapv
+     #(update % :value utils/short-string)
+     (stmem/get-maps {:mp-id :* :struct :meta :metapath :descr}))))
 
 (defn ms-active
   "Prints a table of all active mpds"
