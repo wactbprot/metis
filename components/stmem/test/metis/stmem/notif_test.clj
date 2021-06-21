@@ -28,14 +28,14 @@
                      :stmem-trans {:* "*"
                                    :b "b"}} {:mp-id "a" :struct :b :no-idx 5}))))
   (testing "behaviour :mp-id :struct :no-idx :func"
-    (is (= "a.b.00005.c.*.00000"
+    (is (= "a.b.00005.c*.00000"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
                                    :b "b"
                                    :c "c"}} {:mp-id "a" :struct :b :no-idx 5 :func :c}))))
   (testing "behaviour :mp-id :struct :no-idx :func :level"
-    (is (= "a.b.00005.c.*.00002"
+    (is (= "a.b.00005.c*.00002"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
