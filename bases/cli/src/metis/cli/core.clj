@@ -35,8 +35,9 @@
 ;;------------------------------
 ;; m- mpd commands
 ;;------------------------------
-(defn m-get [mp-id]
+(defn m-get
   "Get the measurement program definition (mpd) from the longterm memory (ltm)."
+  [mp-id]
   (ltmem/get-doc mp-id))
 
 (defn ms-list
@@ -61,7 +62,8 @@
 
 (defn ms-active
   "Prints a table of all active mpds"
-  [] (pp/print-table (stmem/registered)))
+  []
+  (pp/print-table (stmem/registered)))
 
 (defn m-build
   "Builds the mpd with the given `mp-id`."
@@ -87,25 +89,46 @@
 ;;------------------------------
 ;; c- container commands
 ;;------------------------------
-(defn c-run [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :run}))
+(defn c-run
+  "Runs `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :run}))
 
-(defn c-mon [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :mon}))
+(defn c-mon
+  "Monitors (cyclic runs) `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :mon}))
 
-(defn c-stop [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :stop}))
+(defn c-stop
+  "Stops `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :stop}))
 
-(defn c-suspend [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :suspend}))
+(defn c-suspend
+  "Suspends `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :suspend}))
 
-(defn c-reset [mp-id i] (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :reset}))
+(defn c-reset
+  "Resets `c`ontainer `i` of `mp-id`."
+  [mp-id i]
+  (stmem/set-val {:mp-id mp-id :struct :cont :no-idx i :func :ctrl :value :reset}))
 
-(defn c-state [mp-id i]
+(defn c-state
+  "Prints the state table of `c`ontainer `i` of `mp-id`."
+  [mp-id i]
   (pp/print-table
    (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :state :seq-idx :* :par-idx :* })))
 
-(defn c-ctrl [mp-id i]
+(defn c-ctrl
+  "Prints the ctrl table of `c`ontainer `i` of `mp-id`."
+  [mp-id i]
   (pp/print-table
    (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx i :func :ctrl})))
 
-(defn cs-title [mp-id]
+(defn cs-title
+  "Prints the title table of all `c`ontainer of `mp-id`."
+  [mp-id]
   (pp/print-table
    (stmem/get-maps {:mp-id mp-id :struct :cont :func :title :no-idx :*  })))
 
