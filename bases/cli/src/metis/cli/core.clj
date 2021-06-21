@@ -45,7 +45,7 @@
   "Returns a list of maps of the `mpd`s available at ltmem. Filters
   the ids by the optional given substring."
   ([]
-   (ms-list ""))
+   (ms-list-ltmem ""))
   ([s]
    (filter
     #(when (map? %) (string/includes? (:id %) s))
@@ -54,12 +54,12 @@
 (defn ms-table-ltmem
   "Prints a table version of [[ms-list]]."
   ([]
-   (ms-table ""))
+   (ms-table-ltmem ""))
   ([s]
    (pp/print-table
     (mapv
      #(update % :display utils/short-string)
-     (ms-list s)))))
+     (ms-list-ltmem s)))))
 
 
 (defn ms-table-stmem
@@ -153,7 +153,10 @@
 
 (defn t-clear [] (model/clear-tasks))
 
-(defn t-run [m] (worker/run m))
+(defn t-run
+  "Runs task at position `m`. `m` may be provided by [[c-maps]]."
+  [m]
+  (worker/run m))
 
 ;;------------------------------
 ;; d- document commands
@@ -161,3 +164,5 @@
 (defn d-add [mp-id doc-id] (document/add {:mp-id mp-id} doc-id))
 
 (defn d-rm [mp-id doc-id] (document/rm {:mp-id mp-id} doc-id))
+
+(defn d-ids [mp-id] (document/ids {:mp-id mp-id}))
