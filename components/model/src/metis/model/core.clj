@@ -11,7 +11,7 @@
   "Builds the exchange interface."
   [{mp-id :mp-id exch :Exchange}]  
   (doseq [[k v] exch]
-    (stmem/set-val {:mp-id mp-id :struct :exch :exch (name k) :value v})))
+    (stmem/set-val {:mp-id mp-id :struct :exch :exchpath (name k) :value v})))
 
 ;;------------------------------
 ;; definition (cont & defins)
