@@ -43,3 +43,5 @@
 (defn set-ctrl-error [m] (fc/set-ctrl (assoc m :value :error)))
 
 (defn map->key [m] (trans/map->key m))
+
+(defn registered [] (notif/registered)) 
