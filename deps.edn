@@ -67,7 +67,7 @@
                                  codox-theme-rdash/codox-theme-rdash {:mvn/version "0.1.2"}}
                     :exec-fn codox.main/generate-docs
                     :exec-args {:source-paths  ["bases/cli/src"
-
+                                                "bases/srv/src"
                                                 "components/config/src"
                                                 "components/document/src"
                                                 "components/exchange/src"

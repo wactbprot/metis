@@ -9,7 +9,9 @@
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.json :as middleware]
             [ring.util.response :as res]
-            [metis.ws.interface :as ws])
+            [metis.page.interface :as page]
+            [metis.ws.interface :as ws]
+            )
     (:use   [clojure.repl])
     (:gen-class))
 
@@ -19,7 +21,7 @@
 
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
-  #_(GET "/ui" [:as req] (page/view c/config req ))  
+  (GET "/ui" [:as req] (page/index c/config req ))  
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
 
