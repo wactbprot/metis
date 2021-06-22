@@ -24,6 +24,8 @@
                                 "components/ltmem/resources"
                                 "components/model/src"
                                 "components/model/resources"
+                                "components/page/src"
+                                "components/page/resources"
                                 "components/scheduler/src"
                                 "components/scheduler/resources"
                                 "components/stmem/src"
@@ -34,9 +36,13 @@
                                 "components/utils/resources"
                                 "components/worker/src"
                                 "components/worker/resources"
+                                "components/ws/src"
+                                "components/ws/resources"
                                 ;; Bases
                                 "bases/cli/src"
                                 "bases/cli/resources"
+                                "bases/srv/src"
+                                "bases/srv/resources"
                                 ]
                   
                   :extra-deps {com.taoensso/carmine {:mvn/version "3.0.0"}
@@ -67,11 +73,13 @@
                                                 "components/exchange/src"
                                                 "components/ltmem/src"
                                                 "components/model/src"
+                                                "components/page/src"
                                                 "components/scheduler/src"
                                                 "components/stmem/src"
                                                 "components/tasks/src"
                                                 "components/utils/src"
                                                 "components/worker/src"
+                                                "components/ws/src"
                                                 ]
                                 :metadata {:doc/format :markdown}
                                 :themes [:rdash]
@@ -94,9 +102,11 @@
                                      "components/document/test"
                                      "components/scheduler/test"
                                      "components/model/test"
+                                     "components/page/test"
                                      "components/utils/test"
                                      "components/exchange/test"
                                      "components/worker/test"
+                                     "components/ws/test"
                                      "components/tasks/test"]
                        :extra-deps {cloverage/cloverage {:mvn/version "1.2.1"}}
                        :main-opts ["-m" "cloverage.coverage"

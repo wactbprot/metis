@@ -1,0 +1,50 @@
+(ns  metis.srv.core
+    ^{:author "wactbprot"
+      :doc "Provides a server for cmp info and ctrl. Starts up the configured mpds."}
+  (:require [metis.config.interface :as c]
+            [compojure.route :as route]
+            [com.brunobonacci.mulog :as µ]
+            [compojure.core :refer :all]
+            [compojure.handler :as handler]
+            [org.httpkit.server :refer [run-server]]
+            [ring.middleware.json :as middleware]
+            [ring.util.response :as res]
+            [metis.ws.interface :as ws])
+    (:use   [clojure.repl])
+    (:gen-class))
+
+(defonce server (atom nil))
+
+(declare restart)
+
+(defroutes app-routes
+  (GET "/ws" [:as req] (ws/main req))
+  #_(GET "/ui" [:as req] (page/view c/config req ))  
+  (route/resources "/")
+  (route/not-found (res/response {:error "not found"})))
+
+(def app
+  (-> (handler/site app-routes)
+      (middleware/wrap-json-body {:keywords? true})
+      middleware/wrap-json-response))
+
+(defn stop []
+  (when @server (@server :timeout 100)
+        (µ/log ::stop :message "stop server")
+        (reset! server nil)
+        {:ok true}))
+
+(defn start []
+  (µ/log ::start :message "start server")
+  (reset! server (run-server #'app (:api c/config)))
+  {:ok true})
+
+(defn restart []
+  (Thread/sleep 1000)
+  (stop)
+  (Thread/sleep 1000)
+  (start))
+
+(defn -main [& args]
+  (µ/log ::main :message "call -main")
+  (start))
