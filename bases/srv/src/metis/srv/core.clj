@@ -21,7 +21,7 @@
 
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
-  (GET "/ui" [:as req] (page/index c/config req ))  
+  (GET "/ui" [:as req] (page/index c/config req []))  
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
 
