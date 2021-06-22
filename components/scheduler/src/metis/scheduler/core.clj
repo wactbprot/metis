@@ -93,7 +93,7 @@
   (stmem/clean-register {:mp-id mp-id}))
 
 ;;------------------------------
-;; start-ctrl
+;; start
 ;;------------------------------
 (defn start
   "Registers a listener with the pattern `__keyspace@<stmem-db>*__:<mp-id>@*@*@*`.

@@ -11,7 +11,7 @@
 (defn url
   ([]
    (url c/config))
-  ([{conn :ltmem-conn}]
+  ([{conn :ltmem-base-url}]
    (str conn "/_replicate")))
 
 (defn req
