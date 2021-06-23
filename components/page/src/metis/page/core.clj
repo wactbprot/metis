@@ -4,7 +4,16 @@
             [clojure.string :as string]))
 
 (defn table-row [m]
-  [:tr [:td (:value m)] [:td (:seq-idx m)] [:td (:par-idx m)]])
+  [:tr
+   [:td (:value m)]
+   [:td [:button.uk-button.uk-button-default [:span {:uk-icon "icon: cog" :title "working"}]]
+    [:button.uk-button.uk-button-default [:span {:uk-icon "icon: check" :title "executed"}]]
+    [:button.uk-button.uk-button-default [:span {:uk-icon "icon: play" :title "ready"}]]]
+   [:td (:seq-idx m)]
+   [:td (:par-idx m)]
+   [:td (:TaskName (:task m))]
+   [:td (:Action (:task m))]
+   [:td (:Action (:task m))]])
 
 (defn state-li [v]
   (into [:div.uk-accordion-content
@@ -13,6 +22,14 @@
          [:button.uk-button.uk-button-default "cycle"]
          [:button.uk-button.uk-button-default "suspend"] 
          [:table.uk-table.uk-table-hover.uk-table-striped
+          [:thead [:tr
+                   [:th "status"]
+                   [:th "ctrls"]
+                   [:th "seq-idx"]
+                   [:th "par-idx"]
+                   [:th "task name"]
+                   [:th "task action"]
+                   [:th "task info"]]]            
           (into [:tbody] (map table-row v))]]))
 
 (defn ctrl-li-title [m]
@@ -24,7 +41,7 @@
   
 (defn content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (into [:ul.uk-accordion {:uk-accordion "multiple: true"}] (map (fn [m] (ctrl-li m)) (:data data)))])
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map (fn [m] (ctrl-li m)) (:data data)))])
 
 (defn head [conf data]
   [:head [:title "metis"]
@@ -38,6 +55,7 @@
    [:nav.uk-navbar-container
     [:div.uk-navbar-left
      [:ul.uk-navbar-nav
+      #_[:li [:a.uk-navbar-item.uk-logo {:href ""} [:img {:src"/img/logo.png"}]]]
       [:li [:a {:href ""} "redis"]]
       [:li [:a {:href ""} "elasticsearch"]]
       [:li [:a {:href ""} "devproxy"]]]]]])
