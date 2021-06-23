@@ -11,7 +11,7 @@
             [ring.util.response :as res]
             [metis.page.interface :as page]
             [metis.ws.interface :as ws]
-            )
+            [metis.srv.handler :as h])
     (:use   [clojure.repl])
     (:gen-class))
 
@@ -21,7 +21,7 @@
 
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
-  (GET "/ui" [:as req] (page/index c/config req []))  
+  (GET "/ui/:mp-id" [:as req] (page/index c/config (h/data req)))  
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
 
