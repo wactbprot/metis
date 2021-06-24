@@ -55,32 +55,33 @@
   "Processes whats todo next depending on the state of state and ctrl
   interface."
   [m]
-  (µ/trace ::check [:function "scheduler/check"]
-           
+  (µ/trace ::check [:function "scheduler/check"]          
            (let [s (merge (state (state-interface m)) (ctrl m))
                  m (:m s)]
              (when-not (= (:ctrl s) :check)
-               (condp = (dissoc s :m)
-                 ;; run
-                 {:ctrl :run    :state :error}    (set-ctrl m :error)
-                 {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
-                 {:ctrl :run    :state :work}     (worker/run m)
-                 ;; mon
-                 {:ctrl :mon    :state :error}    (set-ctrl m :error) 
-                 {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
-                 {:ctrl :mon    :state :work}     (worker/run m)
-                 ;; stop
-                 {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
-                 {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
-                 {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
-                 {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
-                 ;; reset
-                 {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
-                 {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
-                 {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
-                 {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
-                 
-                 (µ/log ::dispatch :message "state not handeled" :state s))))))
+               (let [s (dissoc s :m)]
+                 (µ/log ::dispatch :message "state entrance" :state s)
+                 (condp = s 
+                   ;; run
+                   {:ctrl :run    :state :error}    (set-ctrl m :error)
+                   {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
+                   {:ctrl :run    :state :work}     (worker/run m)
+                   ;; mon
+                   {:ctrl :mon    :state :error}    (set-ctrl m :error) 
+                   {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
+                   {:ctrl :mon    :state :work}     (worker/run m)
+                   ;; stop
+                   {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
+                   {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
+                   {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
+                   {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
+                   ;; reset
+                   {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
+                   {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
+                   {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
+                   {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
+                   
+                   (µ/log ::dispatch :message "state not handeled")))))))
 
 ;;------------------------------
 ;; stop 
