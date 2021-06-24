@@ -34,3 +34,23 @@ ws.onmessage = function (event) {
 	}
     }
 }
+
+$(".ctrl-btn").click(e => {
+    var $this = $(e.currentTarget);
+    ws.send(JSON.stringify({"mp-id": mp_id,
+			    "no-idx": $this.data("no-idx"),
+			    "struct": $this.data("struct"),
+			    "func":"ctrl",
+			    "value": $this.data("value")}));
+})
+
+$(".state-btn").click(e => {
+    var $this = $(e.currentTarget);
+    ws.send(JSON.stringify({"mp-id": mp_id,
+			    "no-idx": $this.data("no-idx"),
+			    "par-idx": $this.data("par-idx"),
+			    "seq-idx": $this.data("seq-idx"),
+			    "struct": $this.data("struct"),
+			    "func": "state",
+			    "value": $this.data("value")}));
+})
