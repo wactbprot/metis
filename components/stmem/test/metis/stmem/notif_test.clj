@@ -11,18 +11,18 @@
 
 (deftest reg-key-ii
   (testing "behaviour only mp-id"
-    (is (= "a.*.*.*.00000"
+    (is (= "a.*.*.**.00000"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"}} {:mp-id "a"}))))
   (testing "behaviour :mp-id :struct"
-    (is (= "a.b.*.*.00000"
+    (is (= "a.b.*.**.00000"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"
                                    :b "b"}} {:mp-id "a" :struct :b}))))
   (testing "behaviour :mp-id :struct :no-idx"
-    (is (= "a.b.00005.*.00000"
+    (is (= "a.b.00005.**.00000"
            (reg-key {:stmem-notif-sep "."
                      :stmem-key-pad-length 5
                      :stmem-trans {:* "*"

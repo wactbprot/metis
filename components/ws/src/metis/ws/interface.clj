@@ -5,9 +5,9 @@
 
 (defn main [req] (core/main req))
 
-(defn start [m] (core/start m))
+(defn start [] (core/start))
 
-(defn stop [m] (core/stop m))
+(defn stop [] (core/stop))
 
 
 

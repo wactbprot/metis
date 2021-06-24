@@ -22,15 +22,17 @@
 
 (defn m->func [{t :stmem-trans} {func :func}] ((or func :*) t))
 
+(defn m->mp-id [{t :stmem-trans} {mp-id :mp-id}] (if (keyword? mp-id) (mp-id t) mp-id))
+
 (defn reg-pat
   ([m]
    (reg-pat c/config m))
-  ([{t :stmem-trans s :stmem-notif-sep :as config} {mp-id :mp-id :as m}]
-   (let [pat (str mp-id s
-                  (m->struct config m) s
-                  (m->no-idx config m) s
-                  (m->func config m))]
-     (if (string/includes? pat (:* t)) pat (str pat (:* t))))))
+  ([{t :stmem-trans s :stmem-notif-sep :as config} m]
+   (str (m->mp-id config m) s
+        (m->struct config m) s
+        (m->no-idx config m) s
+        (m->func config m)
+        (:* t))))
 
 (defn subs-pat
   "Generates subscribe patterns."
@@ -41,6 +43,7 @@
      (str "__keyspace" s db (:* t) "__:" (reg-pat config m)))))
 
 (defn reg-key
+  "Generates a register key for the `listener` map."
   ([m]
    (reg-key c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} m]

@@ -19,18 +19,19 @@
     (µ/log ::ws :message "connected")
     (swap! ws-clients assoc channel true)
     (on-receive channel #'msg-received)
-    (on-close channel #((swap! ws-clients dissoc channel)
-                        (µ/log ::ws :message "closed, status")))))
+    (on-close channel (fn [status]
+                        (swap! ws-clients dissoc channel)
+                        (µ/log ::ws :message (str "closed, status: "status))))))
 
 (defn send-to-ws-clients [m]
   (doseq [client (keys @ws-clients)]
     (send! client (che/encode m))))
 
-(defn start [{mp-id :mp-id}]
-  (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :state :level 3} send-to-ws-clients)
-  (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :ctrl :level 3} send-to-ws-clients))
+(defn start []
+  (stmem/register {:mp-id :* :struct :* :no-idx :* :func :state  :level 3} send-to-ws-clients)
+  (stmem/register {:mp-id :* :struct :* :no-idx :* :func :ctrl :level 3} send-to-ws-clients))
   
-(defn stop [{mp-id :mp-id}]
-  (stmem/de-register {:mp-id mp-id :struct :* :no-idx :* :func :state :level 3})
-  (stmem/de-register {:mp-id mp-id :struct :* :no-idx :* :func :ctrl :level 3}))
+(defn stop []
+  (stmem/de-register {:mp-id :* :struct :* :no-idx :* :func :state :level 3})
+  (stmem/de-register {:mp-id :* :struct :* :no-idx :* :func :ctrl :level 3}))
     
