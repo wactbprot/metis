@@ -10,7 +10,8 @@
             [metis.scheduler.interface :as scheduler]
             [clojure.string :as string]
             [metis.utils.interface :as utils]
-            [metis.worker.interface :as worker]))
+            [metis.worker.interface :as worker])
+  (:use   [clojure.repl]))
 
 ;;------------------------------
 ;; logging system

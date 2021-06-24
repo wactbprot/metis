@@ -12,7 +12,12 @@
 
 (defonce ws-clients (atom {}))
 
-(defn msg-received [msg] (µ/log ::msg-received :message "msg/data received"))
+(defn msg-received [m]
+  (µ/log ::msg-received :message "msg/data received")
+  (let [m (che/decode m true)
+        m (update m :struct keyword)
+        m (update m :func keyword)]
+    (stmem/set-val m)))
 
 (defn main [req]
   (with-channel req channel

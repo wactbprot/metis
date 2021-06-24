@@ -4,35 +4,56 @@
             [metis.page.utils :as u]
             [clojure.string :as string]))
 
+(defn gen-state-btn [{mp-id :mp-id struct :struct no-idx :no-idx seq-idx :seq-idx par-idx :par-idx } s]
+  [:button.uk-button.uk-button-default.state-btn
+   {:data-mp-id mp-id
+    :data-struct struct
+    :data-no-idx no-idx
+    :data-seq-idx seq-idx
+    :data-par-idx par-idx
+    :data-func "state"
+    :data-value s}
+   (condp = s
+     "working" [:span {:uk-icon "icon: cog" :title s}]
+     "executed" [:span {:uk-icon "icon: check" :title s}]
+     "ready" [:span {:uk-icon "icon: play" :title s}])])
+
 (defn table-row [m]
   [:tr
    [:td {:id (u/gen-state-id m)} (:value m)]
-   [:td [:button.uk-button.uk-button-default [:span {:uk-icon "icon: cog" :title "working"}]]
-    [:button.uk-button.uk-button-default [:span {:uk-icon "icon: check" :title "executed"}]]
-    [:button.uk-button.uk-button-default [:span {:uk-icon "icon: play" :title "ready"}]]]
-   [:td (:seq-idx m)]
+   [:td (gen-state-btn m "working") (gen-state-btn m "executed") (gen-state-btn m "ready")] 
+    [:td (:seq-idx m)]
    [:td (:par-idx m)]
    [:td (:TaskName (:task m))]
    [:td (:Action (:task m))]
    [:td (:Action (:task m))]])
 
-(defn state-li [v]
-  (into [:div.uk-accordion-content
-         [:button.uk-button.uk-button-default "run"]
-         [:button.uk-button.uk-button-default "stop"]
-         [:button.uk-button.uk-button-default "cycle"]
-         [:button.uk-button.uk-button-default "suspend"] 
-         [:table.uk-table.uk-table-hover.uk-table-striped
-          [:thead [:tr
-                   [:th.uk-width-small "status"]
-                   [:th "ctrls"]
-                   [:th "seq-idx"]
-                   [:th "par-idx"]
-                   [:th "task name"]
-                   [:th "task action"]
-                   [:th "task info"]]]            
-          (into [:tbody] (map table-row v))]]))
-
+(defn gen-ctrl-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
+  [:button.uk-button.uk-button-default.ctrl-btn
+     {:data-mp-id mp-id
+      :data-struct struct
+      :data-no-idx no-idx
+      :data-func "ctrl"
+      :data-value (condp = s "cycle" "mon" s)} s])
+  
+  (defn state-li [v]
+    (let [m (first v)]
+    (into [:div.uk-accordion-content
+           (gen-ctrl-btn m "run")
+           (gen-ctrl-btn m "stop")
+           (gen-ctrl-btn m "cycle")
+           (gen-ctrl-btn m "suspend")
+           [:table.uk-table.uk-table-hover.uk-table-striped
+            [:thead [:tr
+                     [:th.uk-width-small "status"]
+                     [:th "ctrls"]
+                     [:th "seq-idx"]
+                     [:th "par-idx"]
+                     [:th "task name"]
+                     [:th "task action"]
+                     [:th "task info"]]]            
+            (into [:tbody] (map table-row v))]])))
+  
 (defn ctrl-li-title [m]
   [:a.uk-accordion-title {:href "#"}
    [:span.uk-text-light (:no-idx m) " / "] [:span.uk-text-light.uk-width-expand {:id (u/gen-ctrl-id m)} (:value m)]
