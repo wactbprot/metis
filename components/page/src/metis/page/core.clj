@@ -64,6 +64,8 @@
   [:body  (nav conf)
    (content conf data)
    (hp/include-js "/js/uikit.min.js")
+   (hp/include-js "/js/ws.js")
+   (hp/include-js "/js/jquery-3.5.1.min.js")
    (hp/include-js "/js/uikit-icons.min.js")])
 
 (defn index [conf data] (hp/html5 (head conf data) (body conf data)))

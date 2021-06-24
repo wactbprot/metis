@@ -32,6 +32,8 @@
 
 (defn stop []
   (when @server (@server :timeout 100)
+        (µ/log ::stop :message "stop ui web socket listener")
+        (ws/stop)
         (µ/log ::stop :message "stop server")
         (reset! server nil)
         {:ok true}))
@@ -39,6 +41,9 @@
 (defn start []
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))
+  (µ/log ::start :message "start ui web socket listener")
+  (ws/start)
+
   {:ok true})
 
 (defn restart []
