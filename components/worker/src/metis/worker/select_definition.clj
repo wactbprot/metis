@@ -15,9 +15,8 @@
      :run   (mu/log ::gen-callback :message "run callback for" :m m)
      :ready (do
               (mu/log ::gen-callback :message "ready callback for" :m m)
-              (stmem/de-register match-m)
-              (stmem/set-state-ready (assoc m :message "ready callback" :m match-m)) 
-              )
+              (stmem/set-state-executed (assoc m :message "ready callback" :m match-m))
+              (stmem/de-register match-m))
      :error (stmem/set-state-error (assoc m :message "error callback" :m match-m))))
 
 (defn start-defins!
