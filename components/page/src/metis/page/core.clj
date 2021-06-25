@@ -76,8 +76,9 @@
   
 (defn ctrl-li-title [m]
   [:a.uk-accordion-title {:href "#"}
-   [:span.uk-text-light (:no-idx m) " / "] [:span.uk-text-light.uk-width-expand {:id (u/gen-ctrl-id m)} (:value m)]
-   [:span.uk-align-right (:title m)]])
+   [:span.uk-text-capitalize (:title m)]
+   [:span.uk-text-light.uk-align-right (:no-idx m)]
+   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted {:id (u/gen-ctrl-id m)} (:value m)]])
 
 (defn ctrl-li [m a]
   [:li
@@ -97,16 +98,16 @@
    (hp/include-css "/css/uikit.min.css")])
 
 (defn nav [conf]
-  [:div {:class "uk-navbar-container uk-sticky uk-sticky-fixed uk-sticky-below"
-         :uk-sticky "media: 960"}
-   [:nav.uk-navbar-container
-    [:div.uk-navbar-left
+   [:div {:class "uk-navbar-container uk-sticky uk-sticky-fixed uk-sticky-below"
+          :uk-sticky ""
+          :uk-navbar ""}
+    [:div.uk-navbar-center
      [:ul.uk-navbar-nav
-      #_[:li [:a.uk-navbar-item.uk-logo {:href ""} [:img {:src"/img/logo.png"}]]]
-      [:li [:a {:href ""} "redis"]]
-      [:li [:a {:href ""} "elasticsearch"]]
-      [:li [:a {:href ""} "devproxy"]]]]]])
-
+      [:li [:a {:target "_balnk" :href "http://localhost:8081/"} "redis"]]
+      [:li [:a {:target "_balnk" :href "http://a75438:5601/app/discover"} "elasticsearch"]]
+      [:li [:a {:target "_balnk" :href "http://localhost:8009/"} "devproxy"]]
+      [:li [:a {:uk-icon "icon: github" :target "_balnk" :href "https://github.com/wactbprot/metis"}]]]]])
+  
 (defn body [conf data]
   [:body#body {:data-mp-id (:mp-id data)} (nav conf)
    (content conf data)

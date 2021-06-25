@@ -20,7 +20,7 @@
 (defn assoc-title [m]
   (assoc m :title (stmem/get-map (assoc (dissoc m :seq-idx :par-idx) :func :title))))
 
-(defn data [req]
+(defn cont [req]
   (let [mp-id  (req->mp-id req)
         ctrls  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :ctrl})]
     {:mp-id mp-id
