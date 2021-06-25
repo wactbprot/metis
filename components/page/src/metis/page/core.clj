@@ -14,13 +14,13 @@
     :data-func "state"
     :data-value s}
    (condp = s
-     "working" [:span {:uk-icon "icon: cog" :title s}]
+     "working" [:span {:uk-icon "icon: cog" :title "halt"}]
      "executed" [:span {:uk-icon "icon: check" :title "skip"}]
-     "ready" [:span {:uk-icon "icon: play" :title s}])])
+     "ready" [:span {:uk-icon "icon: play" :title "run"}])])
 
 (defn table-row [m]
   [:tr
-   [:td {:id (u/gen-state-id m)} (:value m)]
+   [:td.uk-text-uppercase.uk-text-muted {:id (u/gen-state-id m)} (:value m)]
    [:td (gen-state-btn m "working") (gen-state-btn m "executed") (gen-state-btn m "ready")] 
     [:td (:seq-idx m)]
    [:td (:par-idx m)]
@@ -103,10 +103,10 @@
           :uk-navbar ""}
     [:div.uk-navbar-center
      [:ul.uk-navbar-nav
-      [:li [:a {:target "_balnk" :href "http://localhost:8081/"} "redis"]]
-      [:li [:a {:target "_balnk" :href "http://a75438:5601/app/discover"} "elasticsearch"]]
-      [:li [:a {:target "_balnk" :href "http://localhost:8009/"} "devproxy"]]
-      [:li [:a {:uk-icon "icon: github" :target "_balnk" :href "https://github.com/wactbprot/metis"}]]]]])
+      [:li [:a {:target "_blank" :href "http://localhost:8081/"} "redis"]]
+      [:li [:a {:target "_blank" :href "http://a75438:5601/app/discover"} "elasticsearch"]]
+      [:li [:a {:target "_blank" :href "http://localhost:8009/"} "devproxy"]]
+      [:li [:a {:uk-icon "icon: github" :target "_blank" :href "https://github.com/wactbprot/metis"}]]]]])
   
 (defn body [conf data]
   [:body#body {:data-mp-id (:mp-id data)} (nav conf)
