@@ -4,7 +4,6 @@ const mp_id = $("#body").data("mp-id");
 
 const sep = "_";
 
-
 var gen_state_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "state", 
 	    data["seq-idx"], data["par-idx"]].join(sep)
@@ -22,11 +21,9 @@ var gen_msg_elem_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "msg-elem"].join(sep)
 }
 
-
 ws.onopen = function (event) {
    ws.send(JSON.stringify({"ok":true}));
 };
-
 
 ws.onmessage = function (event) {
     var data =JSON.parse(event.data);
@@ -67,7 +64,6 @@ $(".state-btn").click(e => {
 			    "func": "state",
 			    "value": $this.data("value")}));
 });
-
 
 $(".msg-ok-btn").click(e => {
     var $this = $(e.currentTarget);
