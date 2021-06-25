@@ -43,6 +43,7 @@
            (gen-ctrl-btn m "stop")
            (gen-ctrl-btn m "cycle")
            (gen-ctrl-btn m "suspend")
+           (gen-ctrl-btn m "reset")
            [:table.uk-table.uk-table-hover.uk-table-striped
             [:thead [:tr
                      [:th.uk-width-small "status"]
