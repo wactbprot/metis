@@ -40,7 +40,7 @@ ws.onmessage = function (event) {
 	    var id = gen_ctrl_id(data);
 	    $("#" + id).html(data["value"]);
 	}
-	if(data["func"] == "msg"){
+	if(data["func"] == "msg" & typeof data["value"] == "string"){
 	    var id = gen_msg_data_id(data);
 	    $("#" + id).html(data["value"]);
 	    UIkit.modal("#"+gen_msg_elem_id(data)).show();
