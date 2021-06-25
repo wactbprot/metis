@@ -81,7 +81,7 @@
                :resp "response" ; func
                :req "request" ; func
                :state "state" ; func
-               : msg "message" ; func
+               :msg "message" ; func
                :ctrl "ctrl" ; func
                :* "*"}
  ;; for order or sorting reasons

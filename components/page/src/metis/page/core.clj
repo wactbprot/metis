@@ -15,7 +15,7 @@
     :data-value s}
    (condp = s
      "working" [:span {:uk-icon "icon: cog" :title s}]
-     "executed" [:span {:uk-icon "icon: check" :title s}]
+     "executed" [:span {:uk-icon "icon: check" :title "skip"}]
      "ready" [:span {:uk-icon "icon: play" :title s}])])
 
 (defn table-row [m]
@@ -26,7 +26,7 @@
    [:td (:par-idx m)]
    [:td (:TaskName (:task m))]
    [:td (:Action (:task m))]
-   [:td (:Action (:task m))]])
+   [:td (u/task-info (:task m))]])
 
 (defn gen-msg-ok-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
   [:button.uk-button.uk-button-default.uk-modal-close.msg-ok-btn
@@ -55,13 +55,14 @@
   
   (defn state-li [v]
     (let [m (first v)]
-    (into [:div.uk-accordion-content
-           (gen-ctrl-btn m "run")
-           (gen-ctrl-btn m "stop")
-           (gen-ctrl-btn m "cycle")
-           (gen-ctrl-btn m "suspend")
-           (gen-ctrl-btn m "reset")
-           (gen-msg-modal m)
+      (into [:div.uk-accordion-content
+             [:p.uk-text-lighter (:descr m)]
+             (gen-ctrl-btn m "run")
+             (gen-ctrl-btn m "stop")
+             (gen-ctrl-btn m "cycle")
+             (gen-ctrl-btn m "suspend")
+             (gen-ctrl-btn m "reset")
+             (gen-msg-modal m)
            [:table.uk-table.uk-table-hover.uk-table-striped
             [:thead [:tr
                      [:th.uk-width-small "status"]
@@ -70,19 +71,24 @@
                      [:th "par-idx"]
                      [:th "task name"]
                      [:th "task action"]
-                     [:th "task info"]]]            
+                     [:th.uk-width-medium "task info"]]]            
             (into [:tbody] (map table-row v))]])))
   
 (defn ctrl-li-title [m]
   [:a.uk-accordion-title {:href "#"}
    [:span.uk-text-light (:no-idx m) " / "] [:span.uk-text-light.uk-width-expand {:id (u/gen-ctrl-id m)} (:value m)]
-   [:span.uk-align-right (:descr m)]])
+   [:span.uk-align-right (:title m)]])
 
-(defn ctrl-li [m] [:li (ctrl-li-title m) (state-li (:states m))])
+(defn ctrl-li [m a]
+  [:li
+   (if (or (= (str (:no-idx m))  a) (= (:title m) a))
+     {:class "uk-background-muted uk-open"}
+     {:class "uk-background-muted"}) 
+   (ctrl-li-title m) (state-li (:states m))])
   
 (defn content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map (fn [m] (ctrl-li m)) (:data data)))])
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map (fn [m] (ctrl-li m (:active data))) (:data data)))])
 
 (defn head [conf data]
   [:head [:title "metis"]
