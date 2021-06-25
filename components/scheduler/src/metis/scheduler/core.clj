@@ -59,7 +59,9 @@
            (let [s (merge (state (state-interface m)) (ctrl m))
                  m (:m s)]
              (when-not (= (:ctrl s) :check)
-               (let [s (dissoc s :m)]
+               (let [s (dissoc s :m)
+                     s (if (= (:ctrl s) :stop) (assoc s :state :*) s)
+                     s (if (= (:ctrl s) :reset) (assoc s :state :*) s)]
                  (µ/log ::dispatch :message "state entrance" :state s)
                  (condp = s 
                    ;; run
@@ -71,15 +73,9 @@
                    {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
                    {:ctrl :mon    :state :work}     (worker/run m)
                    ;; stop
-                   {:ctrl :stop   :state :error}    (set-state-ctrl m :ready :ready)
-                   {:ctrl :stop   :state :all-exec} (set-state-ctrl m :ready :ready)
-                   {:ctrl :stop   :state :work}     (set-state-ctrl m :ready :ready)
-                   {:ctrl :stop   :state :nop}      (set-state-ctrl m :ready :ready)
+                   {:ctrl :stop   :state :*}        (set-state-ctrl m :ready :ready)
                    ;; reset
-                   {:ctrl :reset  :state :error}    (set-state-ctrl m :ready :ready)
-                   {:ctrl :reset  :state :all-exec} (set-state-ctrl m :ready :ready)
-                   {:ctrl :reset  :state :work}     (set-state-ctrl m :ready :ready)
-                   {:ctrl :reset  :state :nop}      (set-state-ctrl m :ready :ready)
+                   {:ctrl :reset  :state :*}        (set-state-ctrl m :ready :ready)
                    
                    (µ/log ::dispatch :message "state not handeled")))))))
 
