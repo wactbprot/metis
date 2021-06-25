@@ -28,6 +28,23 @@
    [:td (:Action (:task m))]
    [:td (:Action (:task m))]])
 
+(defn gen-msg-ok-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
+  [:button.uk-button.uk-button-default.uk-modal-close.msg-ok-btn
+   {:type "button"
+    :data-mp-id mp-id
+    :data-struct struct
+    :data-no-idx no-idx
+    :data-func "msg"
+    :data-value s} s])
+
+(defn gen-msg-modal [m]
+  [:div {:id (u/gen-msg-elem-id m) :uk-modal=""}
+   [:div.uk-modal-dialog.uk-modal-body
+    [:h2.uk-modal-title (str "container " (:no-idx m) " message")]
+    [:p {:id (u/gen-msg-data-id m)}]
+     [:p.uk-text-right
+      (gen-msg-ok-btn m "ok")]]])
+
 (defn gen-ctrl-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
   [:button.uk-button.uk-button-default.ctrl-btn
      {:data-mp-id mp-id
@@ -44,6 +61,7 @@
            (gen-ctrl-btn m "cycle")
            (gen-ctrl-btn m "suspend")
            (gen-ctrl-btn m "reset")
+           (gen-msg-modal m)
            [:table.uk-table.uk-table-hover.uk-table-striped
             [:thead [:tr
                      [:th.uk-width-small "status"]

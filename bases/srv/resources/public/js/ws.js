@@ -11,7 +11,15 @@ var gen_state_id = (data) => {
 }
 
 var gen_ctrl_id = (data) => {
-    return [mp_id, data["struct"], data["no-idx"],"ctrl"].join(sep)
+    return [mp_id, data["struct"], data["no-idx"], "ctrl"].join(sep)
+}
+
+var gen_msg_data_id = (data) => {
+    return [mp_id, data["struct"], data["no-idx"], "msg-data"].join(sep)
+}
+
+var gen_msg_elem_id = (data) => {
+    return [mp_id, data["struct"], data["no-idx"], "msg-elem"].join(sep)
 }
 
 
@@ -32,6 +40,11 @@ ws.onmessage = function (event) {
 	    var id = gen_ctrl_id(data);
 	    $("#" + id).html(data["value"]);
 	}
+	if(data["func"] == "msg"){
+	    var id = gen_msg_data_id(data);
+	    $("#" + id).html(data["value"]);
+	    UIkit.modal("#"+gen_msg_elem_id(data)).show();
+	}
     }
 }
 
@@ -42,7 +55,7 @@ $(".ctrl-btn").click(e => {
 			    "struct": $this.data("struct"),
 			    "func":"ctrl",
 			    "value": $this.data("value")}));
-})
+});
 
 $(".state-btn").click(e => {
     var $this = $(e.currentTarget);
@@ -53,4 +66,14 @@ $(".state-btn").click(e => {
 			    "struct": $this.data("struct"),
 			    "func": "state",
 			    "value": $this.data("value")}));
-})
+});
+
+
+$(".msg-ok-btn").click(e => {
+    var $this = $(e.currentTarget);
+    ws.send(JSON.stringify({"mp-id": mp_id,
+			    "no-idx": $this.data("no-idx"),
+			    "struct": $this.data("struct"),
+			    "func": "msg",
+			    "value": true}));
+});

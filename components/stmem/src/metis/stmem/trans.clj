@@ -61,6 +61,15 @@
    (map->seq-par-idx-part config m)))
 
 ;;------------------------------
+;; msg keys
+;;------------------------------
+(defn map->msg-key [config m]
+  (str
+   (map->struct-part config m)
+   (map->no-idx-part config m)
+   (map->func-part config m)))
+
+;;------------------------------
 ;; exchange keys
 ;;------------------------------
 (defn map->exch-part [{trans :stmem-trans s :stmem-key-sep :as config} m]
@@ -95,24 +104,24 @@
    (map->metapath-part config m)))
 
 ;;------------------------------
-;; find key type
-;;------------------------------
-(defn m->key-type [m]
-  (cond
-    (:task-name m) :task-key
-    (= (:struct m)
-       :id)        :id-key
-    (= (:struct m)
-       :meta)      :meta-key
-    (= (:struct m)
-       :exch)      :exch-key
-    :default       :default))
-;;------------------------------
 ;; task keys
 ;;------------------------------
 (defn map->task-key [{trans :stmem-trans s :stmem-key-sep} m]
   (let [task-name (:task-name m)]
     (str (:tasks trans) s (if (keyword? task-name) (task-name trans) task-name))))
+
+
+;;------------------------------
+;; find key type
+;;------------------------------
+(defn m->key-type [m]
+  (cond
+    (:task-name m)        :task-key
+    (= (:struct m) :id)   :id-key
+    (= (:struct m) :meta) :meta-key
+    (= (:struct m) :exch) :exch-key
+    (= (:func m)   :msg)  :msg-key
+    :default              :default))
 
 (defn map->key
   ([m]
@@ -124,6 +133,7 @@
        :exch-key (map->exch-key config m)
        :id-key   (map->id-key config m)
        :meta-key (map->meta-key config m)
+       :msg-key  (map->msg-key config m)
        :default  (map->def-key config m)))))
 
 ;;------------------------------

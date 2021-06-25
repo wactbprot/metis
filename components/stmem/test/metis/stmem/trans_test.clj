@@ -18,6 +18,7 @@
                               :nc "ncont"
                               :nd "ndefins"
                               :state "state"
+                              :msg "message"
                               :ctrl "ctrl"
                               :exch "exchange"}}]
     (testing "task"
@@ -55,7 +56,9 @@
   (testing "par-idx key"
     (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}))))
   (testing "no-idx key"
-    (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state})))))
+    (is (= "test@container@000@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :state}))))
+  (testing "message key wit seq-idx and par-idx"
+    (is (= "test@container@000@message" (map->key {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :msg})))))
 
 (deftest lpad-i
   (testing "longer string"
