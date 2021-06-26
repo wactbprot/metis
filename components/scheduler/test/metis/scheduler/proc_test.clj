@@ -31,8 +31,8 @@
           [{:seq-idx 0, :par-idx 0, :value "working"}
            {:seq-idx 0, :par-idx 1, :value "working"}
            {:seq-idx 1, :par-idx 0, :value "ready"}
-           {:seq-idx 2, :par-idx 0, :value "ready"}
            {:seq-idx 3, :par-idx 0, :value "ready"}
+           {:seq-idx 2, :par-idx 0, :value "ready"}
            {:seq-idx 3, :par-idx 1, :value "ready"}]))
         "nothing to do (nil is returned)")
     (is (= {:seq-idx 0, :par-idx 1, :value "ready"}
