@@ -93,9 +93,11 @@
                                  "components/document/test"
                                  "components/scheduler/test"
                                  "components/model/test"
+                                 "components/page/test"
                                  "components/utils/test"
                                  "components/exchange/test"
                                  "components/worker/test"
+                                 "components/ws/test"
                                  "components/tasks/test"]}
             :coverage {:extra-paths ["components/stmem/test"
                                      "components/ltmem/test"
