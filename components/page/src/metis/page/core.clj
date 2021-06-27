@@ -86,9 +86,19 @@
      {:class "uk-background-muted uk-open"}
      {:class "uk-background-muted"}) 
    (ctrl-li-title m) (state-li (:states m))])
-  
+
+(defn ids-list []
+  [:ul.uk-breadcrumb
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
+   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"}]]])
+
 (defn content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
+   (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map (fn [m] (ctrl-li m (:active data))) (:data data)))])
 
 (defn head [conf data]
