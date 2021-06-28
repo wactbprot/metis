@@ -3,6 +3,7 @@
     :doc "Registers/de-registers listener. Sends data to clients using
     httpkit websockets."}
   (:require [cheshire.core :as che]
+            [metis.document.interface :as doc]
             [com.brunobonacci.mulog :as µ]
             [org.httpkit.server :refer [with-channel
                                         on-receive
@@ -32,12 +33,17 @@
   (doseq [client (keys @ws-clients)]
     (send! client (che/encode m))))
 
+(defn get-doc-ids [m]
+  (send-to-ws-clients (assoc m :value (doc/ids m))))
+  
 (defn start []
+  (stmem/register {:mp-id :* :struct :id :level 3} get-doc-ids)
   (stmem/register {:mp-id :* :struct :* :no-idx :* :func :state  :level 3} send-to-ws-clients)
   (stmem/register {:mp-id :* :struct :* :no-idx :* :func :msg :level 3} send-to-ws-clients)
   (stmem/register {:mp-id :* :struct :* :no-idx :* :func :ctrl :level 3} send-to-ws-clients))
   
 (defn stop []
+  (stmem/de-register {:mp-id :* :struct :id :level 3})
   (stmem/de-register {:mp-id :* :struct :* :no-idx :* :func :state :level 3})
   (stmem/de-register {:mp-id :* :struct :* :no-idx :* :func :msg :level 3})
   (stmem/de-register {:mp-id :* :struct :* :no-idx :* :func :ctrl :level 3}))
