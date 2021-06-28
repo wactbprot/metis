@@ -88,13 +88,7 @@
    (ctrl-li-title m) (state-li (:states m))])
 
 (defn ids-list []
-  [:ul.uk-breadcrumb
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"} "exch-read-test"]]
-   [:li [:a {:href "http://localhost:5984/_utils/#database/metis_test/exch-read-test"}]]])
+  [:ul.uk-breadcrumb {:id "doc-ids"}])
 
 (defn content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large

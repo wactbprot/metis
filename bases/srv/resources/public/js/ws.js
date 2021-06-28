@@ -4,6 +4,8 @@ const mp_id = $("#body").data("mp-id");
 
 const sep = "_";
 
+const db_url = "http://localhost:5984/_utils/#database/vl_db_work/"
+
 var gen_state_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "state", 
 	    data["seq-idx"], data["par-idx"]].join(sep)
@@ -21,6 +23,10 @@ var gen_msg_elem_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "msg-elem"].join(sep)
 }
 
+var gen_doc_id_li = (id) => {
+    return "<li><a target='_blank' href='"+ db_url + id +"'>" + id + "</a></li>"
+}
+    
 ws.onopen = function (event) {
    ws.send(JSON.stringify({"ok":true}));
 };
@@ -29,6 +35,11 @@ ws.onmessage = function (event) {
     var data =JSON.parse(event.data);
 
     if(data["mp-id"] == mp_id){
+	if(data["struct"] == "id"){
+	    $e = $("#doc-ids"); 
+	    $e.empty()
+	    data["value"].forEach(id => $e.append(gen_doc_id_li(id)));
+	}
 	if(data["func"] == "state"){
 	    var id = gen_state_id(data);
 	    $("#" + id).html(data["value"]);

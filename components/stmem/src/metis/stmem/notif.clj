@@ -27,12 +27,14 @@
 (defn reg-pat
   ([m]
    (reg-pat c/config m))
-  ([{t :stmem-trans s :stmem-notif-sep :as config} m]
+  ([{t :stmem-trans s :stmem-notif-sep :as config} {struct :struct :as m}]
    (str (m->mp-id config m) s
-        (m->struct config m) s
-        (m->no-idx config m) s
-        (m->func config m)
-        (:* t))))
+        (if (= :id struct)
+          (str (m->struct config m) s(:* t))
+          (str (m->struct config m) s
+               (m->no-idx config m) s
+               (m->func config m)
+               (:* t))))))
 
 (defn subs-pat
   "Generates subscribe patterns."
