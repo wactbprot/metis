@@ -74,18 +74,43 @@
                      [:th.uk-width-medium "task info"]]]            
             (into [:tbody] (map table-row v))]])))
 
-(defn e [m k v]
-  [:div.uk-form-controls
-   [:label.uk-form-label {:for ".uk-form-stacked"} k]
-   [:input.uk-input {:type "text" :value (str v)}]])
+(defn e-input [m k v]
+  (let [id (u/gen-exch-id m (name k))]
+        [:div.uk-margin
+         [:label.uk-form-label {:for id} k]
+         [:div.uk-form-controls
+          [:input.uk-input
+           {:type "text"
+            :id id
+            :value v
+            :data-mp-id (:mp-id m)
+            :data-struct "exchange"
+            :data-exchpath (:exchpath m)
+            :data-no-idx (:no-idx m)}]]]))
+
+(defmulti e (fn [m k v] (keyword k)))
+
+(defmethod e :Type [m k v] (e-input m k v))
+
+(defmethod e :Unit [m k v] (e-input m k v))
+
+(defmethod e :Value [m k v] (e-input m k v))
+
+(defmethod e :SdValue [m k v] (e-input m k v))
+
+(defmethod e :N [m k v] (e-input m k v))
+
+(defmethod e :default [m k v] (e-input m k "not implemented yet"))
+
 
 (defn elem-card [m k v]
   [:div.uk-card.uk-card-default.uk-card-body
    [:h3.uk-card-title k]
-   (cond
-     (map? v) (into [:form.uk-form-stacked] (mapv (fn [[k v]] (e m k v)) v))
-     (string? v) [:p v]
-     (boolean? v) [:p v])])
+   (let [m (assoc m :exchpath k)]
+     (cond
+       (map? v) (into [:form.uk-form-horizontal.uk-margin-large] (mapv (fn [[k v]] (e m k v)) v))
+       (string? v) [:p v]
+       (boolean? v) [:p v]))])
    
 (defn elems [{es :value :as m} e]
   (into [:div.uk-accordion-content] (mapv #(elem-card m % (get e % :not-found)) es)))

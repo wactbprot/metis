@@ -9,6 +9,9 @@
 (defn gen-ctrl-id [{a :mp-id b :struct c :no-idx}]
   (string/join s [a (name b) c "ctrl"]))
 
+(defn gen-exch-id [{a :mp-id b :struct c :no-idx d :exchpath} k]
+  (string/join s [a (name b) c "exch" d k]))
+
 (defn gen-msg-elem-id [{a :mp-id b :struct c :no-idx}]
   (string/join s [a (name b) c "msg-elem"]))
 
