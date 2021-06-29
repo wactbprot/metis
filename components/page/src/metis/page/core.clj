@@ -74,15 +74,31 @@
                      [:th.uk-width-medium "task info"]]]            
             (into [:tbody] (map table-row v))]])))
 
-(defn elems [m e]
-  (prn m)
-  (prn e))
+(defn e [m k v]
+  [:div.uk-form-controls
+   [:label.uk-form-label {:for ".uk-form-stacked"} k]
+   [:input.uk-input {:type "text" :value (str v)}]])
 
-(defn ctrl-li-title [m]
+(defn elem-card [m k v]
+  [:div.uk-card.uk-card-default.uk-card-body
+   [:h3.uk-card-title k]
+   (cond
+     (map? v) (into [:form.uk-form-stacked] (mapv (fn [[k v]] (e m k v)) v))
+     (string? v) [:p v]
+     (boolean? v) [:p v])])
+   
+(defn elems [{es :value :as m} e]
+  (into [:div.uk-accordion-content] (mapv #(elem-card m % (get e % :not-found)) es)))
+
+(defn all-li-title [m s]
   [:a.uk-accordion-title {:href "#"}
    [:span.uk-text-capitalize (:title m)]
    [:span.uk-text-light.uk-align-right (:no-idx m)]
-   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted {:id (u/gen-ctrl-id m)} (:value m)]])
+   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted {:id (u/gen-ctrl-id m)} s]])
+  
+(defn ctrl-li-title [m] (all-li-title m (:value m)))
+
+(defn elem-li-title [m] (all-li-title m ""))
 
 (defn all-li [m a]
   [:li
@@ -92,9 +108,7 @@
 
 (defn ctrl-li [m a] (into (all-li m a) [(ctrl-li-title m) (state-li (:states m))]))
 
-(defn elem-li [m a e]
-  (prn m)
-  (into (all-li m a) [(ctrl-li-title m) (elems m e) ]))
+(defn elem-li [m a e] (into (all-li m a) [(elem-li-title m) (elems m e) ]))
 
 (defn ids-list []
   [:ul.uk-breadcrumb {:id "doc-ids"}])
@@ -102,13 +116,14 @@
 (defn cont-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
    (ids-list)
-   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map #(ctrl-li % (:active data)) (:data data)))])
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
+         (map #(ctrl-li % (:active data)) (:data data)))])
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
    (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
-         (map #(elem-li % (:active data)) (:data data) (:all-exch data)))])
+         (map #(elem-li % (:active data) (:all-exch data)) (:data data) ))])
 
 (defn head [conf data]
   [:head [:title "metis"]
