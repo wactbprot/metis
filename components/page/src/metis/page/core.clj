@@ -53,8 +53,8 @@
       :data-func "ctrl"
       :data-value (condp = s "cycle" "mon" s)} s])
   
-  (defn state-li [v]
-    (let [m (first v)]
+(defn state-li [v]
+  (let [m (first v)]
       (into [:div.uk-accordion-content
              [:p.uk-text-lighter (:descr m)]
              (gen-ctrl-btn m "run")
@@ -73,27 +73,42 @@
                      [:th "task action"]
                      [:th.uk-width-medium "task info"]]]            
             (into [:tbody] (map table-row v))]])))
-  
+
+(defn elems [m e]
+  (prn m)
+  (prn e))
+
 (defn ctrl-li-title [m]
   [:a.uk-accordion-title {:href "#"}
    [:span.uk-text-capitalize (:title m)]
    [:span.uk-text-light.uk-align-right (:no-idx m)]
    [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted {:id (u/gen-ctrl-id m)} (:value m)]])
 
-(defn ctrl-li [m a]
+(defn all-li [m a]
   [:li
    (if (or (= (str (:no-idx m))  a) (= (:title m) a))
      {:class "uk-background-muted uk-open"}
-     {:class "uk-background-muted"}) 
-   (ctrl-li-title m) (state-li (:states m))])
+     {:class "uk-background-muted"})])
+
+(defn ctrl-li [m a] (into (all-li m a) [(ctrl-li-title m) (state-li (:states m))]))
+
+(defn elem-li [m a e]
+  (prn m)
+  (into (all-li m a) [(ctrl-li-title m) (elems m e) ]))
 
 (defn ids-list []
   [:ul.uk-breadcrumb {:id "doc-ids"}])
 
-(defn content [conf data]
+(defn cont-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
    (ids-list)
-   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map (fn [m] (ctrl-li m (:active data))) (:data data)))])
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}] (map #(ctrl-li % (:active data)) (:data data)))])
+
+(defn elem-content [conf data]
+  [:div.uk-container.uk-container-large.uk-padding-large
+   (ids-list)
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
+         (map #(elem-li % (:active data)) (:data data) (:all-exch data)))])
 
 (defn head [conf data]
   [:head [:title "metis"]
@@ -112,12 +127,15 @@
       [:li [:a {:target "_blank" :href "http://localhost:8009/"} "devproxy"]]
       [:li [:a {:uk-icon "icon: github" :target "_blank" :href "https://github.com/wactbprot/metis"}]]]]])
   
-(defn body [conf data]
+(defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)} (nav conf)
-   (content conf data)
+   (f conf data)
    (hp/include-js "/js/jquery-3.5.1.min.js")
    (hp/include-js "/js/uikit.min.js")
    (hp/include-js "/js/uikit-icons.min.js")
    (hp/include-js "/js/ws.js")])
 
-(defn index [conf data] (hp/html5 (head conf data) (body conf data)))
+(defn cont [conf data] (hp/html5 (head conf data) (body conf data cont-content)))
+
+
+(defn elem [conf data] (hp/html5 (head conf data) (body conf data elem-content)))

@@ -39,7 +39,7 @@
   (stmem/set-val (assoc m :func :title :value title))
   (stmem/set-val (assoc m :func :descr :value descr))
   (stmem/set-val (assoc m :func :ctrl :value ctrl))
-  (stmem/set-val (assoc m :func :elem :value elem))
+  (stmem/set-val (assoc m :func :elem :value (if (seq elem) elem [])))
   (build-defin m))
 
 (defn build-all-container

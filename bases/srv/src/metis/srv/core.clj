@@ -21,7 +21,8 @@
 
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
-  (GET "/cont/:mp-id" [:as req] (page/index c/config (h/cont req)))  
+  (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
+  (GET "/elem/:mp-id" [:as req] (page/elem c/config (h/elem req)))  
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
 
