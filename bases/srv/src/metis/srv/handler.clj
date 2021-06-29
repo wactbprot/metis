@@ -31,7 +31,6 @@
 (defn elem [req]
   (let [mp-id  (req->mp-id req)
         elems  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :elem})]
-    
     {:mp-id mp-id
      :active (req->active-param req)
      :all-exch (exch/all {:mp-id mp-id})
