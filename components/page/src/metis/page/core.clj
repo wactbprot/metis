@@ -88,6 +88,14 @@
             :data-exchpath (:exchpath m)
             :data-no-idx (:no-idx m)}]]]))
 
+(defn e-btn [m k v]
+  [:button.uk-button.uk-button-default
+   {:type "text"
+    :data-mp-id (:mp-id m)
+    :data-struct "exchange"
+    :data-exchpath (:exchpath m)
+    :data-no-idx (:no-idx m)}"ok"])
+  
 (defmulti e (fn [m k v] (keyword k)))
 
 (defmethod e :Type [m k v] (e-input m k v))
@@ -99,6 +107,8 @@
 (defmethod e :SdValue [m k v] (e-input m k v))
 
 (defmethod e :N [m k v] (e-input m k v))
+
+(defmethod e :Ready [m k v] (e-btn m k v))
 
 (defmethod e :default [m k v] (e-input m k "not implemented yet"))
 
