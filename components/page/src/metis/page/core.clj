@@ -112,15 +112,20 @@
 
 (defmethod e :default [m k v] (e-input m k "not implemented yet"))
 
-
 (defn elem-card [m k v]
   [:div.uk-card.uk-card-default.uk-card-body
    [:h3.uk-card-title k]
    (let [m (assoc m :exchpath k)]
      (cond
-       (map? v) (into [:form.uk-form-horizontal.uk-margin-large] (mapv (fn [[k v]] (e m k v)) v))
+       (and (map? v)
+            (contains? v :Type)
+            (contains? v :Unit)) (into [:form.uk-form-horizontal.uk-margin-large] (mapv (fn [[k v]] (e m k v)) v))
+       ;; select ...
+       ;; dut ...
+       ;; opk ...
        (string? v) [:p v]
-       (boolean? v) [:p v]))])
+       (boolean? v) [:p v]
+       :else (str v)))])
    
 (defn elems [{es :value :as m} e]
   (into [:div.uk-accordion-content] (mapv #(elem-card m % (get e % :not-found)) es)))
@@ -137,7 +142,7 @@
 
 (defn all-li [m a]
   [:li
-   (if (or (= (str (:no-idx m))  a) (= (:title m) a))
+   (if (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
      {:class "uk-background-muted uk-open"}
      {:class "uk-background-muted"})])
 
@@ -166,7 +171,7 @@
    [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
    (hp/include-css "/css/uikit.min.css")])
 
-(defn nav [conf]
+(defn nav [conf data]
    [:div {:class "uk-navbar-container uk-sticky uk-sticky-fixed uk-sticky-below"
           :uk-sticky ""
           :uk-navbar ""}
@@ -175,10 +180,12 @@
       [:li [:a {:target "_blank" :href "http://localhost:8081/"} "redis"]]
       [:li [:a {:target "_blank" :href "http://a75438:5601/app/discover"} "elasticsearch"]]
       [:li [:a {:target "_blank" :href "http://localhost:8009/"} "devproxy"]]
-      [:li [:a {:uk-icon "icon: github" :target "_blank" :href "https://github.com/wactbprot/metis"}]]]]])
+      [:li [:a {:uk-icon "icon: github" :target "_blank" :href "https://github.com/wactbprot/metis"}]]
+      [:li [:a {:target "_blank" :href (str "/cont/" (:mp-id data))} "Container"]]
+      [:li [:a {:target "_blank" :href (str "/elem/" (:mp-id data))} "Inputs"]]]]])
   
 (defn body [conf data f]
-  [:body#body {:data-mp-id (:mp-id data)} (nav conf)
+  [:body#body {:data-mp-id (:mp-id data)} (nav conf data)
    (f conf data)
    (hp/include-js "/js/jquery-3.5.1.min.js")
    (hp/include-js "/js/uikit.min.js")
