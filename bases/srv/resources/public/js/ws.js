@@ -91,7 +91,6 @@ $(".exch-input").change(e => {
     ws.send(JSON.stringify({"mp-id": mp_id,
 			    "no-idx": $this.data("no-idx"),
 			    "struct": $this.data("struct"),
-			    "exchpath": $this.data("exchpath"),
-			    "exchkey" :$this.data("exchkey")
+			    "exchpath": $this.data("exchpath")+"."+$this.data("exchkey"),
 			    "value": $this.val()}));
 });
