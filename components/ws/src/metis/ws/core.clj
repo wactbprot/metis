@@ -14,15 +14,24 @@
 
 (defonce ws-clients (atom {}))
 
-(defn msg-received [m]
-  (µ/log ::msg-received :message "msg/data received")
-  (let [m (che/decode m true)
-        m (update m :struct keyword)
-        m (update m :func keyword)]
-    (if ((:struct m) :exch)
-      (exch/to (exch/all m) m)
-      (stmem/set-val m))))
+(defn connected-received [m] (µ/log ::msg-received :message "client connected"))
 
+(defn try-decode [m]
+  (try
+    (che/decode m true)
+    (catch Exception e (µ/log ::msg-received :error (.getMessage e)))))
+
+(defn msg-received [m]
+  (when-let [m (try-decode m)]
+    (µ/log ::msg-received :message "receive data" :m m)
+    (let [m (update m :struct keyword)
+          m (update m :func keyword)]
+      (cond
+        (:ok m) (connected-received m)
+        (= (:struct m)
+           :exch) (exch/to (exch/all m) m)
+        :else (stmem/set-val m)))))
+  
 (defn main [req]
   (with-channel req channel
     (µ/log ::ws :message "connected")
