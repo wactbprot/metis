@@ -4,6 +4,7 @@
     httpkit websockets."}
   (:require [cheshire.core :as che]
             [metis.document.interface :as doc]
+            [metis.exchange.interface :as exch]
             [com.brunobonacci.mulog :as µ]
             [org.httpkit.server :refer [with-channel
                                         on-receive
@@ -18,7 +19,9 @@
   (let [m (che/decode m true)
         m (update m :struct keyword)
         m (update m :func keyword)]
-    (stmem/set-val m)))
+    (if ((:struct m) :exch)
+      (exch/to (exch/all m) m)
+      (stmem/set-val m))))
 
 (defn main [req]
   (with-channel req channel
