@@ -93,12 +93,8 @@ var say_ok = () => {
 }
 
 var ensure_type = (t, v) => {
-    if( t == "int") {
-	v = parseInt(v);
-    }
-    if( t == "float") {
-	v = parseFloat(v);
-    }
+    if( t == "int") v = parseInt(v);
+    if( t == "float") v = parseFloat(v.replace(",","."));
     return v
 }
 
