@@ -76,7 +76,7 @@ $(".state-btn").click(e => {
 			    "value": $this.data("value")}));
 });
 
-$(".msg-ok-btn").click(e => {
+$(".msg-btn").click(e => {
     var $this = $(e.currentTarget);
     ws.send(JSON.stringify({"mp-id": mp_id,
 			    "no-idx": $this.data("no-idx"),
@@ -102,4 +102,14 @@ $(".exch-select").change(e => {
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+".Selected",
 			    "value": $this.val()}));
+});
+
+
+$(".exch-btn").click(e => {
+    var $this = $(e.currentTarget);
+    ws.send(JSON.stringify({"mp-id": mp_id,
+			    "no-idx": $this.data("no-idx"),
+			    "struct": $this.data("struct"),
+			    "exchpath": $this.data("exchpath")+".Ready",
+			    "value": true}));
 });
