@@ -31,8 +31,8 @@
    [:td (:Action (:task m))]
    [:td (u/task-info (:task m))]])
 
-(defn gen-msg-ok-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
-  [:button.uk-button.uk-button-default.uk-modal-close.msg-ok-btn
+(defn gen-msg-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
+  [:button.uk-button.uk-button-default.uk-modal-close.msg-btn
    {:type "button"
     :data-mp-id mp-id
     :data-struct struct
@@ -46,7 +46,7 @@
     [:h2.uk-modal-title (str "container " (:no-idx m) " message")]
     [:p {:id (u/gen-msg-data-id m)}]
      [:p.uk-text-right
-      (gen-msg-ok-btn m "ok")]]])
+      (gen-msg-btn m "ok")]]])
 
 (defn gen-ctrl-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
   [:button.uk-button.uk-button-default.ctrl-btn
@@ -80,27 +80,11 @@
 ;; exch inputs
 ;; ------------------------------------------------------------------------
 
-(defn s [m k v]
-  (let [id (u/gen-exch-id m (name k))]
-    [:div.uk-margin
-     [:label.uk-form-label {:for id} "Select"]
-     [:div.uk-form-controls
-      (into [:select.uk-select.exch-select
-             {:id id
-              :data-mp-id (:mp-id m)
-              :data-struct "exch"
-              :data-exchpath (:exchpath m)
-              :data-no-idx (:no-idx m)}
-             [:option {:value (:Selected v)} (:Selected v)]]
-            (mapv (fn [m] [:option {:value (:value m)} (:display m)]) (:Select v)))]]))
-
 (defn e-btn [m k v]
-  [:button.uk-button.uk-button-default.exch-input
-   {:type "text"
-    :data-mp-id (:mp-id m)
+  [:a.uk-button.uk-button-default.exch-btn
+   {:data-mp-id (:mp-id m)
     :data-struct "exch"
     :data-exchpath (:exchpath m)
-    :data-exchkey k
     :data-no-idx (:no-idx m)} "ok"])
 
 (defn e-input [m k v]
@@ -133,6 +117,22 @@
 (defmethod e :Ready [m k v] (e-btn m k v))
 
 (defmethod e :default [m k v] (e-input m k "not implemented yet"))
+
+(defn s [m k v]
+  (let [id (u/gen-exch-id m (name k))]
+    [:div.uk-margin
+     [:label.uk-form-label {:for id} "Select"]
+     [:div.uk-form-controls
+      (into [:select.uk-select.exch-select
+             {:id id
+              :data-mp-id (:mp-id m)
+              :data-struct "exch"
+              :data-exchpath (:exchpath m)
+              :data-no-idx (:no-idx m)}
+             [:option {:value (:Selected v)} (:Selected v)]]
+            (mapv (fn [m] [:option {:value (:value m)} (:display m)]) (:Select v)))
+      (when (contains? v :Ready)
+        (e-btn m k v))]]))
   
 (defn elem-card [m k v]
   [:div.uk-card.uk-card-default.uk-card-body
