@@ -146,7 +146,8 @@
      (cond
        (and (map? v)
             (contains? v :Type)
-            (contains? v :Unit)) (into [:form.uk-form-horizontal.uk-margin-large] (mapv (fn [[k v]] (e m k v)) v))
+            (contains? v :Unit)) (into [:form.uk-form-horizontal.uk-margin-large]
+                                  (mapv (fn [[k v]] (e m k v)) v))
        (and (map? v)
             (contains? v :Selected)) [:form.uk-form-horizontal.uk-margin-large (s m k v)]
        (string? v) [:p v]
@@ -154,13 +155,15 @@
        :else (str v)))])
    
 (defn elems [{es :value :as m} e]
-  (into [:div.uk-accordion-content] (mapv #(elem-card m % (get e % :not-found)) es)))
+  (into [:div.uk-accordion-content]
+        (mapv #(elem-card m % (get e % :not-found)) es)))
 
 (defn li-title [m s]
   [:a.uk-accordion-title {:href "#"}
    [:span.uk-text-capitalize (:title m)]
    [:span.uk-text-light.uk-align-right (:no-idx m)]
-   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted {:id (u/gen-ctrl-id m)} s]])
+   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted
+    {:id (u/gen-ctrl-id m)} s]])
 
 (defn all-li [m a]
   [:li
@@ -179,7 +182,8 @@
 (defn elem-li [m a e]
   (let [n (count (:value m))]
     (into (all-li m a)
-          [(li-title m (when (pos? n) (str n " input" (when (< 1 n) "s") ))) (elems m e) ])))
+          [(li-title m (when (pos? n)
+                         (str n " input" (when (< 1 n) "s") ))) (elems m e) ])))
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
@@ -191,7 +195,7 @@
   [:head [:title "metis"]
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
-   (hp/include-css "/css/uikit.min.css")])
+   (hp/include-css "/css/uikit.css")])
 
 (defn nav [conf data]
    [:div {:class "uk-navbar-container uk-sticky uk-sticky-fixed uk-sticky-below"
@@ -210,9 +214,9 @@
   [:body#body {:data-mp-id (:mp-id data)}
    (nav conf data)
    (f conf data)
-   (hp/include-js "/js/jquery-3.5.1.min.js")
-   (hp/include-js "/js/uikit.min.js")
-   (hp/include-js "/js/uikit-icons.min.js")
+   (hp/include-js "/js/jquery.js")
+   (hp/include-js "/js/uikit.js")
+   (hp/include-js "/js/uikit-icons.js")
    (hp/include-js "/js/ws.js")])
 
 (defn cont [conf data] (hp/html5 (head conf data) (body conf data cont-content)))
