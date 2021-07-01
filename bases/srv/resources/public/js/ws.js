@@ -53,15 +53,6 @@ ws.onmessage = function (event) {
     }
 }
 
-var say_ok = () => {
-    UIkit.notification({
-	message: "<span uk-icon='icon: check'></span> data has been sent",
-	status: "primary",
-	pos: "bottom-center",
-	timeout: 2000
-    });
-}
-
 $(".ctrl-btn").click(e => {
     var $this = $(e.currentTarget);
     ws.send(JSON.stringify({"mp-id": mp_id,
@@ -92,13 +83,32 @@ $(".msg-btn").click(e => {
 });
 
 
+var say_ok = () => {
+    UIkit.notification({
+	message: "<span uk-icon='icon: check'></span> data has been sent",
+	status: "primary",
+	pos: "bottom-center",
+	timeout: 2000
+    });
+}
+
+var ensure_type = (t, v) => {
+    if( t == "int") {
+	v = parseInt(v);
+    }
+    if( t == "float") {
+	v = parseFloat(v);
+    }
+    return v
+}
+
 $(".exch-input").change(e => {
     var $this = $(e.currentTarget);
     ws.send(JSON.stringify({"mp-id": mp_id,
 			    "no-idx": $this.data("no-idx"),
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+"."+$this.data("exchkey"),
-			    "value": $this.val()}));
+			    "value": ensure_type($this.data("type"), $this.val())}));
     say_ok();
 });
 
@@ -108,7 +118,7 @@ $(".exch-select").change(e => {
 			    "no-idx": $this.data("no-idx"),
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+".Selected",
-			    "value": $this.val()}));
+			    "value": ensure_type($this.data("type"), $this.val())}));
     say_ok();
 });
 

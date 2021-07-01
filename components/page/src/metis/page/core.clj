@@ -84,6 +84,7 @@
   [:a.uk-button.uk-button-default.exch-btn
    {:data-mp-id (:mp-id m)
     :data-struct "exch"
+    :data-type :bool
     :data-exchpath (:exchpath m)
     :data-no-idx (:no-idx m)} "ok"])
 
@@ -96,6 +97,7 @@
            {:type "text"
             :id id
             :value v
+            :data-type (u/val-type v)
             :data-mp-id (:mp-id m)
             :data-struct "exch"
             :data-exchpath (:exchpath m)
@@ -128,7 +130,8 @@
               :data-mp-id (:mp-id m)
               :data-struct "exch"
               :data-exchpath (:exchpath m)
-              :data-no-idx (:no-idx m)}
+              :data-no-idx (:no-idx m)
+              :data-type (u/val-type (:Selected v))}
              [:option {:value (:Selected v)} (:Selected v)]]
             (mapv (fn [m] [:option {:value (:value m)} (:display m)]) (:Select v)))
       (when (contains? v :Ready)
