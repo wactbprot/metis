@@ -1,7 +1,7 @@
 (ns metis.page.utils
   (:require [clojure.string :as string]))
 
- (def s "_")
+(def s "_")
 
 (defn gen-state-id [{a :mp-id b :struct c :no-idx  d :seq-idx e :par-idx}]
   (string/join s [a (name b) c "state" d e ]))
@@ -25,5 +25,11 @@
    [:span {:uk-icon "icon: link"}] mp])
 
 (defmethod task-info :default [{descr :Comment}] [:span.uk-text-light descr])
-  
-
+ 
+(defn val-type [x]
+  (cond
+    (string? x) :string
+    (int? x) :int
+    (number? x) :float
+    (boolean? x) :bool
+    (nil? x) :nil))
