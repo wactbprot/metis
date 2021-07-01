@@ -28,7 +28,7 @@ var gen_doc_id_li = (id) => {
 }
     
 ws.onopen = function (event) {
-   ws.send(JSON.stringify({"ok":true}));
+   ws.send(JSON.stringify({"ok": true}));
 };
 
 ws.onmessage = function (event) {
@@ -41,19 +41,25 @@ ws.onmessage = function (event) {
 	    data["value"].forEach(id => $e.append(gen_doc_id_li(id)));
 	}
 	if(data["func"] == "state"){
-	    var id = gen_state_id(data);
-	    $("#" + id).html(data["value"]);
+	    $("#" +  gen_state_id(data)).html(data["value"]);
 	}
 	if(data["func"] == "ctrl"){
-	    var id = gen_ctrl_id(data);
-	    $("#" + id).html(data["value"]);
+	    $("#" + gen_ctrl_id(data)).html(data["value"]);
 	}
 	if(data["func"] == "msg" & typeof data["value"] == "string"){
-	    var id = gen_msg_data_id(data);
-	    $("#" + id).html(data["value"]);
-	    UIkit.modal("#"+gen_msg_elem_id(data)).show();
+	    $("#" + gen_msg_data_id(data)).html(data["value"]);
+	    UIkit.modal("#" + gen_msg_elem_id(data)).show();
 	}
     }
+}
+
+var say_ok = () => {
+    UIkit.notification({
+	message: "<span uk-icon='icon: check'></span> data has been sent",
+	status: "primary",
+	pos: "bottom-center",
+	timeout: 2000
+    });
 }
 
 $(".ctrl-btn").click(e => {
@@ -93,6 +99,7 @@ $(".exch-input").change(e => {
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+"."+$this.data("exchkey"),
 			    "value": $this.val()}));
+    say_ok();
 });
 
 $(".exch-select").change(e => {
@@ -102,8 +109,8 @@ $(".exch-select").change(e => {
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+".Selected",
 			    "value": $this.val()}));
+    say_ok();
 });
-
 
 $(".exch-btn").click(e => {
     var $this = $(e.currentTarget);
@@ -112,4 +119,5 @@ $(".exch-btn").click(e => {
 			    "struct": $this.data("struct"),
 			    "exchpath": $this.data("exchpath")+".Ready",
 			    "value": true}));
+    say_ok();
 });
