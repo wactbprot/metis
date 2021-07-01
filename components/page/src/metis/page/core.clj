@@ -123,6 +123,8 @@
 (defn s [m k v]
   (let [id (u/gen-exch-id m (name k))]
     [:div.uk-margin
+     (when (contains? v :Unit)
+       (e m :Unit (:Unit v)))
      [:label.uk-form-label {:for id} "Select"]
      [:div.uk-form-controls
       (into [:select.uk-select.exch-select
@@ -133,10 +135,10 @@
               :data-no-idx (:no-idx m)
               :data-type (u/val-type (:Selected v))}
              [:option {:value (:Selected v)} (:Selected v)]]
-            (mapv (fn [m] [:option {:value (:value m)} (:display m)]) (:Select v)))
-      (when (contains? v :Ready)
-        (e-btn m k v))]]))
-  
+            (mapv (fn [m] [:option {:value (:value m)} (or (:display m) (:value m))]) (:Select v)))
+     (when (contains? v :Ready)
+       (e-btn m k v))]]))
+
 (defn elem-card [m k v]
   [:div.uk-card.uk-card-default.uk-card-body
    [:h3.uk-card-title k]

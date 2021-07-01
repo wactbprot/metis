@@ -15,7 +15,18 @@
              ;; .. or flat values are valid
              :B "token"
              ;; 
-             :Target_pressure {:Selected 1 :Unit "Pa"}
+             :Target_pressure {:Selected 1
+                               :Select [
+                                        {
+                                         :value 10.0
+                                         },
+                                        {
+                                         :value 100.0
+                                         },
+                                        {
+                                         :value 1000.0
+                                         }]
+                               :Unit "Pa"}
              :Ref_gas {
                        :Selected "N2"
                        :Select [
