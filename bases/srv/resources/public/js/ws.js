@@ -94,3 +94,12 @@ $(".exch-input").change(e => {
 			    "exchpath": $this.data("exchpath")+"."+$this.data("exchkey"),
 			    "value": $this.val()}));
 });
+
+$(".exch-select").change(e => {
+    var $this = $(e.currentTarget);
+    ws.send(JSON.stringify({"mp-id": mp_id,
+			    "no-idx": $this.data("no-idx"),
+			    "struct": $this.data("struct"),
+			    "exchpath": $this.data("exchpath")+".Selected",
+			    "value": $this.val()}));
+});
