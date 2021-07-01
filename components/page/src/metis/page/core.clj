@@ -4,7 +4,6 @@
             [metis.page.utils :as u]
             [clojure.string :as string]))
 
-
 (defn ids-list []
   [:ul.uk-breadcrumb {:id "doc-ids"}])
 
@@ -86,12 +85,11 @@
     [:div.uk-margin
      [:label.uk-form-label {:for id} "Select"]
      [:div.uk-form-controls
-      (into [:select.uk-select.exch-input
+      (into [:select.uk-select.exch-select
              {:id id
               :data-mp-id (:mp-id m)
               :data-struct "exch"
               :data-exchpath (:exchpath m)
-              :data-exchkey k
               :data-no-idx (:no-idx m)}
              [:option {:value (:Selected v)} (:Selected v)]]
             (mapv (fn [m] [:option {:value (:value m)} (:display m)]) (:Select v)))]]))
@@ -119,7 +117,6 @@
             :data-exchpath (:exchpath m)
             :data-exchkey k
             :data-no-idx (:no-idx m)}]]]))
-
   
 (defmulti e (fn [m k v] (keyword k)))
 
