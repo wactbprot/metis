@@ -1,10 +1,16 @@
 (ns  metis.srv.handler
-    ^{:author "wactbprot"
-      :doc "Handler functions."}
+  ^{:author "wactbprot"
+    :doc "Handler functions."}
   (:require [metis.exchange.interface :as exch]
             [metis.stmem.interface :as stmem]
-            [metis.tasks.interface :as tasks]))
+            [metis.tasks.interface :as tasks]
+            [clojure.string :as string]))
 
+(defn running? [mp-id]
+  (pos? (count (filter
+                #(string/starts-with? (:reg-key %) mp-id)
+                (stmem/registered)))))
+  
 (defn req->mp-id [req] (get-in req [:route-params :mp-id] "*"))
 
 (defn req->active-param [req] (get-in req [:params :active] 0))
@@ -25,6 +31,8 @@
   (let [mp-id  (req->mp-id req)
         ctrls  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :ctrl})]
     {:mp-id mp-id
+     :descr (stmem/get-val {:mp-id mp-id :struct :meta :metapath :descr})
+     :running (running? mp-id)
      :active (req->active-param req)
      :data (mapv (comp assoc-states assoc-descr assoc-title) ctrls)}))
 
@@ -32,6 +40,8 @@
   (let [mp-id  (req->mp-id req)
         elems  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :elem})]
     {:mp-id mp-id
+     :descr (stmem/get-val {:mp-id mp-id :struct :meta :metapath :descr})
+     :running (running? mp-id)
      :active (req->active-param req)
      :all-exch (exch/all {:mp-id mp-id})
      :data (mapv (comp assoc-descr assoc-title) elems)}))

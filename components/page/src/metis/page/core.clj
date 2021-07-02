@@ -171,10 +171,19 @@
      {:class "uk-background-muted uk-open"}
      {:class "uk-background-muted"})])
 
+(defn mpd-descr [conf data]
+  [:div
+   [:h1.uk-heading-bullet
+    [:span (:mp-id data) "&nbsp;" [:sup (if (:running data)
+                                 [:span {:uk-icon "icon: bolt"}]
+                                 [:span {:uk-icon "icon: warning"}])]]]
+    [:p.uk-text-meta (:descr data)]])
+
 (defn ctrl-li [m a] (into (all-li m a) [(li-title m (:value m)) (state-li (:states m))]))
 
 (defn cont-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
+   (mpd-descr conf data)
    (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(ctrl-li % (:active data)) (:data data)))])
@@ -187,6 +196,7 @@
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
+   (mpd-descr conf data)
    (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(elem-li % (:active data) (:all-exch data)) (:data data) ))])

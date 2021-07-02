@@ -22,6 +22,8 @@
                                 "components/exchange/resources"
                                 "components/ltmem/src"
                                 "components/ltmem/resources"
+                                "components/log/src"
+                                "components/log/resources"
                                 "components/model/src"
                                 "components/model/resources"
                                 "components/page/src"
@@ -72,6 +74,7 @@
                                                 "components/document/src"
                                                 "components/exchange/src"
                                                 "components/ltmem/src"
+                                                "components/log/src"
                                                 "components/model/src"
                                                 "components/page/src"
                                                 "components/scheduler/src"
@@ -90,6 +93,7 @@
             
             :test {:extra-paths ["components/stmem/test"
                                  "components/ltmem/test"
+                                 "components/log/test"
                                  "components/document/test"
                                  "components/scheduler/test"
                                  "components/model/test"
@@ -101,6 +105,7 @@
                                  "components/tasks/test"]}
             :coverage {:extra-paths ["components/stmem/test"
                                      "components/ltmem/test"
+                                     "components/log/test"
                                      "components/document/test"
                                      "components/scheduler/test"
                                      "components/model/test"
@@ -127,6 +132,9 @@
 
                                    "-p" "components/ltmem/src"
                                    "-s" "components/ltmem/test"
+
+                                   "-p" "components/log/src"
+                                   "-s" "components/log/test"
 
                                    "-p" "components/task/src"
                                    "-s" "components/task/test"
