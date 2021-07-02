@@ -15,31 +15,6 @@
  :api {:port 8010}
  :build-delay 500
  :build-on-start []
- ;; integrated ui
- :ui {:page-title "UI-CMP"
-      :main-title "UI-CMP"
-      :trans {:state "state"
-              :ctrl "ctrl"
-              :def "def"
-              :struct ""
-              :func ""
-              :mp-id "mp-id"
-              :no-idx "Ablauf #"
-              :seq-idx "seq."
-              :par-idx "par."
-              :run ""
-              :mon ""
-              :ready ""
-              :stop ""
-              :executed ""
-              :working ""
-              :value "cur. val."}
-      ;; place images in resources/public/img
-      :img {:ref "ref.jpg"
-            }
-      :mp-alias {:ce3-cmp_calib "The CE3 Measurement Program"
-                 :ref "Referenz MP"}
-      }
  ;; long term memory: couchdb
  :ltmem-srv "127.0.0.1"
  ;;:ltmem-srv "a73434"

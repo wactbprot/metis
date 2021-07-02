@@ -1,10 +1,12 @@
 (ns  metis.srv.core
     ^{:author "wactbprot"
-      :doc "Provides a server for cmp info and ctrl. Starts up the configured mpds."}
+      :doc "Provides a frontend. Starts up the configured mpds."}
   (:require [metis.config.interface :as c]
+            [metis.log.interface :as log]
             [compojure.route :as route]
             [com.brunobonacci.mulog :as µ]
-            [compojure.core :refer :all]
+            [compojure.core :refer [defroutes
+                                    GET]]
             [compojure.handler :as handler]
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.json :as middleware]
@@ -37,14 +39,15 @@
         (ws/stop)
         (µ/log ::stop :message "stop server")
         (reset! server nil)
+        (log/stop)
         {:ok true}))
 
 (defn start []
+  (log/start)
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))
   (µ/log ::start :message "start ui web socket listener")
   (ws/start)
-
   {:ok true})
 
 (defn restart []
@@ -53,6 +56,4 @@
   (Thread/sleep 1000)
   (start))
 
-(defn -main [& args]
-  (µ/log ::main :message "call -main")
-  (start))
+(defn -main [& args] (start))

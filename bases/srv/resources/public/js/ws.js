@@ -82,11 +82,10 @@ $(".msg-btn").click(e => {
 			    "value": true}));
 });
 
-
 var say_ok = () => {
     UIkit.notification({
-	message: "<span uk-icon='icon: check'></span> data has been sent",
-	status: "primary",
+	message: "<span uk-icon='icon: check'></span> updated",
+	status: "success",
 	pos: "bottom-center",
 	timeout: 2000
     });
