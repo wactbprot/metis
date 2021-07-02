@@ -4,6 +4,40 @@
 <img src="metis.png" alt="metis" id="logo" />
 <p><a href="https://github.com/wactbprot/metis/actions/workflows/main.yml"><img src="https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg" alt="codox" /></a></p>
 <p><a href="https://wactbprot.github.io/metis/">api documentation</a></p>
+<h2><a href="#user-interface-web-site-" name="user-interface-web-site-"></a>user interface (web site)</h2>
+<p>The metis frontend is based on <a href="https://getuikit.com/">UIkik</a>. A fresh metis installation needs libraries: run <code>./dl.sh</code> in metis root path in order to install them.</p>
+<h3><a href="#url" name="url"></a>url</h3>
+<ul>
+  <li>container view: <code>http://localhost:8010/cont/mpd-ref</code></li>
+  <li>input/output elements: <code>http://localhost:8010/elem/mpd-ref</code></li>
+</ul>
+<h2><a href="#environment-variables" name="environment-variables"></a>environment variables</h2>
+<table>
+  <thead>
+    <tr>
+      <th><code>var</code> </th>
+      <th>Description </th>
+      <th>Example </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>CMP_BUILD_ON_START</code> </td>
+      <td>mpds to build on server start </td>
+      <td><code>export CMP_BUILD_ON_START="mpd-ppc-gas_dosing"</code><br /><code>export CMP_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"</code> </td>
+    </tr>
+    <tr>
+      <td><code>CMP_DEVHUB_URL</code> </td>
+      <td>url for device requests <br />(Action: TCP, VXI11, MODBUS EXECUTE) </td>
+      <td><code>export CMP_DEVHUB_URL="http://localhost:9009"</code><br /><code>export CMP_DEVHUB_URL="http://a73434:55555"</code> </td>
+    </tr>
+    <tr>
+      <td><code>CMP_LT_SRV</code> </td>
+      <td>CouchDB server </td>
+      <td><code>export CMP_LT_SRV="127.0.0.1"</code><br /><code>export CMP_LT_SRV="a73434"</code> </td>
+    </tr>
+  </tbody>
+</table>
 <h1><a href="#notes" name="notes"></a>notes</h1>
 <h2><a href="#emacs" name="emacs"></a>emacs</h2>
 <pre><code class="elisp">((clojure-mode . ((cider-preferred-build-tool . clojure-cli)
