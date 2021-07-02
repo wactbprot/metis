@@ -27,9 +27,30 @@
           :db   (:stmem-db c)}
    :pool {}})
 
+
+(defn build-on-start [c]
+  (if-let [s (System/getenv "CMP_BUILD_ON_START")]
+    (string/split s  #"[;,\s]")
+    (:build-on-start c)))
+
+(defn dev-hub-url
+  [c]
+   (if-let [url (System/getenv "CMP_DEVHUB_URL")]
+     url
+     (:dev-hub-url c)))
+
+(defn dev-proxy-url
+  [c]
+   (if-let [url (System/getenv "CMP_DEVPROXY_URL")]
+     url
+     (:dev-proxy-url c)))
+
 (def config
   (let [c (get-config)]
     (assoc c
+           :build-on-start (build-on-start c)
+           :dev-hub-url (dev-hub-url c)
+           :dev-proxy-url (dev-proxy-url c)
            :ltmem-base-url (ltmem-base-url c)
            :ltmem-conn (ltmem-conn c)
            :stmem-conn (stmem-conn c)
