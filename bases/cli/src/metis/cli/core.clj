@@ -3,6 +3,7 @@
             [metis.document.interface :as document]
             [metis.exchange.interface :as exchange]
             [metis.model.interface :as model]
+            [metis.log.interface :as log]
             [metis.ltmem.interface :as ltmem]
             [com.brunobonacci.mulog :as µ]
             [clojure.pprint :as pp]
@@ -11,29 +12,15 @@
             [clojure.string :as string]
             [metis.utils.interface :as utils]
             [metis.worker.interface :as worker])
-  (:use   [clojure.repl]))
+  (:use [clojure.repl]))
 
 ;;------------------------------
-;; logging system
+;; log system
 ;;------------------------------
-(defonce logger (atom nil))
+(defn log-start [] (log/start))
 
-(defn log-stop
-  ([]
-   (log-stop c/config))
-  ([conf]
-   (µ/log ::stop)
-   (@logger)
-   (reset! logger nil)))
+(defn log-stop [] (log/stop))
 
-(defn log-start
-   ([]
-   (log-start c/config))
-  ([{conf :mulog}]
-   (µ/set-global-context! {:app-name "metis"})
-   (reset! logger (µ/start-publisher! conf))
-   conf))
-  
 ;;------------------------------
 ;; m- mpd commands
 ;;------------------------------
