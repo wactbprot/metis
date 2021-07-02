@@ -1,8 +1,12 @@
-(ns  metis.srv.core
+(ns metis.srv.core
     ^{:author "wactbprot"
       :doc "Provides a frontend. Starts up the configured mpds."}
   (:require [metis.config.interface :as c]
             [metis.log.interface :as log]
+            [metis.ltmem.interface :as ltmem]
+            [metis.utils.interface :as utils]
+            [metis.model.interface :as model]
+            [metis.scheduler.interface :as scheduler]
             [compojure.route :as route]
             [com.brunobonacci.mulog :as µ]
             [compojure.core :refer [defroutes
@@ -16,6 +20,15 @@
             [metis.srv.handler :as h])
     (:use   [clojure.repl])
     (:gen-class))
+
+
+(defn mpd-build [mp-id] (-> mp-id ltmem/get-doc utils/map->safe-map model/build-mpd))
+ 
+(defn mpd-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
+
+(defn mpd-start [mp-id] (scheduler/start {:mp-id mp-id}))
+
+(defn mpd-stop [mp-id] (scheduler/stop {:mp-id mp-id}))
 
 (defonce server (atom nil))
 
@@ -43,7 +56,17 @@
         {:ok true}))
 
 (defn start []
+
   (log/start)
+  (run! (fn [mp-id]
+          (µ/log ::start :message (str "clear mpd: " mp-id))
+          (mpd-clear mp-id)
+          (µ/log ::start :message (str "build mpd: " mp-id))
+          (mpd-build mp-id)
+          (µ/log ::start :message (str "start mpd: " mp-id))
+          (mpd-start mp-id)          )
+        (:build-on-start c/config))
+  
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))
   (µ/log ::start :message "start ui web socket listener")

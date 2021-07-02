@@ -27,7 +27,6 @@
           :db   (:stmem-db c)}
    :pool {}})
 
-
 (defn build-on-start [c]
   (if-let [s (System/getenv "CMP_BUILD_ON_START")]
     (string/split s  #"[;,\s]")
