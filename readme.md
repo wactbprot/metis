@@ -8,7 +8,7 @@
 
 ## user interface (web site)
 
-The metis frontend is based on [UIkik](https://getuikit.com/). A fresh
+The metis frontend is based on [UIkit](https://getuikit.com/). A fresh
 metis installation needs libraries: run `./dl.sh` in metis root path
 in order to install them.
 
