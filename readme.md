@@ -22,9 +22,10 @@ in order to install them.
 
 | `var`                	| Description                                                      	| Example                                                                                                              	|
 |----------------------	|------------------------------------------------------------------	|----------------------------------------------------------------------------------------------------------------------	|
-| `CMP_BUILD_ON_START` 	| mpds to build on server start                                    	| `export CMP_BUILD_ON_START="mpd-ppc-gas_dosing"`<br>`export CMP_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"` 	|
-| `CMP_DEVHUB_URL`     	| url for device requests <br>(Action: TCP, VXI11, MODBUS EXECUTE) 	| `export CMP_DEVHUB_URL="http://localhost:9009"`<br>`export CMP_DEVHUB_URL="http://a73434:55555"`                     	|
-| `CMP_LT_SRV`         	| CouchDB server                                                   	| `export CMP_LT_SRV="127.0.0.1"`<br>`export CMP_LT_SRV="a73434"`                                                      	|
+| `METIS_BUILD_ON_START` 	| mpds to build on server start                                    	| `export METIS_BUILD_ON_START="mpd-ppc-gas_dosing"`<br>`export METIS_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"` 	|
+| `METIS_DEVHUB_URL`     	| url for device requests <br>(Action: TCP, VXI11, MODBUS EXECUTE) 	| `export METIS_DEVHUB_URL="http://localhost:9009"`<br>`export METIS_DEVHUB_URL="http://a73434:55555"`                     	|
+| `METIS_LTMEM_HOST`         	| CouchDB host                                                   	| `export METIS_LTMEM_HOST="127.0.0.1"`<br>`export METIS_LTMEM_HOST="a73434"`                                                      	|
+| `METIS_DEVPROXY_URL`         	| DevProxy url                                                   	| `export METIS_DEVPROXY_URL="127.0.0.1:8009"                                                      	|
 
 # notes
 
