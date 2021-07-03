@@ -22,19 +22,24 @@
   </thead>
   <tbody>
     <tr>
-      <td><code>CMP_BUILD_ON_START</code> </td>
+      <td><code>METIS_BUILD_ON_START</code> </td>
       <td>mpds to build on server start </td>
-      <td><code>export CMP_BUILD_ON_START="mpd-ppc-gas_dosing"</code><br /><code>export CMP_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"</code> </td>
+      <td><code>export METIS_BUILD_ON_START="mpd-ppc-gas_dosing"</code><br /><code>export METIS_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"</code> </td>
     </tr>
     <tr>
-      <td><code>CMP_DEVHUB_URL</code> </td>
+      <td><code>METIS_DEVHUB_URL</code> </td>
       <td>url for device requests <br />(Action: TCP, VXI11, MODBUS EXECUTE) </td>
-      <td><code>export CMP_DEVHUB_URL="http://localhost:9009"</code><br /><code>export CMP_DEVHUB_URL="http://a73434:55555"</code> </td>
+      <td><code>export METIS_DEVHUB_URL="http://localhost:9009"</code><br /><code>export METIS_DEVHUB_URL="http://a73434:55555"</code> </td>
     </tr>
     <tr>
-      <td><code>CMP_LT_SRV</code> </td>
-      <td>CouchDB server </td>
-      <td><code>export CMP_LT_SRV="127.0.0.1"</code><br /><code>export CMP_LT_SRV="a73434"</code> </td>
+      <td><code>METIS_LTMEM_HOST</code> </td>
+      <td>CouchDB host </td>
+      <td><code>export METIS_LTMEM_HOST="127.0.0.1"</code><br /><code>export METIS_LTMEM_HOST="a73434"</code> </td>
+    </tr>
+    <tr>
+      <td><code>METIS_DEVPROXY_URL</code> </td>
+      <td>DevProxy url </td>
+      <td>`export METIS_DEVPROXY_URL=“127.0.0.1:8009” </td>
     </tr>
   </tbody>
 </table>
