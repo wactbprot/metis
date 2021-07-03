@@ -11,7 +11,7 @@
    (-> f slurp edn/read-string)))
 
 (defn ltmem-base-url [c]
-  (let [lt-srv (System/getenv "CMP_LT_SRV")
+  (let [lt-srv (System/getenv "METIS_LTMEM_HOST")
         usr    (System/getenv "CAL_USR")
         pwd    (System/getenv "CAL_PWD")]
     (str (:ltmem-prot c) "://"
@@ -28,19 +28,19 @@
    :pool {}})
 
 (defn build-on-start [c]
-  (if-let [s (System/getenv "CMP_BUILD_ON_START")]
+  (if-let [s (System/getenv "METIS_BUILD_ON_START")]
     (string/split s  #"[;,\s]")
     (:build-on-start c)))
 
 (defn dev-hub-url
   [c]
-   (if-let [url (System/getenv "CMP_DEVHUB_URL")]
+   (if-let [url (System/getenv "METIS_DEVHUB_URL")]
      url
      (:dev-hub-url c)))
 
 (defn dev-proxy-url
   [c]
-   (if-let [url (System/getenv "CMP_DEVPROXY_URL")]
+   (if-let [url (System/getenv "METIS_DEVPROXY_URL")]
      url
      (:dev-proxy-url c)))
 
