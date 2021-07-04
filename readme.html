@@ -44,6 +44,9 @@
   </tbody>
 </table>
 <h1><a href="#notes" name="notes"></a>notes</h1>
+<h2><a href="#overcome-error-by-" name="overcome-error-by-"></a>overcome <code>SSL peer shut down incorrectly</code> error by:</h2>
+<pre><code class="shell">export JAVA_TOOL_OPTIONS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
+</code></pre>
 <h2><a href="#emacs" name="emacs"></a>emacs</h2>
 <pre><code class="elisp">((clojure-mode . ((cider-preferred-build-tool . clojure-cli)
                   (cider-clojure-cli-global-options . "-A:dev"))))
