@@ -29,6 +29,12 @@ in order to install them.
 
 # notes
 
+## overcome `SSL peer shut down incorrectly` error by:
+
+```shell
+export JAVA_TOOL_OPTIONS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
+```
+
 ## emacs
 
 ```elisp
