@@ -56,8 +56,13 @@
         {:ok true}))
 
 (defn start []
-
   (log/start)
+  (let [mpd-ref (c/mpd-ref)
+        ref-id (:_id mpd-ref)]
+    (µ/log ::start :message (str "clear mpd: " ref-id))
+    (mpd-clear ref-id)
+    (µ/log ::start :message (str "build mpd: " ref-id))
+    (model/build-mpd mpd-ref))
   (run! (fn [mp-id]
           (µ/log ::start :message (str "clear mpd: " mp-id))
           (mpd-clear mp-id)
@@ -66,7 +71,6 @@
           (µ/log ::start :message (str "start mpd: " mp-id))
           (mpd-start mp-id)          )
         (:build-on-start c/config))
-  
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))
   (µ/log ::start :message "start ui web socket listener")
