@@ -7,6 +7,9 @@ CouchDB defining the steps for a calibration or measurement.
 
 **container** ... part of a mpd that groups measurement sequences.
 
+**task** ... description of a single measurement step. The kind of
+task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
+
 ## overview
 
 <img src="frontend_i.jpeg" width="900">
@@ -27,9 +30,8 @@ CouchDB defining the steps for a calibration or measurement.
 6. number of the container
 7. show/hide container content
 
-
-## overview
-
+## container content
+ 
 <img src="frontend_ii.jpeg" width="900">
 
 1. container description
@@ -38,6 +40,21 @@ CouchDB defining the steps for a calibration or measurement.
 * STOP ... stops the execution of the tasks in the container, the
   status of **all** tasks will be set to READY
 * CYCLE ... starts the execution of the tasks in the container,
-  restarts if all tasks in the container are executed
-* SUSPEND ... suspends the execution of the container tasks at point
+  **restarts** if all tasks in the container are executed
+* SUSPEND ... suspends the execution of the container tasks at point,
+  resume with RUN
 * RESET ... sets all container tasks to READY status
+3. state of measurement step (task):
+* READY ... step is ready to be started
+* WORKING ... task is running
+* EXECUTED ... step is finished; if all tasks in a container have the
+  state EXECUTED the
+  [scheduler](components/scheduler/src/metis/scheduler/core.clj) sets
+  all steps to READY
+* ERROR ... an error occured during the execution of the task; the  
+  [scheduler](components/scheduler/src/metis/scheduler/core.clj) sets
+  the container status to ERROR; the execution is suspended
+3. task controls:
+* [gear] ... set state of step to working
+* [check] ... set state of step to executed
+* [play] ... set state of step to ready 
