@@ -167,9 +167,8 @@
 
 (defn all-li [m a]
   [:li
-   (if (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
-     {:class "uk-background-muted uk-open"}
-     {:class "uk-background-muted"})])
+   (when (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
+     {:class "uk-open"})])
 
 (defn mpd-descr [conf data]
   [:div
