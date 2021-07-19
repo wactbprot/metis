@@ -32,8 +32,6 @@
 
 (defonce server (atom nil))
 
-(declare restart)
-
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
   (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
@@ -62,7 +60,9 @@
     (µ/log ::start :message (str "clear mpd: " ref-id))
     (mpd-clear ref-id)
     (µ/log ::start :message (str "build mpd: " ref-id))
-    (model/build-mpd mpd-ref))
+    (model/build-mpd mpd-ref)
+    (µ/log ::start :message (str "start mpd: " ref-id))
+    (mpd-start ref-id))
   (run! (fn [mp-id]
           (µ/log ::start :message (str "clear mpd: " mp-id))
           (mpd-clear mp-id)
