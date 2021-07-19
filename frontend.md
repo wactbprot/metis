@@ -26,3 +26,18 @@ CouchDB defining the steps for a calibration or measurement.
 * SUSPEND ... execution of container tasks is stopped at point
 6. number of the container
 7. show/hide container content
+
+
+## overview
+
+<img src="frontend_ii.jpeg" width="900">
+
+1. container description
+2. container controls:
+* RUN ... starts the execution of the tasks in the container
+* STOP ... stops the execution of the tasks in the container, the
+  status of **all** tasks will be set to READY
+* CYCLE ... starts the execution of the tasks in the container,
+  restarts if all tasks in the container are executed
+* SUSPEND ... suspends the execution of the container tasks at point
+* RESET ... sets all container tasks to READY status
