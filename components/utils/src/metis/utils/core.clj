@@ -1,6 +1,5 @@
 (ns metis.utils.core
   (:require [metis.config.interface :as c]
-            [cheshire.core :as che]
             [clojure.string :as string]
             [clj-time.core :as tm]
             [clj-time.format :as tm-f]
@@ -53,18 +52,6 @@
 ;;------------------------------
 ;; maps
 ;;------------------------------
-(defn map->safe-map
-  "Replaces all of the `@`-signs (if followed by letters 1)
-  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
-  (or at least problematic).
-
-  1) There are devices annotating channels by `(@101:105)`.
-  This expressions should remain as they are."
-  ([m]
-   (map->safe-map c/config m))
-  ([{a :at-replace} m]
-  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" (str a "$2")) true)))
-
 (defn date-map
   "Returns a map with replacements
   of general intrest.

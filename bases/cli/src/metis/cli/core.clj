@@ -66,7 +66,7 @@
 (defn m-build
   "Builds the mpd with the given `mp-id`."
   [mp-id]
-  (-> mp-id ltmem/get-doc utils/map->safe-map model/build-mpd))
+  (-> mp-id ltmem/get-doc model/build-mpd))
  
 (defn m-build-ref 
   "Builds the reference mpd `mpd-ref.edn`."

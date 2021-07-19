@@ -1,8 +1,21 @@
 (ns metis.model.core
   (:require [metis.config.interface :as c]
+            [cheshire.core :as che]
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]
             [metis.utils.interface :as utils]))
+
+(defn safe
+  "Replaces all of the `@`-signs (if followed by letters 1)
+  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
+  (or at least problematic).
+  
+  1) There are devices annotating channels by `(@101:105)`.
+  This expressions should remain as they are."
+  ([m]
+   (safe c/config m))
+  ([{a :at-replace} m]
+  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" (str a "$2")) true)))
 
 ;;------------------------------
 ;; exchange
@@ -104,9 +117,8 @@
 ;;------------------------------
 ;; build mpd doc
 ;;------------------------------
-(defn build-mpd
-  [{mp-id :_id {conts :Container defins :Definitions exch :Exchange :as m} :Mp}]
-  (let [m (assoc m :mp-id mp-id)]
+(defn build-mpd [{mp-id :_id m :Mp}]
+  (let [m (safe (assoc m :mp-id mp-id))]
     (build-exchange m)
     (build-meta m)
     (build-all-container m)
@@ -115,8 +127,7 @@
 ;;------------------------------
 ;; clear mpd doc
 ;;------------------------------
-(defn clear-mpd
-  [{mp-id :mp-id}]
+(defn clear-mpd [{mp-id :mp-id}]
   (stmem/del-vals {:mp-id mp-id :struct :*})) 
 
 ;;------------------------------
@@ -125,7 +136,7 @@
 (defn build-tasks [tasks]
   (map (fn [{task-name :TaskName :as task} ]
          (assoc (stmem/set-val {:task-name task-name
-                                :value (utils/map->safe-map task)}) :task-name task-name))
+                                :value (safe task)}) :task-name task-name))
        tasks))
 
 ;;------------------------------
