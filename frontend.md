@@ -9,7 +9,7 @@ CouchDB defining the steps for a calibration or measurement.
 
 ## overview
 
-<img src="frontend_i.jpeg" width="200">
+<img src="frontend_i.jpeg" width="400">
 
 1. id of the mpd
 2. status of the mpd (_active_ means ready to run)
