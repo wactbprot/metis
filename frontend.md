@@ -5,7 +5,7 @@
 **mpd** ... measurement program definition: JSON document stored in
 CouchDB defining the steps for a calibration or measurement.
 
-**container** ... part of a mpd that groups measurement sequences.
+**container** ... part of a mpd that groups a measurement sequence.
 
 **task** ... description of a single measurement step. The kind of
 task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
@@ -30,9 +30,8 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 6. number of the container
 7. show/hide container content
 
-
 ## container content
-
+ 
 <img src="frontend_ii.jpeg" width="900">
 
 1. container description
@@ -55,3 +54,11 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 * ERROR ... an error occured during the execution of the task; the  
   [scheduler](components/scheduler/src/metis/scheduler/core.clj) sets
   the container status to ERROR; the execution is suspended
+4. task controls:
+*  ⚙ ... set state of step to WORKING: stops the execution until step
+   is set to READY or EXECUTED
+*  ✓ ... set state of step to EXECUTED: task execution is skipped
+*  ▷ ... set state of step to READY: run task again (e.g. after error)
+5. task position: 
+* SEQ-IDX ... sequential step index 
+* PAR-IDX ... parallel step index
