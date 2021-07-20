@@ -10,6 +10,9 @@ CouchDB defining the steps for a calibration or measurement.
 **task** ... description of a single measurement step. The kind of
 task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 
+**task** ... description of a single measurement step. The kind of
+task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
+
 ## overview
 
 <img src="frontend_i.jpeg" width="900">
@@ -54,6 +57,7 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 * ERROR ... an error occured during the execution of the task; the  
   [scheduler](components/scheduler/src/metis/scheduler/core.clj) sets
   the container status to ERROR; the execution is suspended
+<<<<<<< HEAD
 4. task controls:
 *  ⚙ ... set state of step to WORKING: stops the execution until step
    is set to READY or EXECUTED
@@ -62,3 +66,9 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 5. task position: 
 * SEQ-IDX ... sequential step index 
 * PAR-IDX ... parallel step index
+=======
+3. task controls:
+* [gear] ... set state of step to working
+* [check] ... set state of step to executed
+* [play] ... set state of step to ready 
+>>>>>>> 0634da0... ...
