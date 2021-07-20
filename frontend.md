@@ -55,6 +55,6 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
   [scheduler](components/scheduler/src/metis/scheduler/core.clj) sets
   the container status to ERROR; the execution is suspended
 3. task controls:
-* [gear] ... set state of step to working
-* [check] ... set state of step to executed
-* [play] ... set state of step to ready 
+* [ ⚙ ] ... set state of step to WORKING: stops the execution until step is set to READY or EXECUTED
+* [ ✓ ] ... set state of step to EXECUTED: task execution is skipped 
+* [ ▷ ] ... set state of step to READY: run task again (e.g. after error)
