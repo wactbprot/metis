@@ -174,8 +174,8 @@
   [:div
    [:h1.uk-heading-bullet
     [:span (:mp-id data) "&nbsp;" [:sup (if (:running data)
-                                 [:span {:uk-icon "icon: bolt"}]
-                                 [:span {:uk-icon "icon: warning"}])]]]
+                                          [:span.uk-badge "active"]
+                                          [:span.uk-badge "stopped"])]]]
     [:p.uk-text-meta (:descr data)]])
 
 (defn ctrl-li [m a] (into (all-li m a) [(li-title m (:value m)) (state-li (:states m))]))

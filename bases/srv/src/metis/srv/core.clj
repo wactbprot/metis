@@ -32,8 +32,6 @@
 
 (defonce server (atom nil))
 
-(declare restart)
-
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
   (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
@@ -56,8 +54,15 @@
         {:ok true}))
 
 (defn start []
-
   (log/start)
+  (let [mpd-ref (c/mpd-ref)
+        ref-id (:_id mpd-ref)]
+    (µ/log ::start :message (str "clear mpd: " ref-id))
+    (mpd-clear ref-id)
+    (µ/log ::start :message (str "build mpd: " ref-id))
+    (model/build-mpd mpd-ref)
+    (µ/log ::start :message (str "start mpd: " ref-id))
+    (mpd-start ref-id))
   (run! (fn [mp-id]
           (µ/log ::start :message (str "clear mpd: " mp-id))
           (mpd-clear mp-id)
@@ -66,7 +71,6 @@
           (µ/log ::start :message (str "start mpd: " mp-id))
           (mpd-start mp-id)          )
         (:build-on-start c/config))
-  
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))
   (µ/log ::start :message "start ui web socket listener")
