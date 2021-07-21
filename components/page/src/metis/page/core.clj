@@ -171,18 +171,19 @@
      {:class "uk-open"})])
 
 (defn mpd-descr [conf data]
-  [:div
-   [:h1.uk-heading-bullet
-    [:span (:mp-id data) "&nbsp;" [:sup (if (:running data)
-                                          [:span.uk-badge "active"]
-                                          [:span.uk-badge "stopped"])]]]
-    [:p.uk-text-meta (:descr data)]])
+  [:div.uk-navbar-item
+   [:a.uk-logo
+    {:href (str "http://localhost:5984/_utils/#database/vl_db/"(:mp-id data))
+     :target "_blank"}
+    (:mp-id data) "&nbsp;" [:sup (if (:running data)
+                                   [:span.uk-badge "active"]
+                                   [:span.uk-badge "stopped"])]
+    [:div.uk-navbar-subtitle (:descr data)]]])
 
 (defn ctrl-li [m a] (into (all-li m a) [(li-title m (:value m)) (state-li (:states m))]))
 
 (defn cont-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (mpd-descr conf data)
    (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(ctrl-li % (:active data)) (:data data)))])
@@ -195,7 +196,6 @@
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (mpd-descr conf data)
    (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(elem-li % (:active data) (:all-exch data)) (:data data) ))])
@@ -210,7 +210,9 @@
    [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below
     {:uk-sticky ""
      :uk-navbar ""}
-    [:div.uk-navbar-center
+    [:div.uk-navbar-left
+     (mpd-descr conf data)]
+    [:div.uk-navbar-right
      [:ul.uk-navbar-nav
       [:li [:a {:target "_blank"
                 :href "http://localhost:8081/"} "redis"]]
