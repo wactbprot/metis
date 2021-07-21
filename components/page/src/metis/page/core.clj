@@ -70,8 +70,8 @@
             [:thead [:tr
                      [:th.uk-width-small "status"]
                      [:th "ctrls"]
-                     [:th "seq-idx"]
-                     [:th "par-idx"]
+                     [:th.uk-table-shrink "seq-idx"]
+                     [:th.uk-table-shrink "par-idx"]
                      [:th "task name"]
                      [:th "task action"]
                      [:th.uk-width-medium "task info"]]]            
@@ -207,17 +207,24 @@
    (hp/include-css "/css/uikit.css")])
 
 (defn nav [conf data]
-   [:div {:class "uk-navbar-container uk-sticky uk-sticky-fixed uk-sticky-below"
-          :uk-sticky ""
-          :uk-navbar ""}
+   [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below
+    {:uk-sticky ""
+     :uk-navbar ""}
     [:div.uk-navbar-center
      [:ul.uk-navbar-nav
-      [:li [:a {:target "_blank" :href "http://localhost:8081/"} "redis"]]
-      [:li [:a {:target "_blank" :href "http://a75438:5601/app/discover"} "elasticsearch"]]
-      [:li [:a {:target "_blank" :href "http://localhost:8009/"} "devproxy"]]
-      [:li [:a {:uk-icon "icon: github" :target "_blank" :href "https://github.com/wactbprot/metis"}]]
-      [:li [:a {:target "_blank" :href (str "/cont/" (:mp-id data))} "Container"]]
-      [:li [:a {:target "_blank" :href (str "/elem/" (:mp-id data))} "Inputs"]]]]])
+      [:li [:a {:target "_blank"
+                :href "http://localhost:8081/"} "redis"]]
+      [:li [:a {:target "_blank"
+                :href "http://a75438:5601/app/discover"} "elasticsearch"]]
+      [:li [:a {:target "_blank"
+                :href "http://localhost:8009/"} "devproxy"]]
+      [:li [:a {:uk-icon "icon: github"
+                :target "_blank"
+                :href "https://github.com/wactbprot/metis"}]]
+      [:li [:a {:target "_blank"
+                :href (str "/cont/" (:mp-id data))} "Container"]]
+      [:li [:a {:target "_blank"
+                :href (str "/elem/" (:mp-id data))} "Inputs"]]]]])
   
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
