@@ -4,8 +4,7 @@
             [metis.page.utils :as u]
             [clojure.string :as string]))
 
-(defn ids-list []
-  [:ul.uk-breadcrumb {:id "doc-ids"}])
+(defn ids-list [conf data] [:ul.uk-navbar-nav {:id "doc-ids"}])
 
 (defn gen-state-btn [{mp-id :mp-id struct :struct no-idx :no-idx seq-idx :seq-idx par-idx :par-idx } s]
   [:button.uk-button.uk-button-default.state-btn
@@ -61,7 +60,6 @@
       (into [:div.uk-accordion-content
              [:p.uk-text-lighter (:descr m)]
              (gen-ctrl-btn m "run")
-             (gen-ctrl-btn m "stop")
              (gen-ctrl-btn m "cycle")
              (gen-ctrl-btn m "suspend")
              (gen-ctrl-btn m "reset")
@@ -76,10 +74,10 @@
                      [:th "task action"]
                      [:th.uk-width-medium "task info"]]]            
             (into [:tbody] (map table-row v))]])))
+
 ;; ------------------------------------------------------------------------
 ;; exch inputs
 ;; ------------------------------------------------------------------------
-
 (defn e-btn [m k v]
   [:a.uk-button.uk-button-default.exch-btn
    {:data-mp-id (:mp-id m)
@@ -184,7 +182,6 @@
 
 (defn cont-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(ctrl-li % (:active data)) (:data data)))])
 
@@ -196,7 +193,6 @@
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (ids-list)
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(elem-li % (:active data) (:all-exch data)) (:data data) ))])
 
@@ -206,13 +202,19 @@
    [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
    (hp/include-css "/css/uikit.css")])
 
-(defn nav [conf data]
-   [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below
-    {:uk-sticky ""
-     :uk-navbar ""}
-    [:div.uk-navbar-left
+(defn nav-mpd [conf data]
+  [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below
+   {:uk-sticky ""
+    :uk-navbar ""}
+   [:div.uk-navbar-left
      (mpd-descr conf data)]
-    [:div.uk-navbar-right
+   [:div.uk-navbar-right
+    (ids-list conf data)]])
+
+(defn nav-links [conf data]
+  [:div.uk-navbar-container
+   {:uk-navbar ""}
+   [:div.uk-navbar-center
      [:ul.uk-navbar-nav
       [:li [:a {:target "_blank"
                 :href "http://localhost:8081/"} "redis"]]
@@ -230,7 +232,8 @@
   
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
-   (nav conf data)
+   (nav-links conf data)
+   (nav-mpd conf data)
    (f conf data)
    (hp/include-js "/js/jquery.js")
    (hp/include-js "/js/uikit.js")
