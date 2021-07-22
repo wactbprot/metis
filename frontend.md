@@ -25,8 +25,8 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
   executed
 * ERROR ... a task of the container returned an ERROR, task execution
   is interrupted
-* MON ... container runs constantly (e.g. monitoring measurements,
-  restarts if all tasks in the container are executed)
+* MON ... container runs constantly (e.g. monitoring measurements) 
+  restarts if all tasks in the container are executed
 * SUSPEND ... execution of container tasks is stopped at point
 6. number of the container
 7. show/hide container content
