@@ -44,7 +44,7 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 * CYCLE ... starts the execution of the tasks in the container,
   **restarts** if all tasks in the container are executed
 * SUSPEND ... suspends the execution of the container tasks at point
-  (resume with RUN, set all steps twith RESET)
+  (resume with RUN, set all steps back to ready with RESET)
 * RESET ... sets all container tasks to READY status
 3. state of measurement step (task):
 * READY ... step is ready to be started
