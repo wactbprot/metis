@@ -67,4 +67,4 @@ task is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 * PAR-IDX ... parallel step index.
 
 SEQ-IDX and PAR-IDX together with the container number (internal name
-NO-IDX) unambiguously adress a task or step in an mpd.
+NO-IDX) unambiguously address a task or step in an mpd.
