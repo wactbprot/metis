@@ -34,6 +34,7 @@
 
 (defroutes app-routes
   (GET "/ws" [:as req] (ws/main req))
+  (GET "/" [:as req] (page/home c/config (h/home req)))
   (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
   (GET "/elem/:mp-id" [:as req] (page/elem c/config (h/elem req)))  
   (route/resources "/")

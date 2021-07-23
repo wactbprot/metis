@@ -225,10 +225,12 @@
       [:li [:a {:uk-icon "icon: github"
                 :target "_blank"
                 :href "https://github.com/wactbprot/metis"}]]
-      [:li [:a {:target "_blank"
-                :href (str "/cont/" (:mp-id data))} "Container"]]
-      [:li [:a {:target "_blank"
-                :href (str "/elem/" (:mp-id data))} "Inputs"]]]]])
+      (when (:mp-id data)
+        [:li [:a {:target "_blank"
+                  :href (str "/cont/" (:mp-id data))} "Container"]])
+      (when (:mp-id data)
+        [:li [:a {:target "_blank"
+                  :href (str "/elem/" (:mp-id data))} "Inputs"]])]]])
   
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
@@ -243,3 +245,43 @@
 (defn cont [conf data] (hp/html5 (head conf data) (body conf data cont-content)))
 
 (defn elem [conf data] (hp/html5 (head conf data) (body conf data elem-content)))
+
+;; ------------------------------------------------------------------------
+;; home
+;; ------------------------------------------------------------------------
+(defn deps-span [b] [:span {:uk-icon (if b "check" "warning")}])
+
+(defn home-content [conf data]
+  (prn data)
+  (into [:div.uk-container.uk-padding-large]
+        (map (fn [m]
+               [:article 
+                [:h2.uk-heading-divider.uk-text-center.uk-heading
+                 [:a.uk-link-muted {:href (str "cont/"(:mp-id m))}(:mp-id m)]]
+                [:p.uk-text-center (:descr m)]
+                [:div {:uk-grid ""}
+                 [:div {:class "uk-width-2-3@m"}
+                  [:h3.uk-text-uppercase.uk-text-meta	 "task dependencies"]
+                  (into [:p]
+                        (map (fn [m]
+                               [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
+                             (:task-deps m)))]
+                 [:div {:class "uk-width-auto@m"}
+                  [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
+                  (if (empty? (:mp-deps m))
+                    [:p "none"] 
+                    (into [:p]
+                          (map (fn [m]
+                                 [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
+                               (:mp-deps m))))]]])
+             data)))
+
+(defn body-home [conf data]
+  [:body
+   (nav-links conf data)
+   (home-content conf data)
+   (hp/include-js "/js/jquery.js")
+   (hp/include-js "/js/uikit.js")
+   (hp/include-js "/js/uikit-icons.js")])
+
+(defn home [conf data] (hp/html5 (head conf data) (body-home conf data)))

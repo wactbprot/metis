@@ -38,6 +38,8 @@
 
 (defn map->key [m] (trans/map->key m))
 
+(defn key->map [k] (trans/key->map k))
+
 (defn registered [] (notif/registered)) 
 
 (defn register [m f] (notif/register m f))

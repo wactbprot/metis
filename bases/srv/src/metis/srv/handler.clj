@@ -6,10 +6,14 @@
             [metis.tasks.interface :as tasks]
             [clojure.string :as string]))
 
-(defn running? [mp-id]
-  (pos? (count (filter
-                #(string/starts-with? (:reg-key %) mp-id)
-                (stmem/registered)))))
+
+(defn registered-mps []
+  (filterv
+   #(string/starts-with? % "mpd")
+   (map #(:mp-id (stmem/key->map (:reg-key %)))
+        (stmem/registered))))
+
+(defn running? [mp-id] (contains? (set (registered-mps)) mp-id))
   
 (defn req->mp-id [req] (get-in req [:route-params :mp-id] "*"))
 
@@ -46,3 +50,21 @@
      :all-exch (exch/all {:mp-id mp-id})
      :data (mapv (comp assoc-descr assoc-title) elems)}))
 
+(defn task-deps [mp-id]
+  (mapv (fn [s]{:task-name s
+                :available (map? (stmem/get-val {:mp-id :tasks :task-name s}))})
+        (stmem/get-val {:mp-id mp-id :struct :meta :metapath :task-deps})))
+
+(defn mp-deps [mp-id]
+  (mapv (fn [s]{:mp-id s
+                :running (running? s)})
+        (stmem/get-val {:mp-id mp-id :struct :meta :metapath :mp-deps})))
+
+(defn home [req]
+  (let [registered (registered-mps)]
+    (mapv (fn [mp-id]
+            {:mp-id mp-id
+             :descr (stmem/get-val {:mp-id mp-id :struct :meta :metapath :descr})
+             :task-deps (task-deps mp-id)
+             :mp-deps (mp-deps mp-id)})
+          registered)))
