@@ -97,13 +97,20 @@
 ;;------------------------------
 ;; meta
 ;;------------------------------
+(defn proto-tasks [cont defins] (flatten (into (map :Definition cont) (map :Definition defins))))
+
 (defn mp-deps 
   "Filters all `Common-run_mp` tasks from containers and definitions section.
   Returns a distinct list of `:%mpdef`initions."
   [cont defins]
-  (let [l (flatten (into (map :Definition cont) (map :Definition defins)))
-        l (filter #(= (:TaskName %) "Common-run_mp") l)]
+  (let [v (proto-tasks cont defins)
+        l (filter #(= (:TaskName %) "Common-run_mp") v)]
     (distinct (map #(get-in % [:Replace :%mpdef]) l))))
+
+(defn task-deps
+  "returns a distinct list of all `Tasks` needed."
+  [cont defins]
+  (distinct (map :TaskName (proto-tasks cont defins))))
 
 (defn build-meta
   "Stores the meta data of an mpd:
@@ -119,7 +126,8 @@
     (stmem/set-val (assoc m :metapath :std :value std))
     (stmem/set-val (assoc m :metapath :name :value name))
     (stmem/set-val (assoc m :metapath :descr :value descr))
-    (stmem/set-val (assoc m :metapath :deps :value (mp-deps cont defins)))
+    (stmem/set-val (assoc m :metapath :mp-deps :value (mp-deps cont defins)))
+    (stmem/set-val (assoc m :metapath :task-deps :value (task-deps cont defins)))
     (stmem/set-val (assoc m :metapath :nd :value (count defins)))
     (stmem/set-val (assoc m :metapath :nc :value (count cont)))))
 
