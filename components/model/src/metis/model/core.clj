@@ -97,6 +97,14 @@
 ;;------------------------------
 ;; meta
 ;;------------------------------
+(defn mp-deps 
+  "Filters all `Common-run_mp` tasks from containers and definitions section.
+  Returns a distinct list of `:%mpdef`initions."
+  [cont defins]
+  (let [l (flatten (into (map :Definition cont) (map :Definition defins)))
+        l (filter #(= (:TaskName %) "Common-run_mp") l)]
+    (distinct (map #(get-in % [:Replace :%mpdef]) l))))
+
 (defn build-meta
   "Stores the meta data of an mpd:
   
@@ -111,6 +119,7 @@
     (stmem/set-val (assoc m :metapath :std :value std))
     (stmem/set-val (assoc m :metapath :name :value name))
     (stmem/set-val (assoc m :metapath :descr :value descr))
+    (stmem/set-val (assoc m :metapath :deps :value (mp-deps cont defins)))
     (stmem/set-val (assoc m :metapath :nd :value (count defins)))
     (stmem/set-val (assoc m :metapath :nc :value (count cont)))))
 

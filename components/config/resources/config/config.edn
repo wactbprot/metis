@@ -47,6 +47,7 @@
                :cond "cond"
                :cls "class"
                :meta "meta"
+               :deps "dependencies"
                :std "standard"
                :nc "ncont"
                :nd "ndefins"
