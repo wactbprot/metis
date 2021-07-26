@@ -216,21 +216,24 @@
    {:uk-navbar ""}
    [:div.uk-navbar-center
      [:ul.uk-navbar-nav
+      [:li [:a {:uk-icon "icon: github-alt"
+                :target "_blank"
+                :href "https://github.com/wactbprot/metis"}]]
       [:li [:a {:target "_blank"
                 :href "http://localhost:8081/"} "redis"]]
       [:li [:a {:target "_blank"
                 :href "http://a75438:5601/app/discover"} "elasticsearch"]]
       [:li [:a {:target "_blank"
                 :href "http://localhost:8009/"} "devproxy"]]
-      [:li [:a {:uk-icon "icon: github"
-                :target "_blank"
-                :href "https://github.com/wactbprot/metis"}]]
       (when (:mp-id data)
         [:li [:a {:target "_blank"
                   :href (str "/cont/" (:mp-id data))} "Container"]])
       (when (:mp-id data)
         [:li [:a {:target "_blank"
-                  :href (str "/elem/" (:mp-id data))} "Inputs"]])]]])
+                  :href (str "/elem/" (:mp-id data))} "Inputs"]])
+      [:li [:a {:uk-icon "icon: list"
+                :target "_blank"
+                :href "/"}]]]]])
   
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
@@ -251,30 +254,39 @@
 ;; ------------------------------------------------------------------------
 (defn deps-span [b] [:span {:uk-icon (if b "check" "warning")}])
 
+(defn all-task-deps-ok? [v] (= (count v) (count (filter :available v))))
+
+(defn all-mp-deps-ok? [v] (or (empty? v) (= (count v) (count (filter :running v)))))
+
 (defn home-content [conf data]
-  (prn data)
-  (into [:div.uk-container.uk-padding-large]
-        (map (fn [m]
-               [:article 
-                [:h2.uk-heading-divider.uk-text-center.uk-heading
-                 [:a.uk-link-muted {:href (str "cont/"(:mp-id m))}(:mp-id m)]]
-                [:p.uk-text-center (:descr m)]
-                [:div {:uk-grid ""}
-                 [:div {:class "uk-width-2-3@m"}
+  [:div.uk-container.uk-container-large.uk-padding-large
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
+         (map (fn [m]
+                [:li
+                 [:a.uk-accordion-title {:href "#"}
+                  [:h3.uk-heading-line.uk-text-center [:span (:mp-id m)]]
+                  [:a {:href (str "cont/"(:mp-id m))}
+                   (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
+                   (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
+                   [:span {:uk-icon "link"}]]]
+                [:div.uk-accordion-content
+                 [:span.uk-text-meta (:descr m)]
+                 [:div.uk-grid
+                 [:div
                   [:h3.uk-text-uppercase.uk-text-meta	 "task dependencies"]
                   (into [:p]
                         (map (fn [m]
                                [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
                              (:task-deps m)))]
-                 [:div {:class "uk-width-auto@m"}
-                  [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
-                  (if (empty? (:mp-deps m))
-                    [:p "none"] 
-                    (into [:p]
-                          (map (fn [m]
-                                 [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
-                               (:mp-deps m))))]]])
-             data)))
+                 [:div
+                 [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
+                 (if (empty? (:mp-deps m))
+                   [:p "none"] 
+                   (into [:p]
+                         (map (fn [m]
+                                [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
+                              (:mp-deps m))))]]]])
+              data))])
 
 (defn body-home [conf data]
   [:body
