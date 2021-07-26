@@ -17,7 +17,7 @@ _task_ is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 <img src="frontend_o.jpeg" width="1200">
 
 1. id of available _mpd_
-2. all _task_s needed for the _mpd_ are available: 
+2. all _tasks_ needed for the _mpd_ are available: 
 * ✓ ... yes
 * ! ... no
 3. Most _mpds_ depend on measurement sequences provided by other _mpds_;
@@ -30,7 +30,7 @@ _task_ is defined by the _Action_ (e.g. _wait_, _TCP_ or _runMp_).
 at the end of the line.
 
 5. description of the _mpd_ 
-6. detailed list of the used/needed _task_s
+6. detailed list of the used/needed _tasks_
 7. detailed list of the used/needed _mpds_
 
 ## container overview
