@@ -6,16 +6,17 @@
 
 [api documentation](https://wactbprot.github.io/metis/)
 
-## user interface (web site)
+## frontend (web site)
 
 The metis frontend is based on [UIkit](https://getuikit.com/). A fresh
 metis installation needs libraries: run `./dl.sh` in metis root path
-in order to install them.
+in order to install them. See the [frontend documentation](frontend.md). 
 
 ### url
 
-* container view: `http://localhost:8010/cont/mpd-ref`
-* input/output elements: `http://localhost:8010/elem/mpd-ref`
+* home: http://localhost:8010/
+* container view: http://localhost:8010/cont/mpd-ref
+* input/output elements: http://localhost:8010/elem/mpd-ref
 
 
 ## environment variables
