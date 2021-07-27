@@ -44,7 +44,6 @@
                    res-exch  (if to-exch (exch/to (exch/all m) (assoc m :value to-exch)) {:ok true})
                    res-ids   (if ids (doc/renew m ids) {:ok true})
                    res-doc   (if (and doc-path result) (doc/store-results m result doc-path) {:ok true})]
-               (prn res-doc)
                (cond
                  (:error res-retry) (stmem/set-state-error (assoc m :message "error at retry"))
                  (:error res-exch)  (stmem/set-state-error (assoc m :message "error at exchange"))

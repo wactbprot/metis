@@ -21,9 +21,11 @@
 (defmulti task-info  #(-> % :Action keyword))
 
 (defmethod task-info :runMp [{mp :Mp title :ContainerTitle no-idx :Container}]
-  [:a.uk-link-text {:target "_blank" :href (str "/cont/" mp "?active=" (or title no-idx))}
-   [:span {:uk-icon "icon: link"}] mp])
-
+  [:a {:target "_blank"
+                    :href (str "/cont/" mp "?active=" (or title no-idx))}
+   [:div [:b mp] ]
+   [:div (or title no-idx)]])
+  
 (defmethod task-info :default [{descr :Comment}] [:span.uk-text-light descr])
  
 (defn val-type [x]
