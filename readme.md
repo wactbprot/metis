@@ -30,6 +30,26 @@ in order to install them. See the [frontend documentation](frontend.md).
 
 # notes
 
+## set proxy
+
+```shell
+touch ~/.m2/settings.xml 
+```
+fill with:
+
+```xml
+<settings>
+  <proxies>
+    <proxy>
+      <id> ____ </id>
+      <host> ____ </host>
+      <port> ____ </port>
+      <nonProxyHosts>localhost|*.__.__</nonProxyHosts>
+    </proxy>
+  </proxies>
+</settings>
+```
+
 ## overcome `SSL peer shut down incorrectly` error by:
 
 ```shell
