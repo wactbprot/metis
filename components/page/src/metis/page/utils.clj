@@ -25,7 +25,19 @@
                     :href (str "/cont/" mp "?active=" (or title no-idx))}
    [:div [:b mp] ]
    [:div (or title no-idx)]])
-  
+
+(defmethod task-info :TCP [{port :Port value :Value descr :Comment}]
+  [:span.uk-text-light
+   [:div descr]
+   [:div port]
+   [:div [:i value]]])
+
+(defmethod task-info :VXI11 [{device :Device value :Value descr :Comment}]
+  [:span.uk-text-light
+   [:div descr]
+   [:div device]
+   [:div [:i value]]])
+
 (defmethod task-info :default [{descr :Comment}] [:span.uk-text-light descr])
  
 (defn val-type [x]
