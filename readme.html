@@ -23,7 +23,7 @@
   </thead>
   <tbody>
     <tr>
-      <td><code>METIS_BUILD_ON_START</code> </td>
+      <td><code>METIS_BUILD_ON_START</code></td>
       <td>mpds to build on server start </td>
       <td><code>export METIS_BUILD_ON_START="mpd-ppc-gas_dosing"</code><br /><code>export METIS_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"</code> </td>
     </tr>
@@ -42,9 +42,34 @@
       <td>DevProxy url </td>
       <td><code>export METIS_DEVPROXY_URL="http://localhost:8009"</code> </td>
     </tr>
+    <tr>
+      <td><code>CAL_USR</code> </td>
+      <td>For password protected <code>vl_db_work</code> and <code>vl_db</code> </td>
+      <td><code>export CAL_USR="cal"</code> </td>
+    </tr>
+    <tr>
+      <td><code>CAL_PWD</code> </td>
+      <td>see above </td>
+      <td><code>export CAL_USR="&lt;passwd&gt;"</code> </td>
+    </tr>
   </tbody>
 </table>
 <h1><a href="#notes" name="notes"></a>notes</h1>
+<h2><a href="#set-proxy" name="set-proxy"></a>set proxy</h2>
+<pre><code class="shell">touch ~/.m2/settings.xml 
+</code></pre>
+<p>fill with:</p>
+<pre><code class="xml">&lt;settings&gt;
+  &lt;proxies&gt;
+    &lt;proxy&gt;
+      &lt;id&gt; ____ &lt;/id&gt;
+      &lt;host&gt; ____ &lt;/host&gt;
+      &lt;port&gt; ____ &lt;/port&gt;
+      &lt;nonProxyHosts&gt;localhost|*.__.__&lt;/nonProxyHosts&gt;
+    &lt;/proxy&gt;
+  &lt;/proxies&gt;
+&lt;/settings&gt;
+</code></pre>
 <h2><a href="#overcome-error-by-" name="overcome-error-by-"></a>overcome <code>SSL peer shut down incorrectly</code> error by:</h2>
 <pre><code class="shell">export JAVA_TOOL_OPTIONS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
 </code></pre>
