@@ -5,6 +5,38 @@
 [![codox](https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg)](https://github.com/wactbprot/metis/actions/workflows/main.yml)
 
 [api documentation](https://wactbprot.github.io/metis/)
+# requirements
+
+* java (8 or 11)
+* redis (with activated keyspace notification)
+
+# installation 
+
+All of the `mp` state is kept in a [redis](https://redis.io) database.
+
+## redis config
+
+Μητις relies on [Keyspace Notifications](https://redis.io/topics/notifications).
+Therefore it is necassary to replace in `/etc/redis/redis.conf`:
+
+```shell
+notify-keyspace-events ""
+```
+
+by
+
+```shell
+notify-keyspace-events AK
+```
+and restart the service:
+
+```shell
+# restart
+$ sudo systemctl restart redis.service
+
+# check status
+$ sudo systemctl status redis.service
+```
 
 ## frontend (web site)
 
