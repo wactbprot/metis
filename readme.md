@@ -7,8 +7,8 @@
 [api documentation](https://wactbprot.github.io/metis/)
 # requirements
 
-* [clojure.org](https://clojure.org/guides/getting_started)
-* [redis](https://redis.io/) (with activated [Keyspace Notifications](https://redis.io/topics/notifications))
+* [Clojure](https://clojure.org/guides/getting_started)
+* [Redis](https://redis.io/) (with activated [Keyspace Notifications](https://redis.io/topics/notifications))
 
 # installation 
 
