@@ -21,6 +21,10 @@ in order to install them. See the [frontend documentation](frontend.md).
 
 ## environment variables
 
+There are a plenty of methods to set and activate environment variables. E.g.: 
+write them to a file called `.metis` in the home directory (`~/`) and load it 
+by means of your `~/.bashrc` including the line `source ~/.metis`.
+
 | `var`                 | Description                                                       | Example                                                                                                                                   |
 |---------------------- |------------------------------------------------------------------ |-------------------------------------------------------------------------------------------------------------------------------------------|
 | `METIS_BUILD_ON_START`| mpds to build on server start                                     | `export METIS_BUILD_ON_START="mpd-ppc-gas_dosing"`<br>`export METIS_BUILD_ON_START="mpd-se3-servo,mpd-se3-cmp_valves,mpd-se3-cmp_state"`  |
