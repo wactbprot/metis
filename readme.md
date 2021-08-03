@@ -7,8 +7,8 @@
 [api documentation](https://wactbprot.github.io/metis/)
 # requirements
 
-* java (8 or 11)
-* redis (with activated keyspace notification)
+* [clojure.org](https://clojure.org/guides/getting_started)
+* [redis](https://redis.io/) (with activated [Keyspace Notifications](https://redis.io/topics/notifications))
 
 # installation 
 
