@@ -4,6 +4,27 @@
 <img src="metis.png" alt="metis" id="logo" />
 <p><a href="https://github.com/wactbprot/metis/actions/workflows/main.yml"><img src="https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg" alt="codox" /></a></p>
 <p><a href="https://wactbprot.github.io/metis/">api documentation</a></p>
+<h1><a href="#requirements" name="requirements"></a>requirements</h1>
+<ul>
+  <li><a href="https://clojure.org/guides/getting_started">Clojure</a></li>
+  <li><a href="https://redis.io/">Redis</a> (with activated <a href="https://redis.io/topics/notifications">Keyspace Notifications</a>)</li>
+</ul>
+<h1><a href="#installation" name="installation"></a>installation</h1>
+<p>All of the <code>mp</code> state is kept in a <a href="https://redis.io">redis</a> database.</p>
+<h2><a href="#redis-config" name="redis-config"></a>redis config</h2>
+<p>Μητις relies on <a href="https://redis.io/topics/notifications">Keyspace Notifications</a>. Therefore it is necassary to replace in <code>/etc/redis/redis.conf</code>:</p>
+<pre><code class="shell">notify-keyspace-events ""
+</code></pre>
+<p>by</p>
+<pre><code class="shell">notify-keyspace-events AK
+</code></pre>
+<p>and restart the service:</p>
+<pre><code class="shell"># restart
+$ sudo systemctl restart redis.service
+
+# check status
+$ sudo systemctl status redis.service
+</code></pre>
 <h2><a href="#frontend-web-site-" name="frontend-web-site-"></a>frontend (web site)</h2>
 <p>The metis frontend is based on <a href="https://getuikit.com/">UIkit</a>. A fresh metis installation needs libraries: run <code>./dl.sh</code> in metis root path in order to install them. See the <a href="frontend.html">frontend documentation</a>. </p>
 <h3><a href="#url" name="url"></a>url</h3>
@@ -12,7 +33,9 @@
   <li>container view: <a href="http://localhost:8010/cont/mpd-ref">http://localhost:8010/cont/mpd-ref</a></li>
   <li>input/output elements: <a href="http://localhost:8010/elem/mpd-ref">http://localhost:8010/elem/mpd-ref</a></li>
 </ul>
-<h2><a href="#environment-variables" name="environment-variables"></a>environment variables</h2>
+<h2><a href="#backend" name="backend"></a>backend</h2>
+<h3><a href="#environment-variables" name="environment-variables"></a>environment variables</h3>
+<p>There are a plenty of methods to set and activate environment variables. E.g.: write them to a file called <code>.metis</code> in the home directory (<code>~/</code>) and load it by means of your <code>~/.bashrc</code> including the line <code>source ~/.metis</code>.</p>
 <table>
   <thead>
     <tr>
@@ -54,8 +77,8 @@
     </tr>
   </tbody>
 </table>
-<h1><a href="#notes" name="notes"></a>notes</h1>
-<h2><a href="#set-proxy" name="set-proxy"></a>set proxy</h2>
+<h2><a href="#notes" name="notes"></a>notes</h2>
+<h3><a href="#set-proxy-get-deps-from-maven-central-" name="set-proxy-get-deps-from-maven-central-"></a>set proxy (get deps from maven central)</h3>
 <pre><code class="shell">touch ~/.m2/settings.xml 
 </code></pre>
 <p>fill with:</p>
@@ -70,18 +93,16 @@
   &lt;/proxies&gt;
 &lt;/settings&gt;
 </code></pre>
-<h2><a href="#overcome-error-by-" name="overcome-error-by-"></a>overcome <code>SSL peer shut down incorrectly</code> error by:</h2>
+<h3><a href="#overcome-error-by-" name="overcome-error-by-"></a>overcome <code>SSL peer shut down incorrectly</code> error by:</h3>
 <pre><code class="shell">export JAVA_TOOL_OPTIONS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
 </code></pre>
-<h2><a href="#emacs" name="emacs"></a>emacs</h2>
+<h3><a href="#emacs" name="emacs"></a>emacs</h3>
 <pre><code class="elisp">((clojure-mode . ((cider-preferred-build-tool . clojure-cli)
                   (cider-clojure-cli-global-options . "-A:dev"))))
 </code></pre>
-<h2><a href="#start" name="start"></a>start</h2>
-<p>Start with alias (here <code>:dev</code>) dependency <code>clj -A:dev</code></p>
-<h2><a href="#codox" name="codox"></a>codox</h2>
+<h3><a href="#codox" name="codox"></a>codox</h3>
 <pre><code class="shell">clojure -X:dev:codox
 </code></pre>
-<h2><a href="#code-coverage" name="code-coverage"></a>code coverage</h2>
+<h3><a href="#code-coverage" name="code-coverage"></a>code coverage</h3>
 <pre><code class="shell">clojure -M:dev:coverage
 </code></pre></div></div></div></body></html>
