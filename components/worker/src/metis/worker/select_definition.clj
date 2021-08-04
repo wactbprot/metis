@@ -41,8 +41,10 @@
   [l m r]
   (condp = (keyword m)
       :eq (= l r)
-      :lt (< (read-string (str l)) (read-string (str r)))
-      :gt (> (read-string (str l)) (read-string (str r)))))
+      :le (<= (read-string (str l)) (read-string (str r)))
+      :lt (<  (read-string (str l)) (read-string (str r)))
+      :gt (>  (read-string (str l)) (read-string (str r)))
+      :ge (>= (read-string (str l)) (read-string (str r)))))
 
 (defn conds-match? [v] (every? true? (map :cond-match v)))
 
