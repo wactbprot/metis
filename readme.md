@@ -5,6 +5,38 @@
 [![codox](https://github.com/wactbprot/metis/actions/workflows/main.yml/badge.svg)](https://github.com/wactbprot/metis/actions/workflows/main.yml)
 
 [api documentation](https://wactbprot.github.io/metis/)
+# requirements
+
+* [Clojure](https://clojure.org/guides/getting_started)
+* [Redis](https://redis.io/) (with activated [Keyspace Notifications](https://redis.io/topics/notifications))
+
+# installation 
+
+All of the `mp` state is kept in a [redis](https://redis.io) database.
+
+## redis config
+
+Μητις relies on [Keyspace Notifications](https://redis.io/topics/notifications).
+Therefore it is necassary to replace in `/etc/redis/redis.conf`:
+
+```shell
+notify-keyspace-events ""
+```
+
+by
+
+```shell
+notify-keyspace-events AK
+```
+and restart the service:
+
+```shell
+# restart
+$ sudo systemctl restart redis.service
+
+# check status
+$ sudo systemctl status redis.service
+```
 
 ## frontend (web site)
 
@@ -20,6 +52,10 @@ in order to install them. See the [frontend documentation](frontend.md).
 
 ## backend
 ### environment variables
+
+There are a plenty of methods to set and activate environment variables. E.g.: 
+write them to a file called `.metis` in the home directory (`~/`) and load it 
+by means of your `~/.bashrc` including the line `source ~/.metis`.
 
 | `var`                 | Description                                                       | Example                                                                                                                                   |
 |---------------------- |------------------------------------------------------------------ |-------------------------------------------------------------------------------------------------------------------------------------------|
