@@ -30,24 +30,18 @@
 (defn set-val
   ([m]
    (set-val c/config m))
-  ([{relax :stmem-mod-relax} m]
-   (if-let [val (:value m)]
-     (do 
-       (core/set-val (trans/map->key m) (che/generate-string val))
-       (Thread/sleep relax)
-       {:ok true})
-     {:error "no value given"})))
+  ([{relax :stmem-mod-relax} {value :value :as m}]
+   (core/set-val (trans/map->key m) (che/generate-string value))
+   (Thread/sleep relax)
+   {:ok true}))
 
 (defn set-vals
   ([m]
    (set-vals c/config m))
-  ([{relax :stmem-mod-relax} m]
-   (if-let [val (:value m)]
-     (do 
-       (core/set-vals (core/pat->keys (trans/map->key m)) (che/generate-string val))
-       (Thread/sleep relax)
-       {:ok true})
-     {:error "no value given"})))
+  ([{relax :stmem-mod-relax} {value :value :as m}]
+   (core/set-vals (core/pat->keys (trans/map->key m)) (che/generate-string value))
+   (Thread/sleep relax)
+   {:ok true}))
 
 (defn del-val
   ([m]
