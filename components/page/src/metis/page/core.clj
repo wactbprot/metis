@@ -24,11 +24,12 @@
   [:tr
    [:td.uk-text-uppercase.uk-text-muted {:id (u/gen-state-id m)} (:value m)]
    [:td (gen-state-btn m "working") (gen-state-btn m "executed") (gen-state-btn m "ready")] 
-    [:td (:seq-idx m)]
+   [:td (:seq-idx m)]
    [:td (:par-idx m)]
    [:td (:TaskName (:task m))]
    [:td (:Action (:task m))]
-   [:td (u/task-info (:task m))]])
+   [:td (u/task-info (:task m))]
+   [:td [:a {:href "#" :uk-totop "" :uk-scroll ""}]]])
 
 (defn gen-msg-btn [{mp-id :mp-id struct :struct no-idx :no-idx} s]
   [:button.uk-button.uk-button-default.uk-modal-close.msg-btn
@@ -72,7 +73,8 @@
                      [:th.uk-table-shrink "par-idx"]
                      [:th "task name"]
                      [:th "task action"]
-                     [:th.uk-width-medium "task info"]]]            
+                     [:th.uk-width-medium "task info"]
+                     [:th "to top"]]]            
             (into [:tbody] (map table-row v))]])))
 
 ;; ------------------------------------------------------------------------
@@ -261,32 +263,33 @@
 (defn home-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
-         (map (fn [m]
-                [:li
+         (map (fn [m i]
+                [:li (when (zero? i) {:class "uk-open"})
                  [:a.uk-accordion-title {:href "#"}
-                  [:h3.uk-heading-line.uk-text-center [:span (:mp-id m)]]
-                  [:a {:href (str "cont/"(:mp-id m))}
+                  [:h3.uk-heading.uk-text-center
                    (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
                    (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
-                   [:span {:uk-icon "link"}]]]
-                [:div.uk-accordion-content
-                 [:span.uk-text-meta (:descr m)]
-                 [:div.uk-grid
-                 [:div
-                  [:h3.uk-text-uppercase.uk-text-meta	 "task dependencies"]
-                  (into [:p]
-                        (map (fn [m]
-                               [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
-                             (:task-deps m)))]
-                 [:div
-                 [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
-                 (if (empty? (:mp-deps m))
-                   [:p "none"] 
-                   (into [:p]
-                         (map (fn [m]
-                                [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
-                              (:mp-deps m))))]]]])
-              data))])
+                   [:span (:mp-id m)]]
+                  [:a {:href (str "cont/"(:mp-id m))}
+                   [:span.uk-label {:uk-icon "link"}]]]
+                 [:div.uk-accordion-content
+                  [:p.uk-text-meta.uk-text-center (:descr m)]
+                   [:div.uk-grid
+                    [:div
+                     [:h3.uk-text-uppercase.uk-text-meta	 "task dependencies"]
+                     (into [:p]
+                           (map (fn [m]
+                                  [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
+                                (:task-deps m)))]
+                    [:div
+                     [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
+                     (if (empty? (:mp-deps m))
+                       [:p "none"] 
+                       (into [:p]
+                             (map (fn [m]
+                                    [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
+                                  (:mp-deps m))))]]]])
+              data (range)))])
 
 (defn body-home [conf data]
   [:body
