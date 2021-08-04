@@ -18,8 +18,8 @@ in order to install them. See the [frontend documentation](frontend.md).
 * container view: http://localhost:8010/cont/mpd-ref
 * input/output elements: http://localhost:8010/elem/mpd-ref
 
-
-## environment variables
+## backend
+### environment variables
 
 | `var`                 | Description                                                       | Example                                                                                                                                   |
 |---------------------- |------------------------------------------------------------------ |-------------------------------------------------------------------------------------------------------------------------------------------|
@@ -30,9 +30,9 @@ in order to install them. See the [frontend documentation](frontend.md).
 | `CAL_USR`             | For password protected `vl_db_work` and `vl_db`                   | `export CAL_USR="cal"`                                                                                                                    |
 | `CAL_PWD`             | see above                                                         | `export CAL_USR="<passwd>"`                                                                                                               |
 
-# notes
+## notes
 
-## set proxy
+### set proxy (get deps from maven central)
 
 ```shell
 touch ~/.m2/settings.xml 
@@ -52,29 +52,25 @@ fill with:
 </settings>
 ```
 
-## overcome `SSL peer shut down incorrectly` error by:
+### overcome `SSL peer shut down incorrectly` error by:
 
 ```shell
 export JAVA_TOOL_OPTIONS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
 ```
 
-## emacs
+### emacs
 
 ```elisp
 ((clojure-mode . ((cider-preferred-build-tool . clojure-cli)
                   (cider-clojure-cli-global-options . "-A:dev"))))
 ```
-## start
 
-Start with alias (here `:dev`) dependency
-`clj -A:dev`
-
-## codox
+### codox
 
 ```shell
 clojure -X:dev:codox
 ```
-## code coverage
+### code coverage
 
 ```shell
 clojure -M:dev:coverage
