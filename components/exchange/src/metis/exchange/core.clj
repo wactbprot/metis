@@ -102,6 +102,6 @@
 (defn to-vec [a {x :value p :exchpath :as m}]
   (µ/trace ::to-vec [:function "exchange/to-vec"]
            (mapv
-            (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a k) v)))
+            (fn [[k v]] (assoc m :exchpath (name k) :value (fit-in (get a (name k)) v)))
             (enclose-map x p))))
   
