@@ -79,6 +79,9 @@
 
 (defn m-stop [mp-id] (scheduler/stop {:mp-id mp-id}))
 
+(defn m-refresh [mp-id] (m-stop mp-id) (m-clear mp-id) (m-build mp-id) (m-start mp-id))
+  
+
 ;;------------------------------
 ;; e- exchange commands
 ;;------------------------------
