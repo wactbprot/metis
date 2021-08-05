@@ -68,13 +68,13 @@
            [:table.uk-table.uk-table-hover.uk-table-striped
             [:thead [:tr
                      [:th.uk-width-small "status"]
-                     [:th "ctrls"]
+                     [:th.uk-width-medium "ctrls"]
                      [:th.uk-table-shrink "seq-idx"]
                      [:th.uk-table-shrink "par-idx"]
-                     [:th "task name"]
+                     [:th.uk-width-small "task name"]
                      [:th "task action"]
                      [:th.uk-width-medium "task info"]
-                     [:th "to top"]]]            
+                     [:th]]]            
             (into [:tbody] (map table-row v))]])))
 
 ;; ------------------------------------------------------------------------
