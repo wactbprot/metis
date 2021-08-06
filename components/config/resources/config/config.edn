@@ -1,11 +1,13 @@
-{:mulog {:type :multi
+{:app-name "metis"
+ :mulog
+ {:type :multi
          :publishers[
                      ;; send events to the stdout
                      ;;{:type :console
                      ;; :pretty? true}
                      ;; send events to ELS
                       {:type :elasticsearch
-                       :url  "http://a75438:9200/"
+                       :url "http://a75438:9200/"
                        :els-version  :v7.x
                        :publish-delay 1000
                        :data-stream  "vl-log-stream"

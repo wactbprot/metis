@@ -44,9 +44,14 @@
      url
      (:dev-proxy-url c)))
 
+(defn global-log-context [{app-name :app-name}]
+  {:facility (System/getenv "METIS_FACILITY")
+   :app-name app-name})
+
 (def config
   (let [c (get-config)]
     (assoc c
+           :global-log-context (global-log-context c)
            :build-on-start (build-on-start c)
            :dev-hub-url (dev-hub-url c)
            :dev-proxy-url (dev-proxy-url c)

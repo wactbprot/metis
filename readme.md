@@ -63,6 +63,7 @@ by means of your `~/.bashrc` including the line `source ~/.metis`.
 | `METIS_DEVHUB_URL`    | url for device requests <br>(Action: TCP, VXI11, MODBUS EXECUTE)  | `export METIS_DEVHUB_URL="http://localhost:9009"`<br>`export METIS_DEVHUB_URL="http://a73434:55555"`                                      |
 | `METIS_LTMEM_HOST`    | CouchDB host                                                      | `export METIS_LTMEM_HOST="127.0.0.1"`<br>`export METIS_LTMEM_HOST="a73434"`                                                               |
 | `METIS_DEVPROXY_URL`  | DevProxy url                                                      | `export METIS_DEVPROXY_URL="http://localhost:8009"`                                                                                       |
+| `METIS_FACILITY`      | A String that identifies the facility                             | `export METIS_FACILITY="CE3"`                                                                                                             |
 | `CAL_USR`             | For password protected `vl_db_work` and `vl_db`                   | `export CAL_USR="cal"`                                                                                                                    |
 | `CAL_PWD`             | see above                                                         | `export CAL_USR="<passwd>"`                                                                                                               |
 
