@@ -66,20 +66,37 @@
 (defn m-build
   "Builds the mpd with the given `mp-id`."
   [mp-id]
-  (-> mp-id ltmem/get-doc model/build-mpd))
+  (println (str mp-id " start build"))
+  (-> mp-id ltmem/get-doc model/build-mpd)
+  (println (str mp-id " built")))
  
 (defn m-build-ref 
   "Builds the reference mpd `mpd-ref.edn`."
   []
   (model/build-mpd (c/mpd-ref)))
 
-(defn m-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
+(defn m-clear [mp-id]
+  (let [m {:mp-id mp-id :struct :*}]
+    (model/clear-mpd m)
+    (println (str mp-id " cleared, remaining: "
+                  (count (stmem/get-maps m))))))
+  
+(defn m-start [mp-id]
+  (scheduler/start {:mp-id mp-id})
+  (println (str mp-id " started")))
 
-(defn m-start [mp-id] (scheduler/start {:mp-id mp-id}))
-
-(defn m-stop [mp-id] (scheduler/stop {:mp-id mp-id}))
-
-(defn m-refresh [mp-id] (m-stop mp-id) (m-clear mp-id) (m-build mp-id) (m-start mp-id))
+(defn m-stop [mp-id]
+  (let [m {:mp-id mp-id}]
+    (scheduler/stop m)
+    (println (str mp-id " stopped"))
+    (stmem/clean-register m)
+    (println (str mp-id " register cleaned"))))
+  
+(defn m-refresh [mp-id]
+  (m-stop mp-id)
+  (m-clear mp-id)
+  (m-build mp-id)
+  (m-start mp-id))
   
 
 ;;------------------------------
