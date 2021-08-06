@@ -144,12 +144,14 @@
 (defn clean-register
   "Closes and `de-registers` **all** `listeners` belonging to `mp-id` ."
   [{mp-id :mp-id}]
-  (map (fn [[k v]]
-         (when (string/starts-with? k mp-id)
-           (µ/log ::clean-register :message "will clean" :key k)
-           (close-listener v)
-           (swap! listeners dissoc k)))
-       @listeners))
+  (mapv (fn [[k v]]
+          (prn k)
+          (prn (string/starts-with? k mp-id))
+          (when (string/starts-with? k mp-id)
+            (µ/log ::clean-register :message "will clean" :key k)
+            (close-listener v)
+            (swap! listeners dissoc k)))
+        @listeners))
 
 (defn de-register
   "De-registers the listener with a key derived from `m`. `dissoc` it

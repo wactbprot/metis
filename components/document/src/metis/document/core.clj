@@ -105,9 +105,9 @@
    (when (and (string? mp-id) (vector? v))
      (let [m {:mp-id mp-id}]
        (µ/log ::refresh :message "will rm all ids")
-       (doall (mapv #(rm m %) (ids m)))
+        (mapv #(rm m %) (ids m))
        (µ/log ::refresh :message "will add ids provided")
-       (doall (mapv #(add conf m %) v))))
+       (mapv #(add conf m %) v)))
    {:ok true}))
 
 
@@ -143,7 +143,6 @@
   ([conf {mp-id :mp-id :as m} results doc-path]
    (µ/trace ::store-results [:function "document/store-results"]
             (if (and (string? mp-id) (vector? results) (string? doc-path))
-              (doall
-               (into {:ok true} (map #(execute conf % results doc-path) (ids m))))
+              (into {:ok true} (mapv #(execute conf % results doc-path) (ids m)))
               {:error "wrong input params"}))))
 

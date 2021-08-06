@@ -15,9 +15,8 @@
    (to (all m) m))
   ([a m]
    (µ/trace ::to [:function "exchange/to"]
-            (let [res  (doall (mapv stmem/set-val
-                                    (doall
-                                     (core/to-vec a (assoc m :struct :exch)))))
+            (let [res (mapv stmem/set-val
+                            (core/to-vec a (assoc m :struct :exch)))
                   err (filter :error res)]
               (if (empty? err) {:ok true} {:error "on attempt writing to exchange"})))))
 
