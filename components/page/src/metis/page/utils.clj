@@ -26,6 +26,11 @@
    [:div [:b mp] ]
    [:div (or title no-idx)]])
 
+(defmethod task-info :select [{cls :DefinitionClass descr :Comment}]
+  [:span.uk-text-light
+   [:div descr]
+   [:div [:i cls]]])
+
 (defmethod task-info :TCP [{port :Port value :Value descr :Comment}]
   [:span.uk-text-light
    [:div descr]
