@@ -7,8 +7,8 @@
 
 (defn outer-replace-map
   "Replaces tokens (given in the m) in the task.
-  This kind of replacement is used during the
-  task build up at the beginning of its life cycle.
+  This kind of replacement is used during the task build up at the
+  beginning of its life cycle.
   
   Example:
   ```clojure
@@ -25,15 +25,11 @@
       (che/encode task) m) true)
     task))
 
-
 (defn inner-replace-map
-  "Applies the generated function  `f` to the
-  values `v` of the `task` map. `f`s input is `v`.
-  If `m` has a key `v` the value of this key is returned.
-  If `m` has no key `v` the `v` returned.
-  This kind of replacement is used during the
-  runtime.
-  "
+  "Applies the generated function `f` to the values `v` of the `task`
+  map. `f`s input is `v`.  If `m` has a key `v` the value of this key
+  is returned.  If `m` has no key `v` the `v` returned.  This kind of
+  replacement is used during the runtime."
   [m task]
   (let [nm (utils/apply-to-map-keys name m)
         f (fn [v]
@@ -42,27 +38,27 @@
               v))]
     (utils/apply-to-map-values f task)))
 
-(defn extract-use-value [task m k] ((keyword (m k)) (task k)))
+(defn extract-use-value
+  "TODO: write test, refactor to `(k m)`."
+  [task m k]
+  ((keyword (m k)) (task k)))
 
 (defn str->singular-kw
-  "Takes a keyword or string and removes the tailing
-  letter (most likely a s). Turns the result
-  to a keyword.
+  "Takes a keyword or string and removes the tailing letter (most likely
+  a s). Turns the result to a keyword.
   
   ```clojure
   (str->singular-kw :Values)
   ;; :Value
   (str->singular-kw \"Values\")
   ;; :Value
-  ```
-  "
+  ``` "
   [s]
   (->> s name (re-matches #"^(\w*)(s)$") second keyword))
 
 (defn merge-use-map
   "The use keyword enables a replace mechanism.
-  It works like this:
-  proto-task:
+  It works like this: proto-task:
   
   ```clojure
   Use: {Values: med_range}
@@ -71,16 +67,13 @@
   ```"
   [m task]
   (if (map? m)
-    (merge task (into {} (map
-                          (fn [k] (hash-map
-                                   (str->singular-kw k)
-                                   (extract-use-value task m k)))
+    (merge task (into {} (mapv
+                          #(hash-map (str->singular-kw %) (extract-use-value task m %))
                           (keys m))))
     task))
 
 (defn assemble
-  "Assembles the `task` from the given
-  `meta-m`aps in a special order:
+  "Assembles the `task` from the given `meta-m`aps in a special order:
 
   * merge Use
   * replace from Replace
@@ -111,7 +104,10 @@
 
 (defn get-task
   "Trys to gather all information belonging to `m`. Calls `prepair` and
-  `assemble` function.`" 
+  `assemble` function.`
+
+  TODO: The Tasks should be provided by the ltmem. Storing the Tasks
+  at the stmem was not the bet idea." 
   [m]
   (try
     (let [pre-task    (stmem/get-val (assoc m :func :defin))
