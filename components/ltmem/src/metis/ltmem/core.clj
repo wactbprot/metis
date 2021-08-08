@@ -1,5 +1,6 @@
 (ns metis.ltmem.core
   (:require [metis.config.interface :as c]
+            [cheshire.core :as che]
             [com.ashafa.clutch :as couch]
             [com.brunobonacci.mulog :as mu]
             [clojure.string :as string]))

@@ -1,6 +1,5 @@
 (ns metis.model.core
   (:require [metis.config.interface :as c]
-            [cheshire.core :as che]
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]
             [metis.utils.interface :as utils]))

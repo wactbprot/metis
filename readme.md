@@ -7,7 +7,8 @@
 [api documentation](https://wactbprot.github.io/metis/)
 # requirements
 
-* [Clojure](https://clojure.org/guides/getting_started)
+* [Clojure](https://clojure.org/guides/getting_started) (for [REPL](https://clojure.org/guides/repl/introduction) version)
+   or Java 8 or Java 11 (for stand alone version)
 * [Redis](https://redis.io/) (with activated [Keyspace Notifications](https://redis.io/topics/notifications))
 
 # installation 
