@@ -4,6 +4,17 @@
             [com.brunobonacci.mulog :as mu]
             [clojure.string :as string]))
 
+(defn safe
+  "Replaces all of the `@`-signs (if followed by letters 1)
+  by a `%`-sign  because `:%kw` is a valid keyword but `:@kw` not
+  (or at least problematic).
+  
+  1) There are devices annotating channels by `(@101:105)`.
+  This expressions should remain as they are."
+  ([m]
+   (safe c/config m))
+  ([{a :at-replace} m]
+  (che/decode (string/replace (che/encode m) #"(@)([a-zA-Z])" (str a "$2")) true)))
 
 ;;------------------------------
 ;; get doc
@@ -15,7 +26,7 @@
   ([{conn :ltmem-conn} id]
    (mu/log ::get-doc :message "try to get document" :doc-id id)
    (try
-     (couch/get-document conn id)
+    (safe (couch/get-document conn id))
      (catch Exception e (mu/log ::get-doc :error (.getMessage e) :doc-id id)))))
   
 ;;------------------------------
@@ -74,6 +85,16 @@
    (try
      (mapv :value (couch/get-view conn design view))
      (catch Exception e (mu/log ::all-tasks :error (.getMessage e))))))
+
+(defn get-task
+  "Returns the task with the `task-name`."
+  ([task-name]
+   (get-task c/config task-name))
+  ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view} task-name]
+   (mu/log ::get-task :message "get task from ltm")
+   (try
+     (safe (:value (couch/get-view conn design view {:key task-name})))
+     (catch Exception e (mu/log ::get-task :error (.getMessage e))))))
 
 ;;------------------------------
 ;; mpds
