@@ -49,7 +49,6 @@
      #(update % :display utils/short-string)
      (ms-list-ltmem s)))))
 
-
 (defn ms-table-stmem
   "Prints a table of all mpds available at stmem."
   []
@@ -157,10 +156,6 @@
 ;;------------------------------
 ;; t- task commands
 ;;------------------------------
-(defn t-build [] (model/build-tasks (ltmem/all-tasks)))
-
-(defn t-clear [] (model/clear-tasks))
-
 (defn t-run
   "Runs task at position `m`. `m` may be provided by [[c-maps]]."
   [m]

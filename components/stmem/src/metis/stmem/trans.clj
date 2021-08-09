@@ -104,19 +104,10 @@
    (map->metapath-part config m)))
 
 ;;------------------------------
-;; task keys
-;;------------------------------
-(defn map->task-key [{trans :stmem-trans s :stmem-key-sep} m]
-  (let [task-name (:task-name m)]
-    (str (:tasks trans) s (if (keyword? task-name) (task-name trans) task-name))))
-
-
-;;------------------------------
 ;; find key type
 ;;------------------------------
 (defn m->key-type [m]
   (cond
-    (:task-name m)        :task-key
     (= (:struct m) :id)   :id-key
     (= (:struct m) :meta) :meta-key
     (= (:struct m) :exch) :exch-key
@@ -129,7 +120,6 @@
   ([config m]
    (when (and (map? m) (seq m))
      (condp = (m->key-type m)
-       :task-key (map->task-key config m)
        :exch-key (map->exch-key config m)
        :id-key   (map->id-key config m)
        :meta-key (map->meta-key config m)

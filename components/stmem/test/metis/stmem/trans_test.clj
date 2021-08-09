@@ -10,8 +10,7 @@
 
 (deftest map->key-ii
   (let [config {:stmem-key-sep "@"
-                :stmem-trans {:tasks "tasks"
-                              :cont "container"
+                :stmem-trans {:cont "container"
                               :defin "definition"
                               :defins "definitions"
                               :title "title"
@@ -21,14 +20,10 @@
                               :msg "message"
                               :ctrl "ctrl"
                               :exch "exchange"}}]
-    (testing "task"
-      (is (= "tasks@foo" (map->key config {:task-name "foo"}))))
     (testing "..."
       (is (nil? nil)))))
 
 (deftest map->key-iii
-  (testing "tasks clear pat"
-    (is (= "tasks@*" (map->key {:mp-id "tasks" :task-name :*}))))
   (testing "exchange clear pat"
     (is (= "test@exchange@*" (map->key {:mp-id "test" :struct :exch :exchpath :*}))))
   (testing "id clear pat"
@@ -43,8 +38,6 @@
     (is (= "test@container@*@state@000@000" (map->key {:mp-id "test" :struct :cont :no-idx :* :par-idx 0 :seq-idx 0 :func :state})))))
 
 (deftest map->key-iv
-  (testing "task keys"
-    (is (= "tasks@foo" (map->key {:mp-id "tasks" :task-name "foo"}))))
   (testing "exchange key"
     (is (= "test@exchange@foo" (map->key {:mp-id "test" :struct :exch :exchpath "foo"}))))
   (testing "id clear pat"

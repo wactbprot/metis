@@ -94,7 +94,10 @@
   ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view} task-name]
    (mu/log ::get-task :message "get task from ltm")
    (try
-     (safe (:value (couch/get-view conn design view {:key task-name})))
+     (-> (couch/get-view conn design view {:key task-name})
+         first
+         :value
+         safe)
      (catch Exception e (mu/log ::get-task :error (.getMessage e))))))
 
 ;;------------------------------

@@ -133,17 +133,3 @@
 ;;------------------------------
 (defn clear-mpd [{mp-id :mp-id}]
   (stmem/del-vals {:mp-id mp-id :struct :*})) 
-
-;;------------------------------
-;; build tasks (depricated)
-;;------------------------------
-(defn build-tasks [tasks]
-  (map (fn [{task-name :TaskName :as task} ]
-         (assoc (stmem/set-val {:task-name task-name
-                                :value task}) :task-name task-name))
-       tasks))
-
-;;------------------------------
-;; clear  (depricated)
-;;------------------------------
-(defn clear-tasks [] (stmem/del-vals {:task-name :*})) 

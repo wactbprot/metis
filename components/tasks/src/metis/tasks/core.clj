@@ -1,6 +1,7 @@
 (ns metis.tasks.core
   (:require [cheshire.core :as che]
             [metis.exchange.interface :as exch]
+            [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]
             [clojure.string :as string]
             [metis.utils.interface :as utils]))
@@ -111,7 +112,7 @@
   [m]
   (try
     (let [pre-task    (stmem/get-val (assoc m :func :defin))
-          raw-task    (stmem/get-val {:task-name (:TaskName pre-task)})
+          raw-task    (ltmem/get-task (:TaskName pre-task))
           from-map    (exch/from (exch/all m) (:FromExchange raw-task))
           globals-map (utils/date-map)]
       (assemble (prepair pre-task raw-task from-map globals-map m)))
