@@ -2,7 +2,8 @@
   ^{:author "wactbprot"
     :doc "Handler functions."}
   (:require [metis.exchange.interface :as exch]
-            [metis.stmem.interface :as stmem]
+            [metis.ltmem.interface :as ltmem]
+            [metis.stmem.interface :as stmem]            
             [metis.tasks.interface :as tasks]
             [clojure.string :as string]))
 
@@ -51,8 +52,8 @@
      :data (mapv (comp assoc-descr assoc-title) elems)}))
 
 (defn task-deps [mp-id]
-  (mapv (fn [s]{:task-name s
-                :available (map? (stmem/get-val {:mp-id :tasks :task-name s}))})
+  (mapv (fn [s] {:task-name s
+                 :available (map? (ltmem/get-task s))})
         (stmem/get-val {:mp-id mp-id :struct :meta :metapath :task-deps})))
 
 (defn mp-deps [mp-id]
