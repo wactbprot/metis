@@ -9,7 +9,7 @@
             [metis.tasks.interface :as tasks]
             [metis.worker.message :refer [message!]]
             [metis.worker.wait :refer [wait!]]
-            [metis.worker.gen-db-doc :refer [gen-db-doc!]]
+            [metis.worker.db-doc :refer [gen-db-doc! rm-db-docs!]]
             [metis.worker.date-time :refer [store-date! store-time!]]
             [metis.worker.ctrl-mp :refer [run-mp! stop-mp!]]
             [metis.worker.devhub :refer [devhub!]]
@@ -49,6 +49,7 @@
     :Anselm        (start! devproxy!          task m)
     :DevProxy      (start! devproxy!          task m)
     :genDbDoc      (start! gen-db-doc!        task m)
+    :rmDbDocs      (start! rm-db-docs!        task m)
     :replicateDB   (start! replicate!         task m)
     :writeExchange (start! write!             task m)
     :readExchange  (start! read!              task m)

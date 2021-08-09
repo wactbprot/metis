@@ -1,4 +1,4 @@
-(ns metis.worker.gen-db-doc
+(ns metis.worker.db-doc
   ^{:author "wactbprot"
     :doc "Worker to create database documents."}
   (:require [metis.config.interface :as c]
@@ -11,23 +11,19 @@
             [metis.stmem.interface :as stmem]))
 
 (defn url
-  ([id]
-   (url c/config id))
-  ([{conn :ltmem-conn} id]
-   (str conn "/" id)))
+  ([id] (url c/config id))
+  ([{conn :ltmem-conn} id] (str conn "/" id)))
 
 (defn req
   "`assoc` a json version of the doc (with updated revision) as `:body`"
-  ([doc]
-   (req c/config doc))
+  ([doc] (req c/config doc))
   ([{header :json-post-header} doc]
    (assoc header :body (che/encode (ltmem/rev-refresh doc)))))
   
 (defn gen-db-doc!
   "Generates a `ltmem` document from the tasks `:Value` if it dont
   exist. Adds the `document` to the `stmem` doc interface."
-  ([task m]
-   (gen-db-doc! c/config task m))
+  ([task m] (gen-db-doc! c/config task m))
   ([conf {doc :Value :as task} m]
    (stmem/set-state-working m)
    (let [doc-id (:_id doc)]
@@ -43,3 +39,10 @@
   (def m {:mp-id "test" :struct :cont :no-idx 0 :par-idx 0 :seq-idx 0 :func :resp})
   (def t {:Action "genDbDoc" :Value {:_id "gen-db-doc-test"}})
   (gen-db-doc! t m))
+
+(defn rm-db-docs!
+  ([task m] (rm-db-docs! c/config task m))
+  ([conf task m]
+   (stmem/set-state-working m)
+   (mapv #(doc/rm m %) (doc/ids m))
+   (stmem/set-state-executed (assoc m :message "rm all ids from endpoint"))))

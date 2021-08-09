@@ -137,8 +137,7 @@
     :Title "anselm."
     :Element []
     :Definition [
-                 [{:TaskName "Common-anselm_get_dut_max"}]
-                 ]}
+                 [{:TaskName "Common-anselm_get_dut_max"}]]}
    ;; 7. container
    {:Description "Test date and time and the ability to parallel write to database docs."
     :Ctrl "void"
@@ -149,8 +148,8 @@
                              :%type "cmp-test"}}
                   {:TaskName "Common-get_time"
                    :Replace {:%docpath "Calibration.Measurement.AuxValues.Time"
-                             :%type "cmp-test"}}]
-                 ]}
+                             :%type "cmp-test"}}]]}
+
    ;; 8. container
    {:Description "Message test."
     :Ctrl "void"
@@ -169,7 +168,17 @@
                  erat, sed diam voluptua. At vero eos et accusam et
                  justo duo dolores et ea rebum. Stet clita kasd
                  gubergren, no sea takimata sanctus est Lorem ipsum
-                 dolor sit amet."}}]]}] ;;
+                 dolor sit amet."}}]]}
+
+   ;; 9. container
+   {:Description "Add and remove documents."
+    :Ctrl "void"
+    :Title "add & rm docs."
+    :Element []
+    :Definition [
+                 [{:TaskName "Common-gen_state_doc"}]
+                 [{:TaskName "Common-rm_db_docs"}]]}
+   ] ;;
 
   ;; -------------------------------------------------------
   ;; Definitions section 
