@@ -66,7 +66,7 @@ by means of your `~/.bashrc` including the line `source ~/.metis`.
 | `METIS_DEVPROXY_URL`  | DevProxy url                                                      | `export METIS_DEVPROXY_URL="http://localhost:8009"`                                                                                       |
 | `METIS_FACILITY`      | A String that identifies the facility                             | `export METIS_FACILITY="CE3"`                                                                                                             |
 | `CAL_USR`             | For password protected `vl_db_work` and `vl_db`                   | `export CAL_USR="cal"`                                                                                                                    |
-| `CAL_PWD`             | see above                                                         | `export CAL_USR="<passwd>"`                                                                                                               |
+| `CAL_PWD`             | see above                                                         | `export CAL_PWD="<passwd>"`                                                                                                               |
 
 ## notes
 
