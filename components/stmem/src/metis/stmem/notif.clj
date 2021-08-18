@@ -145,8 +145,6 @@
   "Closes and `de-registers` **all** `listeners` belonging to `mp-id` ."
   [{mp-id :mp-id}]
   (mapv (fn [[k v]]
-          (prn k)
-          (prn (string/starts-with? k mp-id))
           (when (string/starts-with? k mp-id)
             (µ/log ::clean-register :message "will clean" :key k)
             (close-listener v)

@@ -41,9 +41,9 @@
     :data-value s} s])
 
 (defn gen-msg-modal [m]
-  [:div {:id (u/gen-msg-elem-id m) :uk-modal=""}
-   [:div.uk-modal-dialog.uk-modal-body
-    [:h2.uk-modal-title (str "container " (:no-idx m) " message")]
+  [:div.uk-flex-top {:id (u/gen-msg-elem-id m) :uk-modal=""}
+   [:div.uk-modal-dialog.uk-modal-body.uk-margin-auto-vertical
+    [:h3.uk-modal-title (str "container " (:no-idx m) " message")]
     [:p {:id (u/gen-msg-data-id m)}]
      [:p.uk-text-right
       (gen-msg-btn m "ok")]]])
@@ -264,7 +264,7 @@
   [:div.uk-container.uk-container-large.uk-padding-large
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map (fn [m i]
-                [:li (when (zero? i) {:class "uk-open"})
+                [:li #_(when (zero? i) {:class "uk-open"})
                  [:a.uk-accordion-title {:href "#"}
                   [:h3.uk-heading.uk-text-center
                    (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
