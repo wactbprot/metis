@@ -17,10 +17,6 @@
   ([doc] (core/put-doc doc))
   ([conf doc] (core/put-doc conf doc)))
  
-(defn all-tasks
-  ([] (core/all-tasks))
-  ([conf] (core/all-tasks conf)))
-
 (defn get-task
   ([s] (core/get-task s))
   ([conf s] (core/get-task conf s)))

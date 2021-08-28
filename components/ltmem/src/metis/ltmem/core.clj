@@ -2,7 +2,7 @@
   (:require [metis.config.interface :as c]
             [cheshire.core :as che]
             [com.ashafa.clutch :as couch]
-            [com.brunobonacci.mulog :as mu]
+            [com.brunobonacci.mulog :as µ]
             [clojure.string :as string]))
 
 (defn safe
@@ -25,10 +25,10 @@
   ([id]
    (get-doc c/config id))
   ([{conn :ltmem-conn} id]
-   (mu/log ::get-doc :message "try to get document" :doc-id id)
+   (µ/log ::get-doc :message "try to get document" :doc-id id)
    (try
     (safe (couch/get-document conn id))
-     (catch Exception e (mu/log ::get-doc :error (.getMessage e) :doc-id id)))))
+     (catch Exception e (µ/log ::get-doc :error (.getMessage e) :doc-id id)))))
   
 ;;------------------------------
 ;; revision refresh
@@ -69,36 +69,26 @@
   ([doc]
    (put-doc c/config doc))
   ([{conn :ltmem-conn :as conf} doc]
-   (mu/log ::put-doc :message "try to put document" :doc-id (:_id doc))
+   (µ/log ::put-doc :message "try to put document" :doc-id (:_id doc))
    (try
      (couch/put-document conn (rev-refresh conf doc))
-     (catch Exception e (mu/log ::put-doc :error (.getMessage e) :doc-id (:_id doc))))))
+     (catch Exception e (µ/log ::put-doc :error (.getMessage e) :doc-id (:_id doc))))))
   
 ;;------------------------------
 ;; tasks
 ;;------------------------------
-(defn all-tasks
-  "Returns all tasks."
-  ([]
-   (all-tasks c/config))
-  ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view}]
-   (mu/log ::all-tasks :message "get tasks from ltm")
-   (try
-     (mapv :value (couch/get-view conn design view))
-     (catch Exception e (mu/log ::all-tasks :error (.getMessage e))))))
-
 (defn get-task
   "Returns the task with the `task-name`."
   ([task-name]
    (get-task c/config task-name))
   ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view} task-name]
-   (mu/log ::get-task :message "get task from ltm")
+   (µ/log ::get-task :message "get task from ltm")
    (try
      (-> (couch/get-view conn design view {:key task-name})
          first
          :value
          safe)
-     (catch Exception e (mu/log ::get-task :error (.getMessage e))))))
+     (catch Exception e (µ/log ::get-task :error (.getMessage e))))))
 
 ;;------------------------------
 ;; mpds
@@ -109,7 +99,7 @@
   ([]
    (all-mpds c/config))
   ([{conn :ltmem-conn design :ltmem-mpds-design view :ltmem-mpds-view}]
-   (mu/log ::all-mpds :message "get mpds from ltm")
+   (µ/log ::all-mpds :message "get mpds from ltm")
   (try
     (mapv :value (couch/get-view conn design view))
-    (catch Exception e (mu/log ::all-mpds :error (.getMessage e))))))
+    (catch Exception e (µ/log ::all-mpds :error (.getMessage e))))))
