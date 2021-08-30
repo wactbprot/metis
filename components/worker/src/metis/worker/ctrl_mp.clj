@@ -54,7 +54,6 @@
   entries given. The `task` is marked as `:executed` if all tasks in
   the container are executed."
   [{title :ContainerTitle index :Container :as task} m]
-  (stmem/set-state-working m)
   (cond
     title (exec-title task m)
     index (exec-index task m)
@@ -70,7 +69,6 @@
   * If not: the task (resp. the :value of `:StateKey`) is set to
   `:executed` after  stopping."
   [{mp :Mp title :ContainerTitle no-idx :Container :as task} m]
-  (stmem/set-state-working (assoc m :message "start with ctr-mp"))
   (let [stop-m  {:mp-id mp :struct :cont}
         no-idx  (or (title->no-idx title stop-m) no-idx)
         stop-m  (assoc stop-m :no-idx no-idx :func :ctrl :value "stop")

@@ -32,7 +32,6 @@
   ```
   to the `/_replicate` endpoint."
   [task m]
-  (stmem/set-state-working  m)
   (try
     (resp/check (http/post (url) (req task)) task m)
     (catch Exception e (stmem/set-state-error (assoc m :message (.getMessage e))))))

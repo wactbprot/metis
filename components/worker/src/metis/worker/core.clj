@@ -66,6 +66,10 @@
   ([m]
    (run c/config m))
   ([{stop-if-delay :stop-if-delay} m]
+   ;; since the task is now fetched from ltmem,
+   ;; setting the working state takes longer
+   ;; test: set state to working before ltmem request.
+   (stmem/set-state-working  (assoc m :message "pre working test")) 
    (let [task (tasks/get-task m)]
      (if (exch/run-if (exch/all m) task)
        (if (exch/only-if-not (exch/all m)task)

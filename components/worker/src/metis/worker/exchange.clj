@@ -25,7 +25,6 @@
 (defn write!
   "Writes the `:Value` to the exchange. No `StopIf` support needed."
   [{value :Value exch-path :ExchangePath :as task} m]
-  (stmem/set-state-working m)
   (let [exch-m (assoc m :value value :struct :exch :exchpath exch-path)
         ret    (exch/to (exch/all m) exch-m)]
     (µ/log ::write! :message "write value to exchange" :m exch-m)

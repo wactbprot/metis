@@ -25,7 +25,6 @@
   exist. Adds the `document` to the `stmem` doc interface."
   ([task m] (gen-db-doc! c/config task m))
   ([conf {doc :Value :as task} m]
-   (stmem/set-state-working m)
    (let [doc-id (:_id doc)]
      (when-not (ltmem/exist? conf doc-id)
        (try
@@ -43,6 +42,5 @@
 (defn rm-db-docs!
   ([task m] (rm-db-docs! c/config task m))
   ([conf task m]
-   (stmem/set-state-working m)
    (mapv #(doc/rm m %) (doc/ids m))
    (stmem/set-state-executed (assoc m :message "rm all ids from endpoint"))))
