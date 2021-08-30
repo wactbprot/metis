@@ -63,8 +63,7 @@
   "Gets the `task` and calls the `dispach` function on it. Handles the
   `:RunIf` case. The `:StopIf` case is handeled by the `workers` after
   processing the task."  
-  ([m]
-   (run c/config m))
+  ([m] (run c/config m))
   ([{stop-if-delay :stop-if-delay} m]
    (let [task (tasks/get-task m)]
      (if (exch/run-if (exch/all m) task)
@@ -92,5 +91,4 @@
              :struct :cont
              :no-idx 0
              :par-idx 0
-             :seq-idx 0})
-  )
+             :seq-idx 0}))
