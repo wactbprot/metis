@@ -21,7 +21,6 @@
     (:use   [clojure.repl])
     (:gen-class))
 
-
 (defn mpd-build [mp-id] (-> mp-id ltmem/get-doc model/build-mpd))
  
 (defn mpd-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
