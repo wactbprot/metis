@@ -14,7 +14,6 @@
   (message! {:Message \"go on?\"} m)
    ```"
   [{msg :Message} m]
-  (stmem/set-state-working m)
   (let [msg-m (assoc m :func :msg :value msg :level 2)
         f     #(when (contains? #{"ok" :ok "true" true "yo!"} (:value %))
                   (stmem/set-state-executed (assoc m :message "ready callback for message worker"))

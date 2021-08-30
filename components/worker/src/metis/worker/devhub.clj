@@ -16,7 +16,6 @@
   ([task m]
    (devhub! c/config task m))
   ([{header :json-post-header url :dev-hub-url} task m]
-   (stmem/set-state-working (assoc m :message "start devhub request"))
    (stmem/set-val (assoc m :func :req :value task))
    (µ/log ::devhub! :message "stored task at, send request" :url url :m m)
    (try

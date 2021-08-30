@@ -12,12 +12,12 @@
 (defn gen-callback
   [match-m m]
   #(condp = (keyword (:value %))
-     :run   (mu/log ::gen-callback :message "run callback for" :m m)
+     :run   (mu/log ::gen-callback :message "run callback for")
      :ready (do
-              (mu/log ::gen-callback :message "ready callback for" :m m)
-              (stmem/set-state-executed (assoc m :message "ready callback" :m match-m))
+              (mu/log ::gen-callback :message "ready callback for")
+              (stmem/set-state-executed (assoc m :message "ready callback"))
               (stmem/de-register match-m))
-     :error (stmem/set-state-error (assoc m :message "error callback" :m match-m))))
+     :error (stmem/set-state-error (assoc m :message "error callback"))))
 
 (defn start-defins!
   "Starts the matching `definitions` structure. `register`s a level 1
@@ -72,7 +72,6 @@
   "Selects and runs a `Definition` from the `Definitions` section of the
   measurement program definition with the given `:mp.id`." 
   [{cls :DefinitionClass} {mp-id :mp-id :as m}]
-  (stmem/set-state-working (assoc m :message "start select-definition"))
   (let [f (match-class-fn cls)
         v (-> {:mp-id mp-id :struct :defins} get-classes f)
         v (filterv #(-> % get-conds resolve-conds conds-match?) v)]

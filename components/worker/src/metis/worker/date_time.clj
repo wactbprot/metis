@@ -23,7 +23,6 @@
   ([task m]
    (store-date! c/config task m))
   ([conf task m]
-   (stmem/set-state-working m)
    (write conf task (u/get-date) m)))
 
 (defn store-time!
@@ -32,7 +31,6 @@
   ([task m]
    (store-time! c/config task m))
   ([conf task m]
-   (stmem/set-state-working m)
    (write conf task (u/get-time) m)))
 
 (comment

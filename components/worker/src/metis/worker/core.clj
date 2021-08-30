@@ -24,9 +24,8 @@
  
 (defn start!
   "Starts the worker in a new threat. "
-  [worker task m]
-  (swap! future-registry
-         assoc (stmem/map->key task) (future (worker task m))))
+  [worker {task-name :TaskName :as task} m]
+  (swap! future-registry assoc task-name (future (worker task m))))
 
 ;;------------------------------
 ;;  dispatch 
@@ -65,6 +64,10 @@
   processing the task."  
   ([m] (run c/config m))
   ([{stop-if-delay :stop-if-delay} m]
+   ;; since the task is now fetched from ltmem,
+   ;; setting the working state takes longer
+   ;; test: set state to working before ltmem request.
+   (stmem/set-state-working  (assoc m :message "pre working test")) 
    (let [task (tasks/get-task m)]
      (if (exch/run-if (exch/all m) task)
        (if (exch/only-if-not (exch/all m)task)

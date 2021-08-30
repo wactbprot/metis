@@ -25,7 +25,6 @@
 (defn devproxy!
   "Interacts with a the `devproxy`. "
   [{value :Value :as task} m]
-  (stmem/set-state-working m)
   (stmem/set-val (assoc m :func :req :value task))
   (µ/log ::devproxy! :message "stored request, will send request" :m m)
   (if-not value
