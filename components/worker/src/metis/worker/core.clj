@@ -24,9 +24,8 @@
  
 (defn start!
   "Starts the worker in a new threat. "
-  [worker task m]
-  (swap! future-registry
-         assoc (stmem/map->key task) (future (worker task m))))
+  [worker {task-name :TaskName :as task} m]
+  (swap! future-registry assoc task-name (future (worker task m))))
 
 ;;------------------------------
 ;;  dispatch 
