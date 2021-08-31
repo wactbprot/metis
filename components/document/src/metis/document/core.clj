@@ -59,7 +59,7 @@
   ([conf {mp-id :mp-id :as m} id]
    (if-let [doc (ltmem/get-doc conf id)]
      (do
-       (µ/log ::add :message "doc info added" :m m)
+       (µ/log ::add  :message "doc info added" :m m)
        (stmem/set-val {:mp-id mp-id :struct :id :doc-id id :value (doc-info doc)}))
      (do
        (µ/log ::add :error "document contains no id" :m m)

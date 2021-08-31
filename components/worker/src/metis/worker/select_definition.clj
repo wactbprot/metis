@@ -72,7 +72,6 @@
   "Selects and runs a `Definition` from the `Definitions` section of the
   measurement program definition with the given `:mp.id`." 
   [{cls :DefinitionClass} {mp-id :mp-id :as m}]
-  (stmem/set-state-working (assoc m :message "start select-definition"))
   (let [f (match-class-fn cls)
         v (-> {:mp-id mp-id :struct :defins} get-classes f)
         v (filterv #(-> % get-conds resolve-conds conds-match?) v)]
