@@ -62,7 +62,6 @@
                (let [s (dissoc s :m)
                      s (if (= (:ctrl s) :stop) (assoc s :state :*) s)
                      s (if (= (:ctrl s) :reset) (assoc s :state :*) s)]
-                 (µ/log ::dispatch :message "state entrance" :state s)
                  (condp = s 
                    ;; run
                    {:ctrl :run    :state :error}    (set-ctrl m :error)
@@ -76,8 +75,7 @@
                    {:ctrl :stop   :state :*}        (set-state-ctrl m :ready :ready)
                    ;; reset
                    {:ctrl :reset  :state :*}        (set-state-ctrl m :ready :ready)
-                   
-                   (µ/log ::dispatch :message "state not handeled")))))))
+                   {:ok true :message "state not handled"}))))))
 
 ;;------------------------------
 ;; stop 
@@ -95,8 +93,7 @@
 (defn start
   "Registers a listener with the pattern `__keyspace@<stmem-db>*__:<mp-id>@*@*@*`.
   The [[check]] function becomes the listeners `callback`." 
-  ([m]
-   (start c/config m))
+  ([m] (start c/config m))
   ([config {mp-id :mp-id}]
    (µ/log ::start :message "register mp listener check callback")
    (stmem/register {:mp-id mp-id :struct :* :no-idx :* :func :*} check)))

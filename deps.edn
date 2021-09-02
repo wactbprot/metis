@@ -12,7 +12,9 @@
             :project-to-alias {"development" "dev"}
             :ns-to-lib {}}
 
- :aliases  {:dev {:extra-paths ["development/src"
+ :aliases  {:build {:deps {io.github.clojure/tools.build {:tag "TAG" :sha "SHA"}}
+                    :ns-default build}
+            :dev {:extra-paths ["development/src"
                                 ;; Components
                                 "components/config/src"
                                 "components/config/resources"

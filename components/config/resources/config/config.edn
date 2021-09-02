@@ -35,9 +35,9 @@
  :stmem-notif-sep "@"
  :stmem-key-sep "@"
  ;; register relax
- :stmem-reg-relax 20 ;; ms
+ :stmem-reg-relax 50 ;; ms
  ;; modify relax
- :stmem-mod-relax 30 ;; ms
+ :stmem-mod-relax 50 ;; ms
  :stmem-trans {:tasks "tasks"
                :cont "container" ; struct
                :id "id" ; struct
@@ -68,10 +68,6 @@
  :stmem-key-pad-length 3
  :at-replace "%"
  :ref-mpd "mpd-ref.edn"
- ;; a task should at least take 10ms
- ;; in order to give the keyspace notification listener
- ;; a chance to find the `next-to-start` task
- :min-task-period 500
  ;; number of retries before task state is set to error
  ;; the device should be reseted and the retry key must
  ;; be deleted manualy
