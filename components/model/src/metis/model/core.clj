@@ -123,10 +123,10 @@
 ;;------------------------------
 (defn build-mpd [{mp-id :_id m :Mp}]
   (let [m (assoc m :mp-id mp-id)]
-    (build-exchange m)
-    (build-meta m)
-    (build-all-container m)
-    (build-all-definitions m)))
+    (future (build-exchange m))
+    (future (build-meta m))
+    (future (build-all-container m))
+    (future (build-all-definitions m))))
 
 ;;------------------------------
 ;; clear mpd doc
