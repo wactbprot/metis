@@ -5,6 +5,10 @@
   ([id] (core/get-doc id))
   ([conf id] (core/get-doc conf id)))
 
+(defn get-safe-doc
+  ([id] (core/safe (core/get-doc id)))
+  ([conf id] (core/safe (core/get-doc conf id))))
+
 (defn exist?
   ([id] (core/exist? id))
   ([conf id](core/exist? conf id)))

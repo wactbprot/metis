@@ -27,7 +27,7 @@
   ([{conn :ltmem-conn} id]
    (µ/log ::get-doc :message "try to get document" :doc-id id)
    (try
-    (safe (couch/get-document conn id))
+     (couch/get-document conn id)
      (catch Exception e (µ/log ::get-doc :error (.getMessage e) :doc-id id)))))
   
 ;;------------------------------

@@ -11,12 +11,11 @@
             [metis.utils.interface :as u]))
 
 (defn do-retry
-  ([m]
-   (do-retry c/config m))
+  ([m] (do-retry c/config m))
   ([{max-retry :max-retry} m]
    (let [m (assoc m :func :retry)
-         n (or (stmem/get-val m) 0)]
-     (if (>= (u/ensure-int n) max-retry)
+         n (u/ensure-int (or (stmem/get-val m) 0))]
+     (if (>= n max-retry)
        (do (µ/log ::retry! :error "reached max-retry" :m m)
            (stmem/set-val (assoc m :value 0))
            {:error "max retry"})
@@ -66,7 +65,7 @@
 ;; check
 ;;------------------------------
 (defn check
-  "Checks a response from outer space.  Lookes at the status, parses the
+  "Checks a response from outer space.  Looks at the status, parses the
   body and dispathes."
   [result task m]
   (if-let [status (:status result)]

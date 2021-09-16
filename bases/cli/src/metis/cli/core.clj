@@ -27,7 +27,7 @@
 (defn m-get
   "Get the measurement program definition (mpd) from the longterm memory (ltm)."
   [mp-id]
-  (ltmem/get-doc mp-id))
+  (ltmem/get-safe-doc mp-id))
 
 (defn ms-list-ltmem
   "Returns a list of maps of the `mpd`s available at ltmem. Filters
@@ -66,7 +66,7 @@
   "Builds the mpd with the given `mp-id`."
   [mp-id]
   (println (str mp-id " start build"))
-  (-> mp-id ltmem/get-doc model/build-mpd)
+  (-> mp-id ltmem/get-safe-doc model/build-mpd)
   (println (str mp-id " built")))
  
 (defn m-build-ref 
