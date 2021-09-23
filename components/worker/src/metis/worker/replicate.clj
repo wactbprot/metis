@@ -9,14 +9,12 @@
             [metis.stmem.interface :as stmem]))
 
 (defn url
-  ([]
-   (url c/config))
+  ([] (url c/config))
   ([{conn :ltmem-base-url}]
    (str conn "/_replicate")))
 
 (defn req
-  ([task]
-   (req c/config task))
+  ([task] (req c/config task))
   ([{header :json-post-header} {s :SourceDB t :TargetDB}]
    (assoc header :body (che/encode {:source s :target t}))))
 

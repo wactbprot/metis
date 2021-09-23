@@ -84,7 +84,7 @@
 ;;------------------------------
 ;; meta
 ;;------------------------------
-(defn proto-tasks [cont defins] (flatten (into (map :Definition cont) (map :Definition defins))))
+(defn proto-tasks [cont defins] (flatten (into (mapv :Definition cont) (mapv :Definition defins))))
 
 (defn mp-deps 
   "Filters all `Common-run_mp` tasks from containers and definitions section.

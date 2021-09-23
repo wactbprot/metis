@@ -1,14 +1,14 @@
 (ns metis.config.core
-  (:require [clojure.edn     :as edn]
+  ^{:author "Thomas Bock <wactbprot@gmail.com>"
+    :doc "Provides configuration data. Reads and assoc env vars."}
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string  :as string]))
+            [clojure.string :as string]))
 
 (defn get-config
   "Reads a `edn` configuration in file `f`." 
-  ([]
-   (get-config (io/resource "config/config.edn")))
-  ([f]
-   (-> f slurp edn/read-string)))
+  ([] (get-config (io/resource "config/config.edn")))
+  ([f] (-> f slurp edn/read-string)))
 
 (defn ltmem-base-url [c]
   (let [lt-srv (System/getenv "METIS_LTMEM_HOST")
@@ -32,14 +32,12 @@
     (string/split s  #"[;,\s]")
     (:build-on-start c)))
 
-(defn dev-hub-url
-  [c]
+(defn dev-hub-url [c]
    (if-let [url (System/getenv "METIS_DEVHUB_URL")]
      url
      (:dev-hub-url c)))
 
-(defn dev-proxy-url
-  [c]
+(defn dev-proxy-url [c]
    (if-let [url (System/getenv "METIS_DEVPROXY_URL")]
      url
      (:dev-proxy-url c)))
@@ -47,6 +45,8 @@
 (defn global-log-context [{app-name :app-name}]
   {:facility (System/getenv "METIS_FACILITY")
    :app-name app-name})
+
+(defn swap-key-val [m] (into {} (mapv (fn [[k v]] {v k}) m)))
 
 (def config
   (let [c (get-config)]
@@ -58,5 +58,5 @@
            :ltmem-base-url (ltmem-base-url c)
            :ltmem-conn (ltmem-conn c)
            :stmem-conn (stmem-conn c)
-           :stmem-retrans (into {} (map (fn [[k v]] {v k})) (:stmem-trans c))
+           :stmem-retrans  (swap-key-val (:stmem-trans c))
            :re-sep (re-pattern (:stmem-key-sep c)))))
