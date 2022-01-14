@@ -262,16 +262,17 @@
 
 (defn home-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
-   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false" :duration 400}]
          (map (fn [m i]
-                [:li #_(when (zero? i) {:class "uk-open"})
-                 [:a.uk-accordion-title {:href "#"}
-                  [:h3.uk-heading.uk-text-center
-                   (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
-                   (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
-                   [:span (:mp-id m)]]
+                [:li.uk-background-muted #_(when (zero? i) {:class "uk-open"})
+                  [:a.uk-accordion-title {:href "#"}
+                   [:h3.uk-heading.uk-text-center
+                    (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
+                    (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
+                    [:span (:mp-id m)]]
                   [:a {:href (str "cont/"(:mp-id m))}
-                   [:span.uk-label {:uk-icon "link"}]]]
+                   [:span.uk-label {:uk-icon "link"}]
+                    (str "&nbsp;&nbsp;&nbsp;" (:descr m))]]
                  [:div.uk-accordion-content
                   [:p.uk-text-meta.uk-text-center (:descr m)]
                    [:div.uk-grid
