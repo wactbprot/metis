@@ -261,25 +261,22 @@
 (defn all-mp-deps-ok? [v] (or (empty? v) (= (count v) (count (filter :running v)))))
 
 (defn home-content [conf data]
-  [:div.uk-container.uk-container-large.uk-padding-large
+  [:div.uk-container.uk-container-xsmall
    (into [:ul.uk-accordion {:uk-accordion "multiple: false" :duration 400}]
          (map (fn [m i]
                 [:li.uk-background-muted #_(when (zero? i) {:class "uk-open"})
                   [:a.uk-accordion-title {:href "#"}
-                   [:h3.uk-heading.uk-text-center
-                    (deps-span (all-task-deps-ok? (:task-deps m)))  "&nbsp;"
+                   [:h3.uk-heading
+                    (deps-span (all-task-deps-ok? (:task-deps m))) "&nbsp;"
                     (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
                     [:span (:mp-id m)]]
-                  [:a {:href (str "cont/"(:mp-id m))}
-                   [:span.uk-label {:uk-icon "link"}]
-                    (str "&nbsp;&nbsp;&nbsp;" (:descr m))]]
+                  [:a.uk-link-text {:href (str "cont/"(:mp-id m))} (:descr m) "→"]]
                  [:div.uk-accordion-content
-                  [:p.uk-text-meta.uk-text-center (:descr m)]
                    [:div.uk-grid
                     [:div
-                     [:h3.uk-text-uppercase.uk-text-meta	 "task dependencies"]
+                     [:h3.uk-text-uppercase.uk-text-meta "task dependencies"]
                      (into [:p]
-                           (map (fn [m]
+                           (mapv (fn [m]
                                   [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
                                 (:task-deps m)))]
                     [:div
@@ -287,7 +284,7 @@
                      (if (empty? (:mp-deps m))
                        [:p "none"] 
                        (into [:p]
-                             (map (fn [m]
+                             (mapv (fn [m]
                                     [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
                                   (:mp-deps m))))]]]])
               data (range)))])
