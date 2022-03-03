@@ -33,7 +33,6 @@
 (defn dispatch
   "Dispatch depending on the `:Action`."
   [task m]
-  (mu/log ::dispatch :message "dispatch task" :m m)
   (condp = (keyword (:Action task))
     :wait          (start! wait!              task m)
     :select        (start! select-definition! task m)

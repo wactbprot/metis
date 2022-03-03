@@ -55,27 +55,26 @@
   "Processes whats todo next depending on the state of state and ctrl
   interface."
   [m]
-  (µ/trace ::check [:function "scheduler/check"]          
-           (let [s (merge (state (state-interface m)) (ctrl m))
-                 m (:m s)]
-             (when-not (= (:ctrl s) :check)
-               (let [s (dissoc s :m)
-                     s (if (= (:ctrl s) :stop) (assoc s :state :*) s)
-                     s (if (= (:ctrl s) :reset) (assoc s :state :*) s)]
-                 (condp = s 
-                   ;; run
-                   {:ctrl :run    :state :error}    (set-ctrl m :error)
-                   {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
-                   {:ctrl :run    :state :work}     (worker/run m)
-                   ;; mon
-                   {:ctrl :mon    :state :error}    (set-ctrl m :error) 
-                   {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
-                   {:ctrl :mon    :state :work}     (worker/run m)
-                   ;; stop
-                   {:ctrl :stop   :state :*}        (set-state-ctrl m :ready :ready)
-                   ;; reset
-                   {:ctrl :reset  :state :*}        (set-state-ctrl m :ready :ready)
-                   {:ok true :message "state not handled"}))))))
+  (let [s (merge (state (state-interface m)) (ctrl m))
+        m (:m s)]
+    (when-not (= (:ctrl s) :check)
+      (let [s (dissoc s :m)
+            s (if (= (:ctrl s) :stop) (assoc s :state :*) s)
+            s (if (= (:ctrl s) :reset) (assoc s :state :*) s)]
+        (condp = s 
+          ;; run
+          {:ctrl :run    :state :error}    (set-ctrl m :error)
+          {:ctrl :run    :state :all-exec} (set-state-ctrl m :ready :ready)
+          {:ctrl :run    :state :work}     (worker/run m)
+          ;; mon
+          {:ctrl :mon    :state :error}    (set-ctrl m :error) 
+          {:ctrl :mon    :state :all-exec} (set-state-ctrl m :ready :mon)
+          {:ctrl :mon    :state :work}     (worker/run m)
+          ;; stop
+          {:ctrl :stop   :state :*}        (set-state-ctrl m :ready :ready)
+          ;; reset
+          {:ctrl :reset  :state :*}        (set-state-ctrl m :ready :ready)
+          {:ok true :message "state not handled"}))))))
 
 ;;------------------------------
 ;; stop 

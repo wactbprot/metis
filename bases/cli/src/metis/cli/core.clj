@@ -63,9 +63,14 @@
   (pp/print-table (stmem/registered)))
 
 (defn m-build
-  "Builds the mpd with the given `mp-id`."
+  "Builds the mpd with the given `mp-id`.
+
+  Example:
+  ```clojure
+  (m-start \"mpd-ppc-gas_dosing\")
+  ```` "
   [mp-id]
-  (println (str mp-id " start build"))
+  (println (str mp-id "start build"))
   (-> mp-id ltmem/get-safe-doc model/build-mpd)
   (println (str mp-id " built")))
  

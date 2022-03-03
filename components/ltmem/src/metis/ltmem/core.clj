@@ -82,7 +82,6 @@
   ([task-name]
    (get-task c/config task-name))
   ([{conn :ltmem-conn design :ltmem-task-design view :ltmem-task-view} task-name]
-   (µ/log ::get-task :message "get task from ltm")
    (try
      (-> (couch/get-view conn design view {:key task-name})
          first
