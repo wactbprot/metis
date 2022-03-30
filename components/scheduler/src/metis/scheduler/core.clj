@@ -74,7 +74,7 @@
           {:ctrl :stop   :state :*}        (set-state-ctrl m :ready :ready)
           ;; reset
           {:ctrl :reset  :state :*}        (set-state-ctrl m :ready :ready)
-          {:ok true :message "state not handled"}))))))
+          {:ok true :message "state not handled"})))))
 
 ;;------------------------------
 ;; stop 

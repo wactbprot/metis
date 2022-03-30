@@ -23,7 +23,7 @@
 (defn table-row [m]
   [:tr
    [:td.uk-text-uppercase.uk-text-muted {:id (u/gen-state-id m)} (:value m)]
-   [:td (gen-state-btn m "working") (gen-state-btn m "executed") (gen-state-btn m "ready")] 
+   [:td (gen-state-btn m "working") (gen-state-btn m "executed") (gen-state-btn m "ready")]
    [:td (:seq-idx m)]
    [:td (:par-idx m)]
    [:td (:TaskName (:task m))]
@@ -55,7 +55,7 @@
       :data-no-idx no-idx
       :data-func "ctrl"
       :data-value (condp = s "cycle" "mon" s)} s])
-  
+
 (defn state-li [v]
   (let [m (first v)]
       (into [:div.uk-accordion-content
@@ -74,7 +74,7 @@
                      [:th.uk-width-small "task name"]
                      [:th "task action"]
                      [:th.uk-width-medium "task info"]
-                     [:th]]]            
+                     [:th]]]
             (into [:tbody] (map table-row v))]])))
 
 ;; ------------------------------------------------------------------------
@@ -103,7 +103,7 @@
             :data-exchpath (:exchpath m)
             :data-exchkey k
             :data-no-idx (:no-idx m)}]]]))
-  
+
 (defmulti e (fn [m k v] (keyword k)))
 
 (defmethod e :Type [m k v] (e-input m k v))
@@ -153,7 +153,7 @@
        (string? v) [:p v]
        (boolean? v) [:p v]
        :else (str v)))])
-   
+
 (defn elems [{es :value :as m} e]
   (into [:div.uk-accordion-content]
         (mapv #(elem-card m % (get e % :not-found)) es)))
@@ -236,7 +236,7 @@
       [:li [:a {:uk-icon "icon: list"
                 :target "_blank"
                 :href "/"}]]]]])
-  
+
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
    (nav-links conf data)
@@ -269,8 +269,9 @@
                    [:h3.uk-heading
                     (deps-span (all-task-deps-ok? (:task-deps m))) "&nbsp;"
                     (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
-                    [:span (:mp-id m)]]
-                  [:a.uk-link-text {:href (str "cont/"(:mp-id m))} (:descr m) "→"]]
+                    [:span.uk-text-uppercase (:name m)]
+                    [:div.uk-text-meta.uk-text-right (:mp-id m)]]
+                  [:a.uk-link-text {:href (str "cont/"(:mp-id m))} [:span {:uk-icon "link"}] "&nbsp;&nbsp;" (:descr m)]]
                  [:div.uk-accordion-content
                    [:div.uk-grid
                     [:div
@@ -282,7 +283,7 @@
                     [:div
                      [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
                      (if (empty? (:mp-deps m))
-                       [:p "none"] 
+                       [:p "none"]
                        (into [:p]
                              (mapv (fn [m]
                                     [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
