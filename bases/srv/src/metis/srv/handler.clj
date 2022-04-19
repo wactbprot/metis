@@ -65,6 +65,7 @@
   (let [registered (registered-mps)]
     (mapv (fn [mp-id]
             {:mp-id mp-id
+             :name (stmem/get-val {:mp-id mp-id :struct :meta :metapath :name})
              :descr (stmem/get-val {:mp-id mp-id :struct :meta :metapath :descr})
              :task-deps (task-deps mp-id)
              :mp-deps (mp-deps mp-id)})
