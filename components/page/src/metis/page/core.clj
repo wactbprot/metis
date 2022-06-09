@@ -2,6 +2,7 @@
   (:require [hiccup.form :as hf]
             [hiccup.page :as hp]
             [metis.page.utils :as u]
+            [metis.page.elements :as elem]
             [clojure.string :as string]))
 
 (defn ids-list [conf data] [:ul.uk-navbar-nav {:id "doc-ids"}])
@@ -77,86 +78,9 @@
                      [:th]]]
             (into [:tbody] (map table-row v))]])))
 
-;; ------------------------------------------------------------------------
-;; exch inputs
-;; ------------------------------------------------------------------------
-(defn e-btn [m k v]
-  [:a.uk-button.uk-button-default.exch-btn
-   {:data-mp-id (:mp-id m)
-    :data-struct "exch"
-    :data-type :bool
-    :data-exchpath (:exchpath m)
-    :data-no-idx (:no-idx m)} "ok"])
-
-(defn e-input [m k v]
-  (let [id (u/gen-exch-id m (name k))]
-        [:div.uk-margin
-         [:label.uk-form-label {:for id} k]
-         [:div.uk-form-controls
-          [:input.uk-input.exch-input
-           {:type "text"
-            :id id
-            :value v
-            :data-type (u/val-type v)
-            :data-mp-id (:mp-id m)
-            :data-struct "exch"
-            :data-exchpath (:exchpath m)
-            :data-exchkey k
-            :data-no-idx (:no-idx m)}]]]))
-
-(defmulti e (fn [m k v] (keyword k)))
-
-(defmethod e :Type [m k v] (e-input m k v))
-
-(defmethod e :Unit [m k v] (e-input m k v))
-
-(defmethod e :Value [m k v] (e-input m k v))
-
-(defmethod e :SdValue [m k v] (e-input m k v))
-
-(defmethod e :N [m k v] (e-input m k v))
-
-(defmethod e :Ready [m k v] (e-btn m k v))
-
-(defmethod e :default [m k v] (e-input m k "not implemented yet"))
-
-(defn s [m k v]
-  (let [id (u/gen-exch-id m (name k))]
-    [:div.uk-margin
-     (when (contains? v :Unit)
-       (e m :Unit (:Unit v)))
-     [:label.uk-form-label {:for id} "Select"]
-     [:div.uk-form-controls
-      (into [:select.uk-select.exch-select
-             {:id id
-              :data-mp-id (:mp-id m)
-              :data-struct "exch"
-              :data-exchpath (:exchpath m)
-              :data-no-idx (:no-idx m)
-              :data-type (u/val-type (:Selected v))}
-             [:option {:value (:Selected v)} (:Selected v)]]
-            (mapv (fn [m] [:option {:value (:value m)} (or (:display m) (:value m))]) (:Select v)))
-     (when (contains? v :Ready)
-       (e-btn m k v))]]))
-
-(defn elem-card [m k v]
-  [:div.uk-card.uk-card-default.uk-card-body
-   [:h3.uk-card-title k]
-   (let [m (assoc m :exchpath k)]
-     (cond
-       (and (map? v)
-            (contains? v :Type)
-            (contains? v :Unit)) (into [:form.uk-form-horizontal.uk-margin-large]
-                                  (mapv (fn [[k v]] (e m k v)) v))
-       (and (map? v)
-            (contains? v :Selected)) [:form.uk-form-horizontal.uk-margin-large (s m k v)]
-       (string? v) [:p v]
-       (boolean? v) [:p v]
-       :else (str v)))])
-
 (defn elems [{es :value :as m} e]
   (into [:div.uk-accordion-content]
-        (mapv #(elem-card m % (get e % :not-found)) es)))
+        (mapv #(elem/card m % (get e % :not-found)) es)))
 
 (defn li-title [m s]
   [:a.uk-accordion-title {:href "#"}
@@ -191,7 +115,8 @@
   (let [n (count (:value m))]
     (into (all-li m a)
           [(li-title m (when (pos? n)
-                         (str n " input" (when (< 1 n) "s") ))) (elems m e) ])))
+                         (str n " input" (when (< 1 n) "s"))))
+           (elems m e) ])))
 
 (defn elem-content [conf data]
   [:div.uk-container.uk-container-large.uk-padding-large
