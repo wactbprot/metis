@@ -2,10 +2,11 @@
   (:require [hiccup.form :as hf]
             [hiccup.page :as hp]
             [metis.page.utils :as u]
+            [metis.page.nav :as nav]
+            [metis.page.home :as home]
+            [metis.page.head :as head]
             [metis.page.elements :as elem]
             [clojure.string :as string]))
-
-(defn ids-list [conf data] [:ul.uk-navbar-nav {:id "doc-ids"}])
 
 (defn gen-state-btn [{mp-id :mp-id struct :struct no-idx :no-idx seq-idx :seq-idx par-idx :par-idx } s]
   [:button.uk-button.uk-button-default.state-btn
@@ -94,16 +95,6 @@
    (when (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
      {:class "uk-open"})])
 
-(defn mpd-descr [conf data]
-  [:div.uk-navbar-item
-   [:a.uk-logo
-    {:href (str "http://localhost:5984/_utils/#database/vl_db/"(:mp-id data))
-     :target "_blank"}
-    (:mp-id data) "&nbsp;" [:sup (if (:running data)
-                                   [:span.uk-badge "active"]
-                                   [:span.uk-badge "stopped"])]
-    [:div.uk-navbar-subtitle (:descr data)]]])
-
 (defn ctrl-li [m a] (into (all-li m a) [(li-title m (:value m)) (state-li (:states m))]))
 
 (defn cont-content [conf data]
@@ -123,104 +114,18 @@
    (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
          (map #(elem-li % (:active data) (:all-exch data)) (:data data) ))])
 
-(defn head [conf data]
-  [:head [:title "metis"]
-   [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
-   (hp/include-css "/css/uikit.css")])
-
-(defn nav-mpd [conf data]
-  [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below
-   {:uk-sticky ""
-    :uk-navbar ""}
-   [:div.uk-navbar-left
-     (mpd-descr conf data)]
-   [:div.uk-navbar-right
-    (ids-list conf data)]])
-
-(defn nav-links [conf data]
-  [:div.uk-navbar-container
-   {:uk-navbar ""}
-   [:div.uk-navbar-center
-     [:ul.uk-navbar-nav
-      [:li [:a {:uk-icon "icon: github-alt"
-                :target "_blank"
-                :href "https://github.com/wactbprot/metis"}]]
-      [:li [:a {:target "_blank"
-                :href "http://localhost:8081/"} "redis"]]
-      [:li [:a {:target "_blank"
-                :href "http://a75438:5601/app/discover"} "elasticsearch"]]
-      [:li [:a {:target "_blank"
-                :href "http://localhost:8009/"} "devproxy"]]
-      (when (:mp-id data)
-        [:li [:a {:target "_blank"
-                  :href (str "/cont/" (:mp-id data))} "Container"]])
-      (when (:mp-id data)
-        [:li [:a {:target "_blank"
-                  :href (str "/elem/" (:mp-id data))} "Inputs"]])
-      [:li [:a {:uk-icon "icon: list"
-                :target "_blank"
-                :href "/"}]]]]])
-
 (defn body [conf data f]
   [:body#body {:data-mp-id (:mp-id data)}
-   (nav-links conf data)
-   (nav-mpd conf data)
+   (nav/links conf data)
+   (nav/mpd conf data)
    (f conf data)
    (hp/include-js "/js/jquery.js")
    (hp/include-js "/js/uikit.js")
    (hp/include-js "/js/uikit-icons.js")
    (hp/include-js "/js/ws.js")])
 
-(defn cont [conf data] (hp/html5 (head conf data) (body conf data cont-content)))
+(defn cont [conf data] (hp/html5 (head/head conf data) (body conf data cont-content)))
 
-(defn elem [conf data] (hp/html5 (head conf data) (body conf data elem-content)))
+(defn elem [conf data] (hp/html5 (head/head conf data) (body conf data elem-content)))
 
-;; ------------------------------------------------------------------------
-;; home
-;; ------------------------------------------------------------------------
-(defn deps-span [b] [:span {:uk-icon (if b "check" "warning")}])
-
-(defn all-task-deps-ok? [v] (= (count v) (count (filter :available v))))
-
-(defn all-mp-deps-ok? [v] (or (empty? v) (= (count v) (count (filter :running v)))))
-
-(defn home-content [conf data]
-  [:div.uk-container.uk-container-xsmall
-   (into [:ul.uk-accordion {:uk-accordion "multiple: false" :duration 400}]
-         (map (fn [m i]
-                [:li.uk-background-muted #_(when (zero? i) {:class "uk-open"})
-                  [:a.uk-accordion-title {:href "#"}
-                   [:h3.uk-heading
-                    (deps-span (all-task-deps-ok? (:task-deps m))) "&nbsp;"
-                    (deps-span (all-mp-deps-ok? (:mp-deps m))) "&nbsp;"
-                    [:span.uk-text-uppercase (:name m)]
-                    [:div.uk-text-meta.uk-text-right (:mp-id m)]]
-                  [:a.uk-link-text {:href (str "cont/"(:mp-id m))} [:span {:uk-icon "link"}] "&nbsp;&nbsp;" (:descr m)]]
-                 [:div.uk-accordion-content
-                   [:div.uk-grid
-                    [:div
-                     [:h3.uk-text-uppercase.uk-text-meta "task dependencies"]
-                     (into [:p]
-                           (mapv (fn [m]
-                                  [:div (deps-span (:available m)) (str "&nbsp;&nbsp;"  (:task-name m))])
-                                (:task-deps m)))]
-                    [:div
-                     [:h3.uk-text-uppercase.uk-text-meta "mpd dependencies"]
-                     (if (empty? (:mp-deps m))
-                       [:p "none"]
-                       (into [:p]
-                             (mapv (fn [m]
-                                    [:div (deps-span (:running m)) (str "&nbsp;&nbsp;"  (:mp-id m))])
-                                  (:mp-deps m))))]]]])
-              data (range)))])
-
-(defn body-home [conf data]
-  [:body
-   (nav-links conf data)
-   (home-content conf data)
-   (hp/include-js "/js/jquery.js")
-   (hp/include-js "/js/uikit.js")
-   (hp/include-js "/js/uikit-icons.js")])
-
-(defn home [conf data] (hp/html5 (head conf data) (body-home conf data)))
+(defn home [conf data] (hp/html5 (head/head conf data) (home/body conf data)))

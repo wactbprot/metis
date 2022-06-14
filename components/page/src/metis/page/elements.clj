@@ -39,6 +39,8 @@
 
 (defmethod element :Position [m k v] (input m k v))
 
+(defmethod element :Mode [m k v] (input m k v))
+
 (defmethod element :Unit [m k v] (input m k v))
 
 (defmethod element :Value [m k v] (input m k v))
