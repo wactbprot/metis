@@ -44,10 +44,3 @@
               data (range)))])
 
 
-(defn body [conf data]
-  [:body
-   (nav/links conf data)
-   (content conf data)
-   (hp/include-js "/js/jquery.js")
-   (hp/include-js "/js/uikit.js")
-   (hp/include-js "/js/uikit-icons.js")])

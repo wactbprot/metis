@@ -89,3 +89,20 @@
        (string? v) [:p v]
        (boolean? v) [:p v]
        :else (str v)))])
+
+
+(defn elems [{es :value :as m} e]
+  (into [:div.uk-accordion-content]
+        (mapv #(card m % (get e % :not-found)) es)))
+
+(defn li [m a e]
+  (let [n (count (:value m))]
+    (into (u/li-all m a)
+          [(u/li-title m (when (pos? n)
+                         (str n " input" (when (< 1 n) "s"))))
+           (elems m e) ])))
+
+(defn content [conf data]
+  [:div.uk-container.uk-container-large.uk-padding-large
+   (into [:ul.uk-accordion {:uk-accordion "multiple: false"}]
+         (map #(li % (:active data) (:all-exch data)) (:data data) ))])
