@@ -31,11 +31,9 @@
       [:li [:a {:target "_blank"
                 :href "http://localhost:8009/"} "devproxy"]]
       (when (:mp-id data)
-        [:li [:a {:target "_blank"
-                  :href (str "/cont/" (:mp-id data))} "Container"]])
+        [:li [:a {:href (str "/cont/" (:mp-id data))} "Container"]])
       (when (:mp-id data)
-        [:li [:a {:target "_blank"
-                  :href (str "/elem/" (:mp-id data))} "Inputs"]])
+        [:li [:a {:href (str "/elem/" (:mp-id data))} "Inputs"]])
       [:li [:a {:uk-icon "icon: list"
                 :target "_blank"
                 :href "/"}]]]]])
