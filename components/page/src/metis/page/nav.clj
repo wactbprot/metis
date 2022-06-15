@@ -16,7 +16,7 @@
                                    [:span.uk-badge "stopped"])]
     [:div.uk-navbar-subtitle (:descr data)]]])
 
-(defn links [conf data]
+(defn links [conf {:keys [mp-id] :as data}]
   [:div.uk-navbar-container
    {:uk-navbar ""}
    [:div.uk-navbar-center
@@ -30,12 +30,11 @@
                 :href "http://a75438:5601/app/discover"} "elasticsearch"]]
       [:li [:a {:target "_blank"
                 :href "http://localhost:8009/"} "devproxy"]]
-      (when (:mp-id data)
-        [:li [:a {:href (str "/cont/" (:mp-id data))} "Container"]])
-      (when (:mp-id data)
-        [:li [:a {:href (str "/elem/" (:mp-id data))} "Inputs"]])
+      (when mp-id
+        [:li [:a {:href (str "/cont/" mp-id)} "Container"]])
+      (when mp-id
+        [:li [:a {:href (str "/elem/" mp-id)} "Inputs"]])
       [:li [:a {:uk-icon "icon: list"
-                :target "_blank"
                 :href "/"}]]]]])
 
 (defn mpd [conf data]

@@ -62,5 +62,6 @@
 
 (defn li-all [m a]
   [:li
-   (when (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
+   (when (or #_(= (str (:no-idx m)) (str a))
+             (= (:title m) a))
      {:class "uk-open"})])
