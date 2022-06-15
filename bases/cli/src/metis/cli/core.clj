@@ -67,6 +67,7 @@
 
   Example:
   ```clojure
+  (m-build \"mpd-ppc-gas_dosing\")
   (m-start \"mpd-ppc-gas_dosing\")
   ```` "
   [mp-id]
