@@ -52,3 +52,15 @@
     (number? x) :float
     (boolean? x) :bool
     (nil? x) :nil))
+
+(defn li-title [{:keys [title no-idx] :as m} s]
+  [:a.uk-accordion-title {:href "#"}
+   [:span.uk-text-capitalize title]
+   [:span.uk-text-light.uk-align-right no-idx]
+   [:span.uk-text-light.uk-align-right.uk-text-uppercase.uk-text-muted
+    {:id (gen-ctrl-id m)} s]])
+
+(defn li-all [m a]
+  [:li
+   (when (or (= (str (:no-idx m)) (str a)) (= (:title m) a))
+     {:class "uk-open"})])
