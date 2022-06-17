@@ -10,31 +10,29 @@
 ;;------------------------------
 (defn pad-ok?
   "Checks if the padding of `i` is ok. `\"*\"` serves pattern matching."
-  ([idx]
-   (pad-ok? c/config idx))
-  ([config idx]
+  ([idx] (pad-ok? c/config idx))
+  ([{n :stmem-key-pad-length} idx]
    (cond
      (and (string? idx)
-          (= (count idx)
-             (:stmem-key-pad-length config))) true
-     (= idx "*")                         true
-     :else                               false)))
+          (= n (count idx))) true
+     (= idx "*") true
+     :else false)))
 
 (defn lpad
   "Left pad the given number if it is not a string."
-  ([idx]
-   (lpad c/config idx))
-  ([config idx]
+  ([idx] (lpad c/config idx))
+  ([{n :stmem-key-pad-length} idx]
    (if (pad-ok? idx)
      idx
-     (when idx (format (str "%0" (:stmem-key-pad-length config) "d") (utils/ensure-int idx))))))
+     (when idx
+       (format (str "%0" n "d") (utils/ensure-int idx))))))
 
 ;;------------------------------
 ;; default  keys
 ;;------------------------------
 (defn map->struct-part
   [{trans :stmem-trans s :stmem-key-sep} {mp-id :mp-id p :struct}]
-  (when  mp-id
+  (when mp-id
     (when p
       (str (if (keyword? mp-id) (mp-id trans) mp-id) s (if (keyword? p) (p trans) p)))))
 
@@ -108,11 +106,11 @@
 ;;------------------------------
 (defn m->key-type [m]
   (cond
-    (= (:struct m) :id)   :id-key
+    (= (:struct m) :id) :id-key
     (= (:struct m) :meta) :meta-key
     (= (:struct m) :exch) :exch-key
-    (= (:func m)   :msg)  :msg-key
-    :default              :default))
+    (= (:func m) :msg) :msg-key
+    :default :default))
 
 (defn map->key
   ([m]
@@ -129,21 +127,23 @@
 ;;------------------------------
 ;; key to map  utils
 ;;------------------------------
-(defn care-no-idx [config v]
+(defn care-no-idx [{:keys [stmem-retrans] :as config} v]
   (when-let [s (get v 2)]
-    (if (re-matches #"[0-9]*" s) (utils/ensure-int s) s)))
+    (cond
+      (re-matches #"[0-9]*" s) (utils/ensure-int s)
+      :default s)))
 
-(defn care-struct [{retrans :stmem-retrans} v] (get retrans  (get v 1)))
+(defn care-struct [{:keys [stmem-retrans]} v] (get stmem-retrans (get v 1)))
 
 (defn key->map
-  ([k]
-   (key->map c/config k))
-  ([{re-sep :re-sep retrans :stmem-retrans :as config} k]
+  ([k] (key->map c/config k))
+  ([{:keys [re-sep stmem-retrans] :as config} k]
    (when k
-     (when-let [v (string/split k re-sep)]
-       {:mp-id (get v 0)
-        :struct (care-struct config v)
-        :no-idx (care-no-idx config v)
-        :func (get retrans (get v 3))
-        :seq-idx (utils/ensure-int (get v 4))
-        :par-idx (utils/ensure-int (get v 5))}))))
+     (let [v (string/split k re-sep)
+           [mp-id struct no-idx func seq-idx par-idx] v]
+       (cond-> {:mp-id mp-id}
+         struct (assoc :struct (care-struct config v))
+         no-idx (assoc (if (= struct "exchange") :exchpath :no-idx) (care-no-idx config v))
+         func (assoc :func (get stmem-retrans func))
+         seq-idx (assoc :seq-idx  (utils/ensure-int seq-idx))
+         par-idx (assoc :par-idx (utils/ensure-int par-idx)))))))

@@ -64,6 +64,7 @@
     (µ/log ::start :message (str "start mpd: " ref-id))
     (mpd-start ref-id))
   (run! (fn [mp-id]
+          (prn mp-id)
           (µ/log ::start :message (str "clear mpd: " mp-id))
           (mpd-clear mp-id)
           (µ/log ::start :message (str "build mpd: " mp-id))
