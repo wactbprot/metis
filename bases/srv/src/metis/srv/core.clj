@@ -22,8 +22,8 @@
     (:gen-class))
 
 (defn mpd-build [mp-id] (-> mp-id ltmem/get-safe-doc model/build-mpd))
- 
-(defn mpd-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))  
+
+(defn mpd-clear [mp-id] (model/clear-mpd {:mp-id mp-id}))
 
 (defn mpd-start [mp-id] (scheduler/start {:mp-id mp-id}))
 
@@ -35,7 +35,8 @@
   (GET "/ws" [:as req] (ws/main req))
   (GET "/" [:as req] (page/home c/config (h/home req)))
   (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
-  (GET "/elem/:mp-id" [:as req] (page/elem c/config (h/elem req)))  
+  (GET "/special/:mp-id" [:as req] (page/special c/config (h/cont req)))
+  (GET "/elem/:mp-id" [:as req] (page/elem c/config (h/elem req)))
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
 
@@ -64,13 +65,12 @@
     (µ/log ::start :message (str "start mpd: " ref-id))
     (mpd-start ref-id))
   (run! (fn [mp-id]
-          (prn mp-id)
           (µ/log ::start :message (str "clear mpd: " mp-id))
           (mpd-clear mp-id)
           (µ/log ::start :message (str "build mpd: " mp-id))
           (mpd-build mp-id)
           (µ/log ::start :message (str "start mpd: " mp-id))
-          (mpd-start mp-id)          )
+          (mpd-start mp-id))
         (:build-on-start c/config))
   (µ/log ::start :message "start server")
   (reset! server (run-server #'app (:api c/config)))

@@ -3,7 +3,7 @@
     :doc "Handler functions."}
   (:require [metis.exchange.interface :as exch]
             [metis.ltmem.interface :as ltmem]
-            [metis.stmem.interface :as stmem]            
+            [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
             [clojure.string :as string]))
 
@@ -15,7 +15,7 @@
         (stmem/registered))))
 
 (defn running? [mp-id] (contains? (set (registered-mps)) mp-id))
-  
+
 (defn req->mp-id [req] (get-in req [:route-params :mp-id] "*"))
 
 (defn req->active-param [req] (get-in req [:params :active] 0))
@@ -33,7 +33,6 @@
   (assoc m :title (stmem/get-map (assoc (dissoc m :seq-idx :par-idx) :func :title))))
 
 (defn cont [req]
-  (prn (req->active-param req))
   (let [mp-id  (req->mp-id req)
         ctrls  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :ctrl})]
     {:mp-id mp-id
@@ -43,7 +42,6 @@
      :data (mapv (comp assoc-states assoc-descr assoc-title) ctrls)}))
 
 (defn elem [req]
-  (prn (req->active-param req))
   (let [mp-id  (req->mp-id req)
         elems  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :elem})]
     {:mp-id mp-id

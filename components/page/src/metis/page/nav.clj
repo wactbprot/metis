@@ -34,6 +34,8 @@
         [:li [:a {:href (str "/cont/" mp-id)} "Container"]])
       (when mp-id
         [:li [:a {:href (str "/elem/" mp-id)} "Inputs"]])
+      (when mp-id
+        [:li [:a {:href (str "/special/" mp-id)} "Special"]])
       [:li [:a {:uk-icon "icon: list"
                 :href "/"}]]]]])
 
