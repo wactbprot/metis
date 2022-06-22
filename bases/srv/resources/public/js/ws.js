@@ -37,7 +37,9 @@ ws.onopen = function (event) {
 };
 
 ws.onmessage = function (event) {
-    var data =JSON.parse(event.data);
+    var data = JSON.parse(event.data);
+
+    console.log(data)
     
     if(data["mp-id"] == mp_id){
 	if(data["struct"] == "id"){

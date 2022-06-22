@@ -42,7 +42,6 @@
                         (µ/log ::ws :message (str "closed, status: "status))))))
 
 (defn send-to-ws-clients [m]
-  (prn 1)
   (doseq [client (keys @ws-clients)]
     (send! client (che/encode m))))
 
@@ -51,9 +50,11 @@
   
 (defn start []
   (stmem/register {:mp-id :* :struct :id :level 3} get-doc-ids)
-  (stmem/register {:mp-id :* :struct :*  :level 3} send-to-ws-clients))
+  (stmem/register {:mp-id :* :level 3} send-to-ws-clients)
+  (stmem/register {:mp-id :* :struct :exch :level 3} send-to-ws-clients))
   
 (defn stop []
   (stmem/de-register {:mp-id :* :struct :id :level 3})
-  (stmem/de-register {:mp-id :* :struct :* :level 3}))
+  (stmem/de-register {:mp-id :* :level 3})
+  (stmem/de-register {:mp-id :* :struct :exch :level 3}))
     
