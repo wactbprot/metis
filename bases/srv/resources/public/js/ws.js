@@ -38,7 +38,6 @@ ws.onopen = function (event) {
 
 ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
-    
     if(data["mp-id"] == mp_id){
 	if(data["struct"] == "id"){
 	    $e = $("#doc-ids"); 
