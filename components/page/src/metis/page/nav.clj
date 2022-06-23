@@ -1,6 +1,6 @@
 (ns metis.page.nav
   ^{:author "Thomas Bock thomas.bock@ptb.de"
-    :doc "Provides elements for the input page."}
+    :doc "Provides navigation elements for all pages."}
   (:require [metis.page.utils :as u]))
 
 
