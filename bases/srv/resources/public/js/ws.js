@@ -17,7 +17,7 @@ var gen_ctrl_id = (data) => {
 
 var gen_exch_id = (data, key) => {
     // mpd-ref_cont__exch_Target_pressure_Value
-    return [mp_id, "cont__exch", data["exchpath"], key].join(sep)
+    return [mp_id, "exch", data["exchpath"], key].join(sep)
 }
 
 var gen_msg_data_id = (data) => {
@@ -38,8 +38,6 @@ ws.onopen = function (event) {
 
 ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
-
-    console.log(data)
     
     if(data["mp-id"] == mp_id){
 	if(data["struct"] == "id"){
@@ -54,7 +52,6 @@ ws.onmessage = function (event) {
 	if(data["struct"] == "exch"){
 	    if(typeof data["value"] == "object"){
 		for(k in data["value"]) {
-		    console.log(gen_exch_id(data, k))
 		    $("#" +  gen_exch_id(data, k)).val(data["value"][k]);
 		}
 	    }
