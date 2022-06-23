@@ -10,6 +10,7 @@
 
 (def target-pressure-opts 
   [{:value 0.1 :display "0.1 mbar"}
+   {:value 0.1 :display "0.2 mbar"}
    {:value 1 :display "1 mbar"}
    {:value 2 :display "2 mbar"}
    {:value 3 :display "3 mbar"}])
@@ -39,7 +40,12 @@
   
   (defn content [conf {:keys [active data]}]
     [:div.uk-container.uk-container-large.uk-padding-large
+     ;; obs pressure
+     [:div.uk-card.uk-card-body.uk-card-default
+      (channel-value-input "ObservePressure" "Observer Pressure (DualGauge, mbar)")]
+
      [:div {:uk-grid ""}
+
       ;; pressure select
       [:div.uk-card.uk-card-body.uk-card-default
        [:h3.uk-card-title "Target Pressure"]
