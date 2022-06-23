@@ -20,7 +20,7 @@
      (µ/log ::read! :message "read value from exchange" :m (assoc m :value exch-val))
      (if (and exch-val (:ok res-doc))
        (stmem/set-state-executed m)
-       (stmem/set-state-error (assoc m :message "error on attempt to write exch value"))))))
+       (stmem/set-state-error (assoc m :message "error on attempt to read exch value"))))))
 
 (defn write!
   "Writes the `:Value` to the exchange. No `StopIf` support needed."

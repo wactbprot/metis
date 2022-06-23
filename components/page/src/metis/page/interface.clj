@@ -7,5 +7,4 @@
 
 (defn elem [conf data] (core/elem conf data))
 
-
-
+(defn special [conf data] (core/special conf data))

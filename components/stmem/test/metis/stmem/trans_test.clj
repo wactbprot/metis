@@ -19,9 +19,7 @@
                               :state "state"
                               :msg "message"
                               :ctrl "ctrl"
-                              :exch "exchange"}}]
-    (testing "..."
-      (is (nil? nil)))))
+                              :exch "exchange"}}]))
 
 (deftest map->key-iii
   (testing "exchange clear pat"
@@ -81,30 +79,18 @@
   (testing "nil behaviour"
     (is (nil? (key->map nil))))
   (testing "empty mp-id"
-    (is (= {:mp-id "",
-            :struct nil,
-            :no-idx nil,
-            :func nil,
-            :seq-idx nil,
-            :par-idx nil} (key->map ""))))
+    (is (= {:mp-id ""} (key->map ""))))
   (testing "mp-id"
-    (is (= {:mp-id "a",
-            :struct nil,
-            :no-idx nil,
-            :func nil,
-            :seq-idx nil,
-            :par-idx nil} (key->map "a"))))
+    (is (= {:mp-id "a"} (key->map "a"))))
   (testing "mp-id no-idx is kept if string"
-    (is (= {:mp-id "a",
-            :struct :cont,
-            :no-idx "c",
-            :func nil,
-            :seq-idx nil,
-            :par-idx nil} (key->map "a@container@c"))))
+    (is (= {:mp-id "a"
+            :struct :cont
+            :no-idx "c"} (key->map "a@container@c"))))
   (testing "mp-id no-idx is turned to number"
-    (is (= {:mp-id "a",
-            :struct :cont,
-            :no-idx 5,
-            :func nil,
-            :seq-idx nil,
-            :par-idx nil} (key->map "a@container@00000005")))))
+    (is (= {:mp-id "a"
+            :struct :cont
+            :no-idx 5} (key->map "a@container@00000005"))))
+  (testing "exchange is cared"
+    (is (= {:mp-id "a"
+            :struct :exch
+            :exchpath "A"} (key->map "a@exchange@A")))))

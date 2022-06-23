@@ -29,12 +29,13 @@
    (reg-pat c/config m))
   ([{t :stmem-trans s :stmem-notif-sep :as config} {struct :struct :as m}]
    (str (m->mp-id config m) s
-        (if (= :id struct)
-          (str (m->struct config m) s(:* t))
-          (str (m->struct config m) s
-               (m->no-idx config m) s
-               (m->func config m)
-               (:* t))))))
+        (cond
+          (= :id struct)   (str (m->struct config m) s(:* t))
+          (= :exch struct) (str (m->struct config m) s(:* t))
+          :default         (str (m->struct config m) s
+                                (m->no-idx config m) s
+                                (m->func config m)
+                                (:* t))))))
 
 (defn subs-pat
   "Generates subscribe patterns."
@@ -75,7 +76,7 @@
   ([f]
    (wrap-assoc-value c/config f))
   ([config f]
-   (fn [m] (f (assoc m :value (api/get-val m))))))
+   (fn [m]  (f (assoc m :value (api/get-val m))))))
 
 ;;------------------------------
 ;; generate listener
@@ -103,7 +104,7 @@
 
 (defn registered? [k] (contains? @listeners k))
 
-(defn registered 
+(defn registered
   "Retuns a vector of maps containing information about the registered
   listeners"
   []
