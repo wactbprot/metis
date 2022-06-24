@@ -42,7 +42,6 @@
                         (µ/log ::ws :message (str "closed, status: "status))))))
 
 (defn send-to-ws-clients [m]
-  (prn 1)
   (doseq [client (keys @ws-clients)]
     (send! client (che/encode m))))
 

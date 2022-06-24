@@ -29,4 +29,4 @@
    (body/default conf data
               (condp = (-> mp-id keyword)
                 :mpd-ref mpd-ref/content
-                :default index/content))))
+                cont/content))))
