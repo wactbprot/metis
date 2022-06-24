@@ -4,6 +4,7 @@
             [metis.page.home :as index]
             [metis.page.head :as head]
             [metis.page.body :as body]
+            [metis.page.mpd-ppc-gas_dosing :as mpd-ppc-gas_dosing]
             [metis.page.mpd-ref :as mpd-ref]
             [metis.page.elements :as elem]
             [metis.page.container :as cont]))
@@ -28,5 +29,6 @@
    (head/head conf data)
    (body/default conf data
               (condp = (-> mp-id keyword)
+                :mpd-ppc-gas_dosing mpd-ppc-gas_dosing/content
                 :mpd-ref mpd-ref/content
                 cont/content))))
