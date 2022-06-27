@@ -8,12 +8,16 @@
             [metis.page.container :as cont]))
 
 (defn cont [conf data]
-  (hp/html5 (head/head conf data)
-            (body/default conf data cont/content)))
+  (hp/html5
+   (head/head conf data)
+   (body/default conf data cont/content)))
 
 (defn elem [conf data]
   (hp/html5
    (head/head conf data)
    (body/default conf data elem/content)))
 
-(defn home [conf data] (hp/html5 (head/head conf data) (body/home conf data index/content)))
+(defn home [conf data]
+  (hp/html5
+   (head/head conf data)
+   (body/home conf data index/content)))

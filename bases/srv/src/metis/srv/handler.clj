@@ -33,7 +33,6 @@
   (assoc m :title (stmem/get-map (assoc (dissoc m :seq-idx :par-idx) :func :title))))
 
 (defn cont [req]
-  (prn (req->active-param req))
   (let [mp-id  (req->mp-id req)
         ctrls  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :ctrl})]
     {:mp-id mp-id
@@ -43,7 +42,6 @@
      :data (mapv (comp assoc-states assoc-descr assoc-title) ctrls)}))
 
 (defn elem [req]
-  (prn (req->active-param req))
   (let [mp-id  (req->mp-id req)
         elems  (stmem/get-maps {:mp-id mp-id :struct :cont :no-idx :* :func :elem})]
     {:mp-id mp-id
