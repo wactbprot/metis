@@ -31,4 +31,4 @@
               (condp = (-> mp-id keyword)
                 :mpd-ppc-gas_dosing mpd-ppc-gas_dosing/content
                 :mpd-ref mpd-ref/content
-                :default index/content))))
+                cont/content))))
