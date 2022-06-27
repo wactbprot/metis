@@ -35,7 +35,7 @@
   (GET "/ws" [:as req] (ws/main req))
   (GET "/" [:as req] (page/home c/config (h/home req)))
   (GET "/cont/:mp-id" [:as req] (page/cont c/config (h/cont req)))
-  (GET "/special/:mp-id" [:as req] (page/special c/config (h/cont req)))
+  (GET "/special/:mp-id" [:as req] (page/special c/config (h/elem req)))
   (GET "/elem/:mp-id" [:as req] (page/elem c/config (h/elem req)))
   (route/resources "/")
   (route/not-found (res/response {:error "not found"})))
