@@ -15,6 +15,11 @@ var gen_ctrl_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "ctrl"].join(sep)
 }
 
+var gen_exch_id = (data, key) => {
+    // mpd-ref_cont__exch_Target_pressure_Value
+    return [mp_id, "exch", data["exchpath"], key].join(sep)
+}
+
 var gen_msg_data_id = (data) => {
     return [mp_id, data["struct"], data["no-idx"], "msg-data"].join(sep)
 }
@@ -32,8 +37,7 @@ ws.onopen = function (event) {
 };
 
 ws.onmessage = function (event) {
-    var data =JSON.parse(event.data);
-
+    var data = JSON.parse(event.data);
     if(data["mp-id"] == mp_id){
 	if(data["struct"] == "id"){
 	    $e = $("#doc-ids"); 
@@ -43,9 +47,19 @@ ws.onmessage = function (event) {
 	if(data["func"] == "state"){
 	    $("#" +  gen_state_id(data)).html(data["value"]);
 	}
+	
+	if(data["struct"] == "exch"){
+	    if(typeof data["value"] == "object"){
+		for(k in data["value"]) {
+		    $("#" +  gen_exch_id(data, k)).val(data["value"][k]);
+		}
+	    }
+	}
+	
 	if(data["func"] == "ctrl"){
 	    $("#" + gen_ctrl_id(data)).html(data["value"]);
 	}
+
 	if(data["func"] == "msg" & typeof data["value"] == "string"){
 	    $("#" + gen_msg_data_id(data)).html(data["value"]);
 	    UIkit.modal("#" + gen_msg_elem_id(data)).show();

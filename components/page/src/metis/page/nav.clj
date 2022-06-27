@@ -1,6 +1,6 @@
 (ns metis.page.nav
   ^{:author "Thomas Bock thomas.bock@ptb.de"
-    :doc "Provides elements for the input page."}
+    :doc "Provides navigation elements for all pages."}
   (:require [metis.page.utils :as u]))
 
 
@@ -30,12 +30,14 @@
                 :href "http://a75438:5601/app/discover"} "elasticsearch"]]
       [:li [:a {:target "_blank"
                 :href "http://localhost:8009/"} "devproxy"]]
+      [:li [:a {:uk-icon "icon: list"
+                :href "/"}]]
       (when mp-id
         [:li [:a {:href (str "/cont/" mp-id)} "Container"]])
       (when mp-id
         [:li [:a {:href (str "/elem/" mp-id)} "Inputs"]])
-      [:li [:a {:uk-icon "icon: list"
-                :href "/"}]]]]])
+      (when mp-id
+        [:li [:a {:href (str "/special/" mp-id)} "Special"]])]]])
 
 (defn mpd [conf data]
   [:div.uk-navbar-container.uk-sticky.uk-sticky-fixed.uk-sticky-below

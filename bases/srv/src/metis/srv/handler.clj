@@ -3,7 +3,7 @@
     :doc "Handler functions."}
   (:require [metis.exchange.interface :as exch]
             [metis.ltmem.interface :as ltmem]
-            [metis.stmem.interface :as stmem]            
+            [metis.stmem.interface :as stmem]
             [metis.tasks.interface :as tasks]
             [clojure.string :as string]))
 
@@ -15,7 +15,7 @@
         (stmem/registered))))
 
 (defn running? [mp-id] (contains? (set (registered-mps)) mp-id))
-  
+
 (defn req->mp-id [req] (get-in req [:route-params :mp-id] "*"))
 
 (defn req->active-param [req] (get-in req [:params :active] 0))
