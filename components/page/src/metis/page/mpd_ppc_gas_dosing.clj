@@ -10,7 +10,7 @@
 
 (def target-pressure-opts 
   [{:value 0.1 :display "0.1"}
-   {:value 0.1 :display "0.2"}
+   {:value 0.2 :display "0.2"}
    {:value 1 :display "1"}
    {:value 2 :display "2"}
    {:value 3 :display "3"}])
