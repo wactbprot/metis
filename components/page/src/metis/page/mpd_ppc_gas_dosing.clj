@@ -48,41 +48,47 @@
    [:div {:uk-grid ""}
     
     ;; ctrl container
-    [:button.uk-button.uk-button-default.uk-button-danger.ctrl-btn
+    [:button.uk-button.uk-button-default.uk-button-danger.ctrl-btn.uk-width-1-5
      {:data-mp-id mp-id
       :data-struct "cont"
       :data-no-idx "0"
       :data-func "ctrl"
       :data-value "run"} "Initialize Devices"]
     
-    [:button.uk-button.uk-button-default.ctrl-btn
+    [:button.uk-button.uk-button-default.ctrl-btn.uk-width-1-5
      {:data-mp-id mp-id
       :data-struct "cont"
       :data-no-idx "1"
       :data-func "ctrl"
       :data-value "run"} "Open TMP Valve"]
 
-    [:button.uk-button.uk-button-default.ctrl-btn
+    [:button.uk-button.uk-button-default.ctrl-btn.uk-width-1-5
      {:data-mp-id mp-id
       :data-struct "cont"
       :data-no-idx "2"
       :data-func "ctrl"
       :data-value "run"} "Close TMP Valve"]
 
-    [:button.uk-button.uk-button-default.uk-button-primary.ctrl-btn
+    [:button.uk-button.uk-button-default.uk-button-primary.ctrl-btn.uk-width-1-5
      {:data-mp-id mp-id
       :data-struct "cont"
       :data-no-idx "3"
       :data-func "ctrl"
       :data-value "mon"} "Start Gas Dosing"]
     
-    [:button.uk-button.uk-button-default.uk-button-secondary.ctrl-btn
+    [:button.uk-button.uk-button-default.uk-button-secondary.ctrl-btn.uk-width-1-5
      {:data-mp-id mp-id
       :data-struct "cont"
       :data-no-idx "3"
       :data-func "ctrl"
-      :data-value "stop"} "Stop Gas Dosing"]]
-   
+      :data-value "stop"} "Stop Gas Dosing"]
+
+    [:button.uk-button.uk-button-default.uk-width-1-5 {:id "mpd-ppc-gas_dosing_cont_0_ctrl" :disabled ""} "~"]
+    [:button.uk-button.uk-button-default.uk-width-1-5 {:id "mpd-ppc-gas_dosing_cont_1_ctrl" :disabled ""} "~"]
+    [:button.uk-button.uk-button-default.uk-width-1-5 {:id "mpd-ppc-gas_dosing_cont_2_ctrl" :disabled ""} "~"]
+    [:button.uk-button.uk-button-default.uk-width-1-5 {:id "mpd-ppc-gas_dosing_cont_3_ctrl" :disabled ""} "~"]
+    [:button.uk-button.uk-button-default.uk-width-1-5 {:disabled ""}]]
+    
    [:div {:uk-grid ""}
 
     [:div.uk-card.uk-card-body.uk-card-default
@@ -92,15 +98,7 @@
     [:div.uk-card.uk-card-body.uk-card-default
      (input "PPCVATDosingValve" "Mode" "VAT-Valve Operation Mode" all-exch)]
     [:div.uk-card.uk-card-body.uk-card-default
-     (input "PPCVATDosingValve" "Position" "Position of VAT-Valve" all-exch)]
-
-    (let [cont-3-ctrl-id "mpd-ppc-gas_dosing_cont_3_ctrl"]
-      [:div.uk-card.uk-card-body.uk-card-default
-       [:div
-        [:label.uk-form-label {:for cont-3-ctrl-id} "Prog. State"]
-        [:div.uk-form-controls
-         [:span {:id cont-3-ctrl-id}]]]])]
-   
+     (input "PPCVATDosingValve" "Position" "Position of VAT-Valve" all-exch)]]
    [:div {:uk-grid ""}
 
     ;; pressure select
