@@ -39,11 +39,13 @@ ws.onopen = function (event) {
 ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
     if(data["mp-id"] == mp_id){
+
 	if(data["struct"] == "id"){
 	    $e = $("#doc-ids"); 
 	    $e.empty()
 	    data["value"].forEach(id => $e.append(gen_doc_id_li(id)));
 	}
+
 	if(data["func"] == "state"){
 	    $("#" +  gen_state_id(data)).html(data["value"]);
 	}

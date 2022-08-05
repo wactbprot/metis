@@ -25,11 +25,11 @@
   ([exchpath         label all-exch] (input exchpath "Value" label all-exch))
   ([exchpath exchkey label all-exch]
    (let [id (id-> exchpath exchkey)]
-    [:div
-     [:label.uk-form-label {:for id} label]
-     [:div.uk-form-controls
-      [:input.uk-input.exch-input
-       {:type "text" :id id :value (get-in all-exch [exchpath (keyword exchkey)])}]]])))
+     [:div
+      [:label.uk-form-label {:for id} label]
+      [:div.uk-form-controls
+       [:input.uk-input.exch-input
+        {:type "text" :id id :value (get-in all-exch [exchpath (keyword exchkey)])}]]])))
 
 (defn select [exchpath opts all-exch]
   (let [selected-val (get-in all-exch [exchpath :Selected])
@@ -43,7 +43,7 @@
                 opts))))
 
 (defn content [conf {:keys [all-exch]}]
-  [:div.uk-container.uk-container-large.uk-padding-large
+  [:div.uk-container.uk-padding-large.uk-container-large
    
    [:div {:uk-grid ""}
     
@@ -82,18 +82,24 @@
       :data-no-idx "3"
       :data-func "ctrl"
       :data-value "stop"} "Stop Gas Dosing"]]
-
+   
    [:div {:uk-grid ""}
-    
-    ;; obs pressure
+
     [:div.uk-card.uk-card-body.uk-card-default
-     (input "ObservePressure" "Value" "Observer Pressure (DualGauge, mbar)" all-exch)]
+     (input "ObservePressure" "Value" "Observer Pressure in mbar" all-exch)]
     [:div.uk-card.uk-card-body.uk-card-default
      (input "Servo_PPC_Pos" "Value" "Position of TMP Valve" all-exch)]
     [:div.uk-card.uk-card-body.uk-card-default
      (input "PPCVATDosingValve" "Mode" "VAT-Valve Operation Mode" all-exch)]
     [:div.uk-card.uk-card-body.uk-card-default
-     (input "PPCVATDosingValve" "Position" "Position of VAT-Valve" all-exch)]]
+     (input "PPCVATDosingValve" "Position" "Position of VAT-Valve" all-exch)]
+
+    (let [cont-3-ctrl-id "mpd-ppc-gas_dosing_cont_3_ctrl"]
+      [:div.uk-card.uk-card-body.uk-card-default
+       [:div
+        [:label.uk-form-label {:for cont-3-ctrl-id} "Prog. State"]
+        [:div.uk-form-controls
+         [:span {:id cont-3-ctrl-id}]]]])]
    
    [:div {:uk-grid ""}
 
