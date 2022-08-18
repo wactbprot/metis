@@ -5,8 +5,9 @@
           docs. The document component needs access to ltmem and
           stmem."}
   (:require [metis.config.interface :as c]
+            [cheshire.core :as che]
             [com.ashafa.clutch :as couch]
-            [vl-data-insert.core :as i]
+            [clj-http.client :as http]
             [com.brunobonacci.mulog :as µ]
             [metis.ltmem.interface :as ltmem]
             [metis.stmem.interface :as stmem]
@@ -111,22 +112,8 @@
    {:ok true}))
 
 
-;;------------------------------
-;; store with doc-lock
-;;------------------------------
-(def doc-lock (Object.))
-
-(defn execute
-  [conf id results doc-path]
-  (locking doc-lock
-    (µ/log ::execute :message "execute store with lock doc" :doc-id id)
-    (let [d (ltmem/get-doc conf id)
-          d (i/store-results d results doc-path)
-          d (ltmem/put-doc conf d)]
-      {:ok (contains? d :_rev)})))
-
-(defn store-results
-  "Stores the `results` vector under the `doc-path` of every document
+(defn store-results 
+ "Stores the `results` vector under the `doc-path` of every document
   active at the given `mp-id`.
   
   Example:
@@ -140,9 +127,14 @@
   ```"  
   ([m results doc-path]
    (store-results c/config m results doc-path))
-  ([conf {mp-id :mp-id :as m} results doc-path]
+  ([{header :json-post-header url :db-agent-url} {mp-id :mp-id :as m} results doc-path]
    (µ/trace ::store-results [:function "document/store-results"]
             (if (and (string? mp-id) (vector? results) (string? doc-path))
-              (into {:ok true} (mapv #(execute conf % results doc-path) (ids m)))
+              {:ok true
+               :revs (mapv (fn [id]
+                             (-> (str url "/" id)
+                                 (http/post (assoc header :body (che/encode {:Result results :DocPath doc-path})))
+                                 :body
+                                 (che/decode true)))
+                           (ids m))}
               {:error "wrong input params"}))))
-
