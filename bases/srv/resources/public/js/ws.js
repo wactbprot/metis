@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://127.0.0.1:8010/ws")
+var ws = new WebSocket("ws://i75464:8010/ws")
 
 const mp_id = $("#body").data("mp-id"); 
 
