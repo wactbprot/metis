@@ -114,7 +114,7 @@
 
 (defn store-results 
  "Stores the `results` vector under the `doc-path` of every document
-  active at the given `mp-id`.
+  active at the given `mp-id`. 
   
   Example:
   ```clojure
@@ -129,12 +129,10 @@
    (store-results c/config m results doc-path))
   ([{header :json-post-header url :db-agent-url} {mp-id :mp-id :as m} results doc-path]
    (µ/trace ::store-results [:function "document/store-results"]
-            (if (and (string? mp-id) (vector? results) (string? doc-path))
-              {:ok true
-               :revs (mapv (fn [id]
-                             (-> (str url "/" id)
-                                 (http/post (assoc header :body (che/encode {:Result results :DocPath doc-path})))
-                                 :body
-                                 (che/decode true)))
-                           (ids m))}
-              {:error "wrong input params"}))))
+            {:ok true
+             :revs (mapv (fn [id]
+                           (-> (str url "/" id)
+                               (http/post (assoc header :body (che/encode {:Result results :DocPath doc-path})))
+                               :body
+                               (che/decode true)))
+                         (ids m))})))
